@@ -399,8 +399,9 @@ function renderWL(){
   const L=WL.filter(t=>BY[t]); $('#wlCard').classList.toggle('hide',!L.length);
   $('#wlSetNote').textContent=L.length?`${L.length} stock${L.length>1?'s':''}: ${L.join(', ')}. Saved on this device only.`:'Empty. Tap ☆ on any stock to add it.';
   if(!L.length)return;
-  $('#wl').innerHTML='<tr><th>Stock</th><th class="num">Rank</th><th class="num">vs yesterday</th><th class="num">Last day</th><th class="num hm">Last week</th><th></th></tr>'+
-    L.map(t=>BY[t]).sort((a,b)=>a.rk-b.rk).map(s=>`<tr class="row" tabindex="0" role="button" data-t="${esc(s.t)}"><td><b>${esc(s.t)}</b> <span class="mut hm">${esc(s.n)}</span></td><td class="num">${s.rk}${s.port?' <span class="tag">pick</span>':''}</td><td class="num">${rkMove(s)}</td><td class="num ${cls(s.r1d)}">${pct(s.r1d,1)}</td><td class="num hm ${cls(s.r1w)}">${pct(s.r1w,1)}</td><td>${starBtn(s.t)}</td></tr>`).join('');
+  const hv=!!D.changes;
+  $('#wl').innerHTML='<tr><th>Stock</th><th class="num">Rank</th>'+(hv?'<th class="num">vs yesterday</th>':'')+'<th class="num">Last day</th><th class="num hm">Last week</th><th></th></tr>'+
+    L.map(t=>BY[t]).sort((a,b)=>a.rk-b.rk).map(s=>`<tr class="row" tabindex="0" role="button" data-t="${esc(s.t)}"><td><b>${esc(s.t)}</b> <span class="mut hm">${esc(s.n)}</span></td><td class="num">${s.rk}${s.port?' <span class="tag">pick</span>':''}</td>${hv?`<td class="num">${rkMove(s)}</td>`:''}<td class="num ${cls(s.r1d)}">${pct(s.r1d,1)}</td><td class="num hm ${cls(s.r1w)}">${pct(s.r1w,1)}</td><td>${starBtn(s.t)}</td></tr>`).join('');
 }
 function renderRunning(){
   const R=D.running; if(!R)return; $('#runCard').classList.remove('hide');
@@ -495,7 +496,7 @@ const FL={ey:'Cheap vs earnings',bm:'Cheap vs book value',gpa:'Profitable (gross
 function moreHTML(t,h){
   const fi=h.fi||{}, raw=h.raw||{}, used=D.model_inputs&&D.model_inputs.fundamentals;
   const facts=[raw.ey!=null&&raw.ey>0?['Price / earnings',(1/raw.ey).toFixed(1)]:raw.ey!=null?['Price / earnings','loss-making']:null,
-    raw.revg!=null?['Revenue growth (12 months)',pct(raw.revg,0)]:null, raw.sue!=null?['Last earnings vs a year before',raw.sue>1?'well above':raw.sue>0?'above':raw.sue>-1?'below':'well below']:null,
+    raw.revg!=null?['Revenue growth (12 months)',pct(raw.revg,1)]:null, raw.sue!=null?['Last earnings vs a year before',raw.sue>1?'well above':raw.sue>0?'above':raw.sue>-1?'below':'well below']:null,
     raw.gpa!=null?['Gross profit / assets',pct(raw.gpa,0,false)]:null].filter(Boolean);
   const bars=Object.entries(fi).filter(([k])=>FL[k]&&k!=='evt').sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="fac"><span>${FL[k]}</span><div class="bar"><i style="width:${Math.round(v*100)}%"></i></div><span class="num">${Math.round(v*100)}</span></div>`).join('');
   const fil=(h.filings||[]).length?`<p class="note" style="margin:10px 0 4px"><b>Official announcements (8-K), last 30 days:</b> ${h.filings.map(fmtD).join(' · ')} · <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=${encodeURIComponent(t)}&amp;type=8-K" target="_blank" rel="noopener noreferrer">open on SEC.gov</a></p>`:'';
@@ -628,7 +629,7 @@ function wire(){
   $('#sector').innerHTML='<option value="">All sectors</option>'+[...new Set(D.stocks.map(s=>s.s))].sort().map(s=>`<option>${esc(s)}</option>`).join('');
   $('#ks').innerHTML=D.ks.map(k=>`<li>${k.ok?'✅':'⚠️'} <b>${esc(k.id)}</b> – ${esc(k.detail)}</li>`).join('')+`<li>Last run ${esc(new Date(D.generated).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'}))} · ${D.health.current_members_with_data}/${D.health.current_members} stocks updated · model ${esc(D.cfg.model)}</li>`;
 
-  $('#foot').innerHTML=`Research tool, not financial advice. Prices: Yahoo Finance (unofficial, free), may be delayed or incomplete. Last update ${esc(new Date(D.generated).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'}))}.`;
+  $('#foot').innerHTML=`Research tool, not financial advice. Prices: Yahoo Finance (free, unofficial), cross-checked against Nasdaq. Financials: SEC EDGAR. Last update ${esc(new Date(D.generated).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'}))}.`;
   if(D.health&&D.health.removed_with_data!=null){const x=D.xchk||{};$('#survLine').textContent=`Main prices come from Yahoo Finance (free, unofficial)${x.agree!=null?`; each run checks a sample against Nasdaq's own data (${pct(x.agree,1,false)} matched last time)`:''}. ${D.health.removed_with_data} stocks that left the index are in the history; the rest have no free price source, which can flatter past results (size estimated in Record). Adding a free Tiingo key fills most of them.`}
   const qw=new URLSearchParams(location.search).get('w'); if(qw){const add=qw.split(',').map(x=>decodeURIComponent(x).toUpperCase()).filter(t=>BY[t]&&!inWL(t)); if(add.length){WL=[...WL,...add];saveWL();setTimeout(()=>toast(`Added ${add.length} stock${add.length>1?'s':''} to your watchlist`),300)} history.replaceState(null,'',location.pathname+location.hash)}
   tabs(); wire(); [renderExp,renderSources,renderChanges,renderWL,renderWeek,renderRunning,renderTest,renderRecord,renderHind,renderAll,calc].forEach(safe);
