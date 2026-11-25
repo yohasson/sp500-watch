@@ -285,22 +285,23 @@ def _events(Ev, out, stocks, idx):
 
 
 # ----------------------------------------------------------------------------- Wikipedia page views (attention)
-def pageviews(meta, idx, stocks, log=print, hours=20, workers=8):
+def pageviews(meta, idx, stocks, log=print, hours=20, workers=4):
     path = _p("pageviews.csv.gz")
-    if _fresh(path, hours):
-        V = pd.read_csv(path, index_col=0, parse_dates=True)
-    else:
+    V = pd.read_csv(path, index_col=0, parse_dates=True) if _fresh(path, hours) else None
+    n_art = sum(1 for m in meta.values() if m.get("article"))
+    if V is None or V.shape[1] < 0.8 * n_art:      # refetch when stale or incomplete
         os.makedirs(SRC, exist_ok=True)
         start = (idx.min() - pd.Timedelta(days=90)).strftime("%Y%m%d"); end = dt.date.today().strftime("%Y%m%d")
         arts = {t: m["article"] for t, m in meta.items() if m.get("article")}
-        rate = _Rate(40)
+        rate = _Rate(12)
         def job(x):
             t, a = x
             u = f"https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/{a}/daily/{start}/{end}"
-            for k in range(3):
+            for k in range(5):
                 rate.wait()
                 try:
                     r = requests.get(u, headers=WUA, timeout=30)
+                    if r.status_code == 429: time.sleep(2 + 3 * k); continue
                     if r.status_code == 200:
                         it = r.json().get("items", [])
                         return t, pd.Series({pd.Timestamp(i["timestamp"][:8]): i["views"] for i in it}, dtype=float)
