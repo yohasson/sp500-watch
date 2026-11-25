@@ -151,12 +151,25 @@ def update_prices(symbols, years=10, providers=None, workers=12, log=print, budg
 def add_histories(got, log=print):
     """Merge externally fetched histories ({sym: DataFrame[open, close, adjclose]}) into the price cache."""
     cache = _load_cache(); frames = {}
+    end = _trim_sparse_tail(cache)["adjclose"].index.max() if "adjclose" in cache else None
     for f in ("open", "close", "adjclose"):
         new = pd.DataFrame({s: d[f] for s, d in got.items()})
+        if end is not None: new = new[new.index <= end]   # never add dates the main source does not have yet
         frames[f] = cache[f].combine_first(new) if f in cache else new
     _save_cache(frames); log(f"[data] merged {len(got)} extra histories")
 
 def load_prices():
     c = _load_cache()
     if "close" not in c: raise RuntimeError("no price cache; run update first")
-    return c
+    return _trim_sparse_tail(c)
+
+def _trim_sparse_tail(c):
+    """Drop trailing dates that only a few stocks have (e.g. a date added by a secondary source)."""
+    n = c["adjclose"].notna().sum(axis=1)
+    if not len(n): return c
+    full = n.rolling(20, min_periods=1).median().shift(1).fillna(n.max())
+    keep = len(n)
+    while keep > 1 and n.iloc[keep - 1] < 0.5 * full.iloc[keep - 1]: keep -= 1
+    if keep == len(n): return c
+    idx = n.index[:keep]
+    return {k: (v.loc[idx] if isinstance(v, pd.DataFrame) and v.index.equals(n.index) else v) for k, v in c.items()}
