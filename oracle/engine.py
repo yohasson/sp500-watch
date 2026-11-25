@@ -242,14 +242,25 @@ def pick_portfolio(rk, held, n, k, sectors=None, cap=None):
         new.append(s); cnt[sec] = cnt.get(sec, 0) + 1
     return new
 
-def simulate(rep, n, k, cost_oneway, target="fwd", col="ens", sectors=None, cap=None):
+def trust_series(rep, weeks=26, col="ens", target="fwd"):
+    """Trailing average rank accuracy known at each decision date (labels of the previous week are known at its close)."""
+    ic = ic_series(rep, col, target)
+    return ic.shift(1).rolling(weeks, min_periods=max(8, weeks // 2)).mean()
+
+def simulate(rep, n, k, cost_oneway, target="fwd", col="ens", sectors=None, cap=None, gate=0):
+    """Weekly paper portfolio. gate>0: only follow the picks while the trailing `gate`-week accuracy is positive,
+    otherwise hold the S&P 500 itself (excess return 0); switching in or out pays trading costs."""
     held, rows = [], []
+    tr = trust_series(rep, gate, col, target) if gate else None
     for d, x in rep.dropna(subset=[target]).groupby("date"):
+        if tr is not None and not (tr.get(d, np.nan) > 0):
+            to = 1.0 if held else 0.0
+            rows.append({"date": d, "gross": 0.0, "turnover": to, "net": -cost_oneway * to, "names": [], "in": False}); held = []; continue
         rk = x.set_index("ticker")[col].rank(ascending=False)
         new = pick_portfolio(rk, held, n, k, sectors, cap)
         to = len(set(new) - set(held)) / n if held else 1.0
         y = x.set_index("ticker")[target]
-        g = y[new].mean(); rows.append({"date": d, "gross": g, "turnover": to, "net": g - 2 * cost_oneway * to, "names": new})
+        g = y[new].mean(); rows.append({"date": d, "gross": g, "turnover": to, "net": g - 2 * cost_oneway * to, "names": new, "in": True})
         held = new
     return pd.DataFrame(rows).set_index("date")
 
