@@ -98,8 +98,8 @@ def run(update=True, seal=True, log=print, offline_universe=False):
     daily_all.to_csv(os.path.join(DATA_DIR, "hindsight_daily.csv.gz"), index=False, compression="gzip", float_format="%.5f")
     # ---- seal
     sealed = None; seal_note = ""
-    open_fc = [r for r in sys_fcs if pd.Timestamp(r["exit_date"]) >= last + pd.Timedelta(days=1)]
-    due = is_last_trading_day_of_week(last) or not open_fc
+    open_fc = [r for r in sys_fcs if pd.Timestamp(r["exit_date"]) > last]
+    due = not open_fc   # back-to-back lists that never overlap: the next one is locked at the close of the previous exit day
     already = any(r["decision_date"] == str(last.date()) for r in sys_fcs)
     if seal and due and not already:
         if _now_utc() >= market_open_utc(entry):
@@ -116,7 +116,7 @@ def run(update=True, seal=True, log=print, offline_universe=False):
                     "portfolio": port}
             sealed = L.seal(out, meta); seal_note = "sealed" if sealed else "already sealed"
     elif already: seal_note = "already sealed for this decision date"
-    else: seal_note = "not due (forecast already open and not the last trading day of the week)"
+    else: seal_note = f"not due (current list ends {open_fc[-1]['exit_date']})" if open_fc else "not due"
     status["steps"]["seal"] = seal_note
     graded = L.grade_due(px, CFG.benchmark, log=log)
     problems = L.verify()

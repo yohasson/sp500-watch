@@ -72,8 +72,9 @@ def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entr
     # running result of the latest sealed weekly forecast (updated after every close)
     running = None
     sysf = [r for r in L.forecasts() if r.get("convention") == "next_open"]
-    if sysf:
-        fr = sysf[-1]; en = pd.Timestamp(fr["entry_date"]); ex = pd.Timestamp(fr["exit_date"])
+    started = [r for r in sysf if pd.Timestamp(r["entry_date"]) <= A.index.max()]
+    if started:
+        fr = started[-1]; en = pd.Timestamp(fr["entry_date"]); ex = pd.Timestamp(fr["exit_date"])
         if en in A.index and en <= A.index.max():
             upto = min(A.index.max(), ex)
             O, C = px["open"], px["close"]
@@ -92,6 +93,12 @@ def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entr
             fc = pd.read_csv(os.path.join(os.path.dirname(L.LEDGER), fr["file"])).set_index("ticker")
             plan_port = [t for t in fr.get("portfolio", []) if t in fc.index]
             acts = fc["action"].fillna("").to_dict()
+            have = {x["t"] for x in stocks}
+            for t in plan_port:
+                if t not in have:   # e.g. left the index mid-week: keep it visible from the locked file
+                    stocks.append({"t": t, "n": str(fc.loc[t, "name"]), "s": str(fc.loc[t, "sector"]), "rk": int(fc.loc[t, "rank"]),
+                                   "sc": None, "b": str(fc.loc[t, "bucket"]), "l": "", "x": None, "p": None, "port": True,
+                                   "a": acts.get(t, ""), "c": None, "why": [], "f": {}, "m": {}, "r1w": None})
             for st in stocks:
                 st["port"] = st["t"] in plan_port
                 st["a"] = acts.get(st["t"], "") if st["port"] or acts.get(st["t"], "") == "SELL" else ""
@@ -100,6 +107,15 @@ def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entr
         except Exception as e:
             print(f"[dashboard] could not load sealed plan: {e}")
     ev = evaluation; pc = ev["portfolio"]["chosen"]
+    base_hit = None
+    try:
+        rng = np.random.default_rng(7); wins = []
+        for _, g in rep.dropna(subset=["fwd"]).groupby("date"):
+            v = g["fwd"].values
+            if len(v) >= 50: wins.append((rng.choice(v, size=(300, CFG.portfolio_n)).mean(1) > 0).mean())
+        base_hit = float(np.mean(wins)) if wins else None
+    except Exception as e:
+        print(f"[dashboard] base rate failed: {e}")
     data = {
         "generated": status["run_utc"], "asof": str(last.date()), "entry": str(plan_entry.date()), "exit": str(plan_exit.date()), "next_entry": str(entry.date()), "next_exit": str(exit_.date()),
         "regime": {"name": reg, "text": reg_txt, "vix": _r(vix, 1), "vix_prev": _r(vix_prev, 1),
@@ -109,7 +125,7 @@ def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entr
                  "pctpos": _r(ev["ic"]["pct_pos"], 3), "p_ic_pos": _r(ev["ic"]["p_ic_pos"], 3), "weeks_needed": _r(ev["ic"]["weeks_needed"], 0),
                  "band13": [_r(x, 3) for x in ev["ic"]["band_13"]], "dsr": _r(ev["deflated_sharpe_prob"], 3),
                  "gross": _r(pc["gross_wk"], 5), "net": _r(pc["net_wk"], 5), "turn": _r(pc["turnover"], 3), "ann": _r(pc["net_ann"], 4),
-                 "be": _r(pc["breakeven_oneway"], 5), "hitw": _r(pc["hit_weeks"], 3), "dd": _r(ev["max_drawdown_chosen"], 3),
+                 "be": _r(pc["breakeven_oneway"], 5), "hitw": _r(pc["hit_weeks"], 3), "base_hit": _r(base_hit, 3), "dd": _r(ev["max_drawdown_chosen"], 3),
                  "byyear": {k: _r(v, 4) for k, v in ev["ic_by_year"].items()}, "cost": _r(ev["cost_oneway"], 5),
                  "alts": {k: {"net": _r(v["net_ann"], 4), "turn": _r(v["turnover"], 3)} for k, v in ev["portfolio"].items()},
                  "league": {k: {kk: _r(vv, 4) for kk, vv in v.items()} for k, v in ev.get("league", {}).items()}},
@@ -161,16 +177,18 @@ def _pct(x, d=1, sign=True):
 
 def _report(d):
     e = d["eval"]; st = {s["t"]: s for s in d["stocks"]}
-    lines = [f"# S&P 500 Oracle: weekly plan", "",
+    weak = (e.get("t") or 0) < 2
+    lines = [f"# S&P 500 Oracle: paper plan", "", "**Unproven edge — paper trading only.**" if weak else "", "",
              f"**Data as of:** {d['asof']} close · **Holding window:** buy at the open on {d['entry']}, sell at the close on {d['exit']}",
              f"**Market mood:** {d['regime']['name']} (VIX {d['regime']['vix']}) · {d['regime']['text']}", "",
-             "## This week's 10 picks (equal amounts)", "", "| # | Stock | Sector | Action | Main signals |", "|---|---|---|---|---|"]
+             f"## The {len(d['portfolio'])} picks (equal amounts)", "", "| # | Stock | Sector | Status | Main signals |", "|---|---|---|---|---|"]
     for i, t in enumerate(d["portfolio"], 1):
-        s = st[t]; lines.append(f"| {i} | **{t}** {s['n']} | {s['s']} | {s['a']} | {'; '.join(s['why']) or 'Model blend'} |")
-    if d["sells"]: lines += ["", f"**Sell (left the top {d['cfg']['k']}):** " + ", ".join(d["sells"])]
+        s = st.get(t, {"n": "", "s": "", "a": "", "why": []}); lab = {"BUY": "New", "KEEP": "Kept", "SELL": "Exit"}.get(s["a"], s["a"])
+        lines.append(f"| {i} | **{t}** {s['n']} | {s['s']} | {lab} | {'; '.join(s['why']) or 'Model blend'} |")
+    if d["sells"]: lines += ["", f"**Exit (left the top {d['cfg']['k']}):** " + ", ".join(d["sells"])]
     lines += ["", "## How much to trust this", "",
-              f"- Over {e['weeks']} replayed weeks ({e['first']} to {e['last']}), this plan beat the S&P 500 by {_pct(e['gross'],2)} a week on average before costs ({_pct(e['net'],2)} after costs at a $0-commission broker).",
+              f"- In a hypothetical replay of {e['weeks']} past weeks ({e['first']} to {e['last']}), the list beat the S&P 500 by {_pct(e['gross'],2)} a week on average before costs ({_pct(e['net'],2)} after costs at a $0-commission broker).",
               f"- It beat the index in {_pct(e['hitw'],0,False)} of weeks. The worst stretch was {_pct(e['dd'],0)} behind the index.",
-              f"- Probability the edge is real (not luck): about {_pct(e['p_ic_pos'],0,False)}. Statistically proving it would take ~{int(e['weeks_needed'] or 0)} weeks of results.",
+              f"- Strength of evidence: t = {(e['t'] or 0):.1f} (2 or more is convincing). " + (f"At this pace proving it would take ~{max(1, round(e['weeks_needed'] / 52))} years." if e.get('weeks_needed') and weak else ("" if not weak else "No positive edge has been measured.")),
               "", "_Research output, not financial advice. Paper-trade first._"]
     open(os.path.join(DOCS_DIR, "weekly_report.md"), "w", encoding="utf-8").write("\n".join(lines) + "\n")
