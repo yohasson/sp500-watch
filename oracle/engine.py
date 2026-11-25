@@ -70,16 +70,15 @@ class Replay:
         self.fwd, self.exit = forward_excess(px, self.stocks, self.dates, cfg.benchmark, cfg.horizon_days, "open")
         self.fwd = self.fwd.where(self.member.reindex(self.fwd.index))
         self.fwd_cc, _ = forward_excess(px, self.stocks, self.dates, cfg.benchmark, cfg.horizon_days, "close")
-        self._pc, self._tc = {}, {}
+        self.model_hist = []
 
     def panel(self, d):
-        if d not in self._pc:
-            X = pd.DataFrame({k: self.F[k].loc[d] for k in FACTORS})
-            for c in REGIME: X[c] = self.reg.loc[d, c]
-            self._pc[d] = X[self.member.loc[d]]
-        return self._pc[d]
+        if not hasattr(self, "_pc"): self._pc = {}
+        if d in self._pc: return self._pc[d]
+        X = self._panel(d); self._pc[d] = X; return X
 
     def _train_rows(self, t):
+        if not hasattr(self, "_tc"): self._tc = {}
         if t not in self._tc:
             X = self.panel(t); y = self.fwd.loc[t].reindex(X.index).rank(pct=True) - 0.5
             m = X[FACTORS].notna().all(1) & y.notna()
@@ -88,6 +87,11 @@ class Replay:
                 Xd = X[m].copy(); Xd["y"] = y[m]
             self._tc[t] = Xd
         return self._tc[t]
+
+    def _panel(self, d):
+        X = pd.DataFrame({k: self.F[k].loc[d] for k in FACTORS})
+        for c in REGIME: X[c] = self.reg.loc[d, c]
+        return X[self.member.loc[d]]
 
     def blend(self, d):
         return sum(self.F[k].loc[d].fillna(0) for k in self.cfg.factor_blend) / len(self.cfg.factor_blend)
@@ -115,14 +119,14 @@ class Replay:
 
     def run(self, log=print):
         """Walk-forward over all decision dates; models retrained every N weeks on purged history."""
-        out = []; models = None
+        out = []; models = None; last_train = None
         start = self.cfg.min_train_weeks
         for i, d in enumerate(self.dates):
             if i < start: continue
             if models is None or (i - start) % self.cfg.retrain_every_weeks == 0:
                 m = self._train(d)
                 if m is None: continue
-                models = m
+                models = m; self.model_hist.append((d, m))
             sc = self.score(d, models); sc["date"] = d; sc["fwd"] = self.fwd.loc[d].reindex(sc.index) if d in self.fwd.index else np.nan
             sc["fwd_cc"] = self.fwd_cc.loc[d].reindex(sc.index) if d in self.fwd_cc.index else np.nan
             out.append(sc.reset_index().rename(columns={"index": "ticker"}))
@@ -132,7 +136,54 @@ class Replay:
 
     def live(self, d):
         models = self._train(d)
+        self.model_hist.append((d, models))
         return self.score(d, models), models[2]
+
+    def daily_backtest(self, rep, days=252, top=5):
+        """Blind daily hindsight analysis for every stock on every trading day of the last `days`.
+
+        For each day d, using ONLY information known at d's close:
+          - features from prices up to d,
+          - the latest model whose training labels had all ended by its training date (<= d),
+          - a projection table (rank group -> average next-week return vs SPY) built from replay weeks
+            whose outcome was already known at d.
+        The real outcome (buy next open, sell at the close 5 trading days later) is attached afterwards
+        for grading only. Returns (all_rows DataFrame, top-5 rows list)."""
+        O, C, A = self.px["open"], self.px["close"], self.px["adjclose"]
+        idx = A.index; h = self.cfg.horizon_days; bench = self.cfg.benchmark
+        hist = sorted(self.model_hist, key=lambda x: x[0])
+        r = rep.dropna(subset=["fwd"]).copy()
+        r["pct"] = r.groupby("date")["ens"].rank(pct=True, ascending=False)
+        r["bucket"] = r["pct"].map(bucket_of)
+        r["known"] = r["date"].map(self.exit)
+        names = [b[2] for b in BUCKETS]
+        rows, tops = [], []
+        for p in range(max(0, len(idx) - days), len(idx)):
+            d = idx[p]
+            usable = [m for t, m in hist if t <= d]
+            if not usable: continue
+            X = self.panel(d)
+            if len(X) < 100: continue
+            sc = self.score(d, usable[-1])["ens"]
+            pct = sc.rank(pct=True, ascending=False)
+            kn = r[r["known"] <= d]
+            proj = kn.groupby("bucket")["fwd"].mean().reindex(names).fillna(0.0) if len(kn) else pd.Series(0.0, index=names)
+            b = pct.map(bucket_of)
+            df = pd.DataFrame({"date": d, "ticker": sc.index, "rank": sc.rank(ascending=False, method="first").astype(int).values,
+                               "pct": pct.values, "proj": b.map(proj).values})
+            picks = list(sc.sort_values(ascending=False).index[:top])
+            row = {"date": d, "picks": picks}
+            if p + h < len(idx):
+                e0, e1 = idx[p + 1], idx[p + h]
+                p0 = O.loc[e0] * (A.loc[e0] / C.loc[e0]); ret = A.loc[e1] / p0 - 1
+                df["actual"] = (ret.reindex(df.ticker) - ret[bench]).values
+                rp = ret[picks].astype(float)
+                row.update({"exit": e1, "ret": float(rp.mean()), "bench": float(ret[bench]),
+                            "each": {k: round(float(v), 4) for k, v in rp.items()}})
+            else:
+                df["actual"] = np.nan
+            rows.append(df); tops.append(row)
+        return pd.concat(rows, ignore_index=True), tops
 
 # ---------------- evaluation ----------------
 def ic_series(rep, col="ens", target="fwd"):
@@ -183,10 +234,14 @@ def calibration(rep, col="ens", target="fwd"):
     return cal.reindex(order)
 
 def label_for(bucket, cal, cfg=CFG):
-    rt = cfg.roundtrip_cost(); m = cal.loc[bucket, "mean_excess"] if bucket in cal.index else 0
+    """Label from the bucket's replay edge over the average stock (not over SPY), net of round-trip cost."""
+    rt = cfg.roundtrip_cost()
+    if bucket not in cal.index: return "Hold"
+    m = cal.loc[bucket, "mean_excess"] - cal["mean_excess"].mean()
+    p = cal.loc[bucket, "p_beat"]
     if bucket == "Top 2%" and m >= cfg.strong_buy_cost_mult * rt: return "Strong Buy"
     if bucket in ("Top 2%", "Top 2–10%") and m >= cfg.buy_cost_mult * rt: return "Buy"
-    if bucket in ("Bottom 2–10%", "Bottom 2%"): return "Avoid"
+    if bucket in ("Bottom 2–10%", "Bottom 2%") and m <= -rt and p < 0.5: return "Avoid"
     return "Hold"
 
 def deflated_sharpe(r, trials, sr_var):

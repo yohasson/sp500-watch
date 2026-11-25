@@ -77,6 +77,8 @@ def run(update=True, seal=True, log=print, offline_universe=False):
     live["last_close"] = px["close"].loc[last].reindex(live.index)
     live = live.sort_values("rank")
     entry, *_, exit_ = next_trading_days(last, CFG.horizon_days, None)
+    daily_all, daily = R.daily_backtest(rep, days=252, top=5)
+    daily_all.to_csv(os.path.join(DATA_DIR, "hindsight_daily.csv.gz"), index=False, compression="gzip", float_format="%.5f")
     # ---- seal
     sealed = None; seal_note = ""
     open_fc = [r for r in sys_fcs if pd.Timestamp(r["exit_date"]) >= last + pd.Timedelta(days=1)]
@@ -117,6 +119,6 @@ def run(update=True, seal=True, log=print, offline_universe=False):
     json.dump(status, open(os.path.join(DATA_DIR, "status.json"), "w"), indent=1, default=str)
     from . import dashboard
     dashboard.build(px=px, rep=rep, live=live, evaluation=evaluation, sims=sims, ic=ic, cal=cal, status=status,
-                    names=names, sectors=sectors, entry=entry, exit_=exit_, last=last, uni=uni)
+                    names=names, sectors=sectors, entry=entry, exit_=exit_, last=last, uni=uni, daily=daily, daily_all=daily_all)
     log(f"[run] done: last data {last.date()}, seal: {seal_note}, graded {len(graded)}, ledger problems {len(problems)}")
     return status

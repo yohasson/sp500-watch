@@ -19,7 +19,7 @@ def regime_text(vix):
     if vix < 30: return ("Nervous", "Volatility is elevated; expect bigger daily swings.")
     return ("Stressed", "Volatility is high; one-week predictions are least reliable now.")
 
-def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entry, exit_, last, uni):
+def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entry, exit_, last, uni, daily=None, daily_all=None):
     os.makedirs(DOCS_DIR, exist_ok=True)
     A = px["adjclose"]
     vix = float(px["close"]["^VIX"].dropna().iloc[-1]) if "^VIX" in px["close"] else None
@@ -84,7 +84,24 @@ def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entr
         "stocks": stocks, "portfolio": port.index.tolist(), "sells": sells, "forecasts": fcs,
         "cfg": {"n": CFG.portfolio_n, "k": CFG.portfolio_hold_k, "model": CFG.model_version},
         "health": status["steps"]["data"],
+        "daily": [{"d": r["date"].strftime("%Y-%m-%d"), "p": r["picks"], "x": r["exit"].strftime("%Y-%m-%d") if "exit" in r else None,
+                   "v": _r(1000 * (1 + r["ret"]), 2) if "ret" in r else None, "b": _r(1000 * (1 + r["bench"]), 2) if "bench" in r else None,
+                   "e": r.get("each")} for r in (daily or [])],
     }
+    # blind daily hindsight: one small file per stock (loaded when the stock is opened) + daily summary
+    if daily_all is not None and len(daily_all):
+        sd = os.path.join(DOCS_DIR, "stocks"); os.makedirs(sd, exist_ok=True)
+        da = daily_all.copy(); da["d"] = da["date"].dt.strftime("%Y-%m-%d")
+        for t, g in da.groupby("ticker"):
+            if not str(t).replace("-", "").isalnum(): continue
+            json.dump({"t": t, "d": g["d"].tolist(), "r": g["rank"].astype(int).tolist(),
+                       "p": [_r(x, 5) for x in g["proj"]], "a": [_r(x, 5) for x in g["actual"]]},
+                      open(os.path.join(sd, f"{t}.json"), "w"), separators=(",", ":"))
+        dk = da.dropna(subset=["actual"])
+        dic = dk.groupby("d").apply(lambda x: x["pct"].corr(x["actual"], method="spearman") * -1)
+        hit = dk.assign(ok=np.sign(dk["proj"]) == np.sign(dk["actual"])).groupby("d")["ok"].mean()
+        data["hind"] = {"days": int(dk["d"].nunique()), "rows": int(len(dk)), "ic": _r(dic.mean(), 4), "pos": _r((dic > 0).mean(), 3),
+                        "dir_hit": _r(hit.mean(), 3), "series": [[k, _r(v, 3)] for k, v in dic.items()]}
     tpl = open(os.path.join(os.path.dirname(__file__), "dashboard_template.html"), encoding="utf-8").read()
     open(os.path.join(DOCS_DIR, "index.html"), "w", encoding="utf-8").write(tpl)
     json.dump(data, open(os.path.join(DOCS_DIR, "data.json"), "w"), separators=(",", ":"))
