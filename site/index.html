@@ -45,7 +45,11 @@ h2{font-size:16px;margin:0 0 12px}
 .tk{font-weight:800;font-size:15px;min-width:54px}
 .pick .nm{font-weight:600}.pick .ws{color:var(--mut);font-size:13px}
 .tag{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--chip);color:var(--mut);white-space:nowrap}
-.tag.buy{background:rgba(4,120,87,.12);color:var(--pos)}.tag.keep{background:rgba(37,99,235,.12);color:var(--acc)}.tag.sell,.tag.avoid{background:rgba(185,28,28,.1);color:var(--neg)}
+.tag.buy{background:rgba(4,120,87,.12);color:var(--pos)}.tag.keep{background:rgba(37,99,235,.12);color:#1d4ed8}.tag.sell,.tag.avoid{background:rgba(185,28,28,.1);color:var(--neg)}
+.seg button:focus-visible,.x:focus-visible,.chip:focus-visible,th button:focus-visible,tr.row:focus-visible td{outline:2px solid var(--acc);outline-offset:-2px}
+.verdict{display:inline-flex;gap:6px;flex-wrap:wrap;margin:2px 0 8px}.verdict span{font-size:12px;font-weight:600;border-radius:999px;padding:2px 9px;background:rgba(180,83,9,.10);color:#92400e}
+[data-theme=dark] .verdict span{color:var(--warn)}
+th button{all:unset;cursor:pointer}
 .tag.sb{background:rgba(4,120,87,.18);color:var(--pos)}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
 @media (max-width:760px){.steps{grid-template-columns:1fr}}
@@ -78,18 +82,22 @@ details{border-top:1px solid var(--line);padding:10px 0}details summary{cursor:p
 .chips{display:flex;gap:6px;flex-wrap:wrap}
 .chip{background:var(--chip);border-radius:999px;padding:3px 10px;font-size:13px;cursor:pointer}
 .status li{margin:4px 0}
-.banner{background:rgba(180,83,9,.10);color:var(--warn);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:600;margin:8px 0 0}
+.banner{background:rgba(180,83,9,.10);color:#92400e;border-radius:10px;padding:8px 12px;font-size:13px;font-weight:600;margin:8px 0 0}
 .pill.warn .dot{background:var(--warn)}
 .seg2{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
 .scroll{max-height:420px;overflow:auto}
 tr.sel td{background:var(--chip)}
+.banner.bad{background:rgba(185,28,28,.1);color:var(--neg)}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .banner,:root:not([data-theme=light]) .verdict span{color:var(--warn)}:root:not([data-theme=light]) .tag.keep{color:var(--acc)}}
+[data-theme=dark] .banner{color:var(--warn)}[data-theme=dark] .tag.keep{color:var(--acc)}
+@media (max-width:520px){.asof{display:none}#gear .gl{display:none}nav button{padding:10px 10px;font-size:14px}.g3>.kpi:last-child:nth-child(odd){grid-column:1/-1}.scroll{max-height:none}.hm{display:none}h1{font-size:21px}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
   <div class="brand"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#2563eb"/><path d="M6 22l6-7 5 4 9-10" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>S&amp;P 500 Oracle</div>
-  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="asof" id="asof"></span><span class="pill" id="health"><span class="dot"></span><span>…</span></span><button class="iconbtn" id="gear" aria-label="Settings" title="Settings">⚙︎ Settings</button></div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="asof" id="asof"></span><span class="pill" id="health"><span class="dot"></span><span>…</span></span><button class="iconbtn" id="gear" aria-label="Settings" title="Settings">⚙︎<span class="gl"> Settings</span></button></div>
 </header>
 <div class="banner" id="banner">Paper trading only · research tool, not financial advice</div>
 <nav role="tablist">
@@ -102,10 +110,11 @@ tr.sel td{background:var(--chip)}
 
 <section id="week">
   <div class="card">
-    <div class="note" id="mood"></div>
     <h1 id="headline"></h1>
+    <div class="verdict" id="verdict"></div>
     <p class="sub" id="subline"></p>
     <div class="steps" id="steps"></div>
+    <div class="note" id="mood" style="margin-top:10px"></div>
   </div>
   <div class="card hide" id="runCard">
     <h2 id="runTitle">How the sealed picks are doing</h2>
@@ -127,7 +136,8 @@ tr.sel td{background:var(--chip)}
 <section id="test" class="hide">
   <div class="card">
     <h2 id="tTitle">If you had put $1,000 into the top 5 picks on any day of the past year</h2>
-    <p class="note" style="margin-top:-6px" id="tSub">For every trading day: the amount split equally across that day's top stocks, bought at the next open and sold 5 trading days (one calendar week) later. Compared with putting the same amount into the S&amp;P 500 (SPY) for the same week. Replay using only information known on each day; dividends included, trading costs and taxes not.</p>
+    <p class="note" style="margin-top:-6px" id="tSub">For every trading day: the amount split equally across that day's top stocks, bought at the next open and sold 5 trading days (one calendar week) later. Compared with putting the same amount into the S&amp;P 500 (SPY) for the same week. Replay using only information known on each day; dividends included, taxes not. Raw daily ranking: no sector limit or keep rule, unlike the weekly plan.</p>
+    <p class="note" id="tSub2" style="margin-top:-4px"></p>
     <div class="grid g4" id="tKpis"></div>
   </div>
   <div class="card">
@@ -226,7 +236,7 @@ tr.sel td{background:var(--chip)}
 <div class="foot" id="foot"></div>
 </div>
 
-<div class="drawer" id="setDlg" role="dialog" aria-modal="true" aria-labelledby="setTitle"><div class="panel">
+<div class="drawer" id="setDlg"><div class="panel" role="dialog" aria-modal="true" aria-labelledby="setTitle">
   <button class="x" aria-label="Close" id="setX">×</button><h1 id="setTitle">Settings</h1><p class="note">Saved on this device only.</p>
   <div class="card"><h2>Appearance</h2>
     <div class="set"><label for="sTheme">Theme</label><select id="sTheme"><option value="system">Match my device</option><option value="light">Light</option><option value="dark">Dark</option></select></div>
@@ -244,7 +254,7 @@ tr.sel td{background:var(--chip)}
   </div>
   <button class="iconbtn" id="setReset">Reset to defaults</button>
 </div></div>
-<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dTitle"><div class="panel" id="panel"></div></div>
+<div class="drawer" id="drawer"><div class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="dTitle"></div></div>
 
 <script>
 const EMBED=/*__DATA__*/null;
@@ -282,30 +292,43 @@ function bars(items,{w=640,h=170,fmt=v=>pct(v,2)}={}){
     s+=`<text x="${x+bw*.32}" y="${it.v>=0?y-4:y+bh+12}" text-anchor="middle">${fmt(it.v)}</text><text x="${x+bw*.32}" y="${h-4}" text-anchor="middle">${esc(it.l)}</text>`});
   return s+'</svg>';
 }
-function tagFor(s){ if(s.a==='BUY')return '<span class="tag buy">Buy</span>'; if(s.a==='KEEP')return '<span class="tag keep">Keep</span>'; if(s.a==='SELL')return '<span class="tag sell">Sell</span>';
+function tagFor(s){ if(s.a==='BUY')return '<span class="tag">New</span>'; if(s.a==='KEEP')return '<span class="tag keep">Kept</span>'; if(s.a==='SELL')return '<span class="tag sell">Exit</span>';
   if(s.l==='Strong Buy')return '<span class="tag">Top 2%</span>'; if(s.l==='Avoid')return '<span class="tag avoid">Avoid</span>'; return ''}
 
+const CLOSED={'2026-11-26':'closed (Thanksgiving)','2026-11-27':'half day','2026-12-24':'half day','2026-12-25':'closed (Christmas)','2027-01-01':'closed (New Year)','2027-01-18':'closed (MLK Day)','2027-02-15':'closed (Presidents Day)','2027-03-26':'closed (Good Friday)','2027-05-31':'closed (Memorial Day)','2027-06-18':'closed (Juneteenth)','2027-07-05':'closed (Independence Day)','2027-09-06':'closed (Labor Day)','2027-11-25':'closed (Thanksgiving)','2027-11-26':'half day','2027-12-24':'closed (Christmas)'};
+function closures(a,b){return Object.entries(CLOSED).filter(([d])=>d>=a&&d<=b).map(([d,t])=>`${fmtD(d)} ${t}`).join(', ')}
+function isWeak(e){return e.t==null||e.t<2||e.dsr==null||e.dsr<0.95}
+function integrityBad(){const k=(D.ks||[]).find(k=>k.id==='Ledger integrity');return k&&!k.ok?k.detail:null}
 function renderWeek(){
   const r=D.regime,e=D.eval;
   $('#mood').innerHTML=`Market mood: <b>${esc(r.name)}</b> · VIX ${r.vix??'–'} · S&amp;P 500 ${pct(r.spy_1w)} this week, ${pct(r.spy_1m)} this month`;
   const sealed=D.forecasts.find(f=>f.entry===D.entry&&f.conv==='next_open');
-  const weak=(e.ic==null||e.ic<=0||e.p_ic_pos<0.5);
-  $('#headline').textContent=(sealed?'Paper plan':'Preview (not sealed yet)')+` for ${fmtD(D.entry)} – ${fmtD(D.exit)}`;
-  $('#subline').textContent=weak?`The 10 stocks the models rank highest for the next 5 trading days. In the history replay this ranking has not shown a reliable edge, so treat the list as an experiment to track, not a tip.`
-    :`The 10 stocks the models rank highest for the next 5 trading days. In the history replay, picks like these averaged ${pct(e.gross,2)} a week above the S&P 500 before costs. Small, and not yet proven.`;
-  $('#steps').innerHTML=[['Buy',`At the open on ${fmtD(D.entry)}, equal amounts`],['Hold',`5 trading days${D.entry<='2026-11-26'&&D.exit>='2026-11-26'?' (market closed Thu 26 Nov, half day Fri 27 Nov)':''}; review if there is major news`],['Sell',`At the close on ${fmtD(D.exit)}, unless still in the top ${D.cfg.k}`]].map(x=>`<div class="step"><b>${x[0]}</b>${x[1]}</div>`).join('');
+  const over=(D.running&&D.running.done)||D.exit<D.asof, state=over?'over':sealed?'sealed':'preview';
+  const weak=isWeak(e), bad=integrityBad()&&sealed&&integrityBad().includes(sealed.id);
+  const graded=D.forecasts.filter(f=>f.status==='graded'&&f.conv==='next_open').length;
+  $('#verdict').innerHTML=[weak?'Unproven edge':'Edge measured',`t ${e.t==null?'–':e.t.toFixed(1)}`,`${graded} live week${graded===1?'':'s'} graded`,'paper only'].map(x=>`<span>${x}</span>`).join('');
+  const ne=D.next_entry||D.entry, nx=D.next_exit||D.exit;
+  $('#headline').textContent=(bad?'Unverified · ':'')+(state==='sealed'?`Paper plan for ${fmtD(D.entry)} – ${fmtD(D.exit)}`:state==='over'?`Next list: preview for ${fmtD(ne)} – ${fmtD(nx)}`:`Preview (not locked yet) for ${fmtD(D.entry)} – ${fmtD(D.exit)}`);
+  const why=weak?`In the history replay this ranking's edge is too small to tell from luck (t = ${e.t==null?'–':e.t.toFixed(1)}; about 2 is needed), so treat the list as an experiment to track, not a tip.`
+    :`In the history replay, picks like these averaged ${pct(e.gross,2)} a week above the S&P 500 before costs.`;
+  $('#subline').textContent=(state==='over'?'Last week\'s locked list has finished (result below). The new list is locked before the next market open. ':`The ${D.portfolio.length} stocks the models rank highest for the next 5 trading days. `)+why;
+  const cl=closures(D.entry,D.exit);
+  $('#steps').classList.toggle('hide',state!=='sealed');
+  $('#steps').innerHTML=[['Buy',`At the open on ${fmtD(D.entry)}, equal amounts`],['Hold',`5 trading days${cl?' (market '+cl+')':''}; review if there is major news`],['Sell',`At the close on ${fmtD(D.exit)}, unless still in the top ${D.cfg.k}`]].map(x=>`<div class="step"><b>${x[0]}</b>${x[1]}</div>`).join('');
+  if(bad){$('#banner').classList.add('bad');$('#banner').textContent='Integrity check failed for this week\'s locked list: it may have been changed after locking. Do not rely on it.'}
   const P=D.portfolio.map(t=>BY[t]);
-  $('#picksTitle').textContent=`The ${P.length} picks`;
+  $('#picksTitle').textContent=state==='over'?`Last week's ${P.length} locked picks`:`The ${P.length} picks`;
   $('#picks').innerHTML=P.map(s=>`<div class="pick" tabindex="0" role="button" data-t="${esc(s.t)}"><div class="tk">${esc(s.t)}</div><div style="flex:1;min-width:0"><div class="nm">${esc(s.n)}</div><div class="ws">${esc(s.why.join(' · ')||'Overall model blend')}</div></div>${tagFor(s)}</div>`).join('');
   const secs={};P.forEach(s=>secs[s.s]=(secs[s.s]||0)+1);
-  const skipped=D.stocks.filter(s=>!s.port&&s.rk<=Math.max(...P.map(p=>p.rk))).length;
-  $('#sells').innerHTML=`<div class="note" style="margin-bottom:6px">Sectors: ${Object.entries(secs).map(([k,v])=>esc(k)+' '+v).join(' · ')}. At most 3 per sector${skipped?`, so ${skipped} higher-ranked stock${skipped>1?'s were':' was'} skipped for balance`:''}.</div>`+(D.sells.length?`<b>Sell:</b> ${D.sells.map(t=>`<span class="chip" data-t="${t}">${t}</span>`).join(' ')} – dropped out of the top ${D.cfg.k}.`:'');
+  const newP=P.filter(p=>p.a!=='KEEP'), lim=newP.length?Math.max(...newP.map(p=>p.rk)):0, cap=D.cfg.cap||3;
+  const skipped=D.stocks.filter(s=>!s.port&&s.rk<lim&&(secs[s.s]||0)>=cap).length, kept=P.filter(p=>p.a==='KEEP').map(p=>p.t);
+  $('#sells').innerHTML=`<div class="note" style="margin-bottom:6px">Sectors: ${Object.entries(secs).map(([k,v])=>esc(k)+' '+v).join(' · ')}. ${kept.length?`Kept from last week: ${kept.map(esc).join(', ')}. `:''}At most ${cap} per sector${skipped?`, so ${skipped} higher-ranked stock${skipped>1?'s were':' was'} skipped for balance`:''}.</div>`+(D.sells.length?`<b>Sell:</b> ${D.sells.map(t=>`<span class="chip" role="button" tabindex="0" data-t="${esc(t)}">${esc(t)}</span>`).join(' ')} – dropped out of the top ${D.cfg.k}.`:'');
   $('#trust').innerHTML=[
     [pct(e.hitw,0,false),'of past weeks beat the S&P 500',`over ${e.weeks} replayed weeks`],
-    [pct(e.p_ic_pos,0,false),'estimated chance the ranking has any skill',e.weeks_needed?`proof would need ~${Math.max(1,Math.round(e.weeks_needed/52))} years of live results`:'no positive edge measured yet'],
+    [e.t==null?'–':e.t.toFixed(1),'strength of evidence (t-stat)',e.weeks_needed&&e.t<2?`about 2 is needed; at this pace that takes ~${Math.max(1,Math.round(e.weeks_needed/52))} years of results`:(e.t>=2?'above the usual bar of 2':'no positive edge measured yet')],
     [pct(e.dd,0),'worst losing stretch vs the index','losing streaks are normal']
   ].map(k=>`<div class="kpi"><div class="v">${k[0]}</div><div class="l">${k[1]}</div><div class="h">${k[2]}</div></div>`).join('');
-  $('#trustNote').innerHTML=`Research output, not financial advice. Start with paper trading. ${sealed?'This week\'s list was locked before the open (fingerprint <code>'+esc(sealed.sha)+'…</code>).':'This week\'s list is not locked yet: '+esc(D.seal||'')}`;
+  $('#trustNote').innerHTML=`Research output, not financial advice. Start with paper trading. ${state==='over'?'The next list is locked automatically before the next market open.':sealed?'This week\'s list was locked before the open (fingerprint <code>'+esc(sealed.sha)+'…</code>).':'This week\'s list is not locked yet: '+esc(D.seal||'')}`;
 }
 function renderRunning(){
   const R=D.running; if(!R)return; $('#runCard').classList.remove('hide');
@@ -320,7 +343,7 @@ function renderRecord(){
   if(!F.length){$('#fcTable').innerHTML='<tr><td class="note">No live forecasts yet. The first one is locked before the next market open and graded 5 trading days later.</td></tr>'}else
   $('#fcTable').innerHTML='<tr><th>Decided</th><th>Window</th><th>Model</th><th>Status</th><th class="num">Picks vs S&amp;P</th><th class="num">Hit rate</th><th class="num">Rank accuracy</th></tr>'+
    F.map(f=>`<tr><td>${fmtD(f.decision)}</td><td class="mut">${fmtD(f.entry||f.decision)} → ${fmtD(f.exit)}</td><td class="mut">${esc(f.model)}</td><td>${f.status==='graded'?'Graded':f.status==='open'?'<span class="tag keep">Running</span>':'Waiting for prices'}</td><td class="num ${cls(f.port)}">${pct(f.port,2)}</td><td class="num">${f.hit==null?'–':pct(f.hit,0,false)}</td><td class="num">${f.ic==null?'–':f.ic.toFixed(2)}</td></tr>`).join('');
-  $('#replayKpis').innerHTML=[[pct(e.gross,2),'avg weekly edge, before costs'],[pct(e.ann,1),'per year after costs'],[pct(e.hitw,0,false),'weeks beating the index'],[pct(e.dd,0),'worst drawdown vs index']]
+  $('#replayKpis').innerHTML=[[pct(e.gross,2),'avg weekly edge, before costs'],[pct(e.ann,1),`per year after costs (${(e.first||'').slice(0,4)}–${(e.last||'').slice(0,4)})`],[pct(e.hitw,0,false),'weeks beating the index'],[pct(e.dd,0),'worst drawdown vs index']]
     .map(k=>`<div class="kpi"><div class="v ${k[0].startsWith('-')?'neg':''}">${k[0]}</div><div class="l">${k[1]}</div></div>`).join('');
   $('#cumChart').innerHTML=line(D.cum,{fmt:v=>pct(v,0)});
   $('#skill').innerHTML=[[e.ic==null?'–':e.ic.toFixed(3),'average rank accuracy (IC)','0 = no skill; 0.02–0.05 is useful'],[pct(e.pctpos,0,false),'weeks with positive accuracy',''],[pct(e.dsr,0,false),'overfitting-adjusted confidence','95% would count as proven']]
@@ -332,8 +355,8 @@ function renderRecord(){
     Object.entries(L).map(([k,v])=>`<tr><td>${esc(k)}</td><td class="num ${cls(v.ic)}">${v.ic==null?'–':v.ic.toFixed(3)}</td><td class="num">${v.t==null?'–':v.t.toFixed(1)}</td><td class="num ${cls(v.last52)}">${v.last52==null?'–':v.last52.toFixed(3)}</td><td class="num ${cls(v.net_ann)}">${pct(v.net_ann,1)}</td></tr>`).join('');
   const lab={'Top 2%':'Top 2%','Top 2–10%':'2–10%','Top 10–20%':'10–20%','Upper middle':'20–50%','Lower middle':'50–80%','Bottom 10–20%':'80–90%','Bottom 2–10%':'90–98%','Bottom 2%':'Last 2%'};
   $('#calChart').innerHTML=bars(D.cal.map(c=>({l:lab[c.b]||c.b,v:c.m})));
-  const best=[...D.cal].sort((a,b)=>b.m-a.m)[0], top=D.cal[0], avg=D.cal.reduce((a,c)=>a+c.m,0)/D.cal.length;
-  $('#calNote').textContent=`Average next-week return versus the S&P 500 for each rank group (best-ranked on the left). Top 2%: ${pct(top.m,2)}; average group: ${pct(avg,2)}; best group: ${esc(lab[best.b]||best.b)} (${pct(best.m,2)}). A useful model shows bars falling from left to right.`;
+  const best=[...D.cal].sort((a,b)=>b.m-a.m)[0], top=D.cal[0], W=[.02,.08,.10,.30,.30,.10,.08,.02], avg=D.cal.reduce((a,c,i)=>a+c.m*(W[i]??1/D.cal.length),0);
+  $('#calNote').textContent=`Average next-week return versus the S&P 500 for each rank group (best-ranked on the left). Top 2%: ${pct(top.m,2)}; average stock: ${pct(avg,2)}; best group: ${esc(lab[best.b]||best.b)} (${pct(best.m,2)}). A useful model shows bars falling from left to right.`;
 }
 const DEF={theme:'system',tab:'week',amt:1000,n:5,a:50000,fee:0,pf:0};
 let SET=Object.assign({},DEF); try{SET=Object.assign(SET,JSON.parse(localStorage.getItem('oracleSettings')||'{}'))}catch(e){}
@@ -341,16 +364,20 @@ function saveSet(){try{localStorage.setItem('oracleSettings',JSON.stringify(SET)
 function applyTheme(){if(SET.theme==='system')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',SET.theme)}
 applyTheme();
 let setReturn=null;
-function openSettings(){setReturn=document.activeElement;$('#sTheme').value=SET.theme;$('#sTab').value=SET.tab;$('#sAmt').value=SET.amt;$('#sN').value=String(SET.n);$('#acct').value=SET.a;$('#fee').value=SET.fee;$('#pctfee').value=SET.pf;$('#setDlg').classList.add('on');$('#setX').focus()}
-function closeSettings(){$('#setDlg').classList.remove('on');if(setReturn)setReturn.focus()}
-function readSettings(){SET.theme=$('#sTheme').value;SET.tab=$('#sTab').value;SET.amt=Math.max(100,+$('#sAmt').value||1000);SET.n=+$('#sN').value||5;
-  SET.a=Math.max(1000,+$('#acct').value||0);SET.fee=Math.max(0,+$('#fee').value||0);SET.pf=Math.max(0,+$('#pctfee').value||0);saveSet();applyTheme();renderTest();calc()}
-let tView='diff',tF='',tSel=null;
+function openSettings(){setReturn=document.activeElement;$('#sTheme').value=SET.theme;$('#sTab').value=SET.tab;$('#sAmt').value=SET.amt;$('#sN').value=String(SET.n);$('#acct').value=SET.a;$('#fee').value=SET.fee;$('#pctfee').value=SET.pf;$('#setDlg').classList.add('on');setInert(true);$('#setX').focus()}
+function setInert(on){document.querySelectorAll('.wrap > *').forEach(el=>{if(on)el.setAttribute('inert','');else el.removeAttribute('inert')})}
+function closeSettings(){if(!$('#setDlg').classList.contains('on'))return;$('#setDlg').classList.remove('on');setInert($('#drawer').classList.contains('on'));if(setReturn)setReturn.focus()}
+function readSettings(show){SET.theme=$('#sTheme').value;SET.tab=$('#sTab').value;SET.amt=Math.max(100,+$('#sAmt').value||1000);SET.n=+$('#sN').value||5;
+  SET.a=Math.max(1000,+$('#acct').value||0);SET.fee=Math.max(0,+$('#fee').value||0);SET.pf=Math.max(0,+$('#pctfee').value||0);saveSet();applyTheme();safe(renderTest);safe(calc);
+  if(show){$('#sAmt').value=SET.amt;$('#acct').value=SET.a;$('#fee').value=SET.fee;$('#pctfee').value=SET.pf}}
+function safe(f){try{f()}catch(err){console.error(err)}}
+let tView='diff',tF='',tSel=null; const R0len=()=>(D.daily||[]).filter(r=>r.e&&r.b!=null).length;
 function renderTest(){
-  const A=SET.amt, N=SET.n;
+  const A=SET.amt, N=SET.n, ow=Math.max(SET.fee/(A/N),SET.pf/100)+0.0003, cpos=2*ow*(A/N);
+  $('#tSub2').textContent=`After your broker fees from Settings (about $${(2*ow*A).toFixed(2)} per round trip on $${A.toLocaleString('en-US')}${SET.fee||SET.pf?'':'; add your broker\'s fees in ⚙︎ Settings'}). Days overlap, so ${R0len()} days are only about ${Math.round(R0len()/5)} independent weeks.`;
   $('#tTitle').textContent=`If you had put $${A.toLocaleString('en-US')} into the top ${N} pick${N>1?'s':''} on any day of the past year`;
   const R=(D.daily||[]).filter(r=>r.e&&r.b!=null).map(r=>{const ps=r.p.slice(0,N).filter(t=>r.e[t]!=null);const m=ps.reduce((a,t)=>a+r.e[t],0)/(ps.length||1);
-    return {d:r.d,x:r.x,p:ps,e:Object.fromEntries(ps.map(t=>[t,r.e[t]])),v:A*(1+m),b:A*(r.b/1000)}});
+    return {d:r.d,x:r.x,p:ps,e:Object.fromEntries(ps.map(t=>[t,r.e[t]])),v:A*(1+m-2*ow),b:A*(r.b/1000)}});
   if(!R.length){$('#tKpis').innerHTML='<p class="note">Not available yet.</p>';return}
   const n=R.length, avgV=R.reduce((a,r)=>a+r.v,0)/n, avgB=R.reduce((a,r)=>a+r.b,0)/n, wins=R.filter(r=>r.v>r.b).length, pos=R.filter(r=>r.v>A).length;
   const best=R.reduce((a,r)=>r.v-r.b>a.v-a.b?r:a), worst=R.reduce((a,r)=>r.v-r.b<a.v-a.b?r:a);
@@ -366,7 +393,7 @@ function renderTest(){
   $('#tCount').textContent=`${rows.length} days`;
   $('#tTable').innerHTML=`<tr><th>Bought</th><th>Sold</th><th>Top ${N} that day</th><th class="num">Top ${N}</th><th class="num">S&amp;P 500</th><th class="num">Difference</th></tr>`+
    rows.map(r=>`<tr class="row${tSel===r.d?' sel':''}" data-day="${esc(r.d)}" tabindex="0"><td>${fmtD(r.d)}</td><td class="mut">${fmtD(r.x)}</td><td class="mut">${r.p.map(esc).join(' · ')}</td><td class="num ${cls(r.v-A)}">${usd(r.v)}</td><td class="num ${cls(r.b-A)}">${usd(r.b)}</td><td class="num ${cls(r.v-r.b)}"><b>${sd(r.v-r.b)}</b></td></tr>`+
-     (tSel===r.d&&r.e?`<tr class="sel"><td></td><td colspan="5">${Object.entries(r.e).map(([t,v])=>`<span class="chip" data-t="${esc(t)}">${esc(t)} <span class="${cls(v)}">${pct(v,1)}</span> = ${usd(A/N*(1+v))}</span>`).join(' ')}</td></tr>`:'')).join('');
+     (tSel===r.d&&r.e?`<tr class="sel"><td></td><td colspan="5">${Object.entries(r.e).map(([t,v])=>`<span class="chip" role="button" tabindex="0" data-t="${esc(t)}">${esc(t)} <span class="${cls(v)}">${pct(v,1)}</span> = ${usd(A/N*(1+v)-cpos)}</span>`).join(' ')}</td></tr>`:'')).join('');
 }
 function bars2(items,{w=640,h=170}={}){
   const mx=Math.max(...items.map(i=>Math.abs(i.v)),1e-6),bw=(w-40)/items.length,Y0=(h-24)/2+4;
@@ -384,7 +411,7 @@ function line2(sets,{w=640,h=190,base=1000}={}){
 }
 function renderHind(){
   const H=D.hind; if(!H){$('#hindKpis').innerHTML='<p class="note">Available after the next full run.</p>';return}
-  $('#hindKpis').innerHTML=[[String(H.days),'days checked',`${H.rows.toLocaleString('en-US')} stock-day projections`],[H.ic==null?'–':H.ic.toFixed(3),'average daily rank accuracy','0 = no skill; above 0.02 is useful'],[pct(H.dir_hit,0,false),'projections with the right direction','vs the S&P 500; 50% = coin flip']]
+  $('#hindKpis').innerHTML=[[String(H.days),'days checked',`${H.rows.toLocaleString('en-US')} stock-day projections`],[H.ic==null?'–':H.ic.toFixed(3),'average daily rank accuracy','0 = no skill; above 0.02 is useful'],[pct(H.dir_hit,0,false),'projections with the right direction',H.base!=null?`random guessing would get ${pct(H.base,0,false)}`:'vs the S&P 500']]
     .map(k=>`<div class="kpi"><div class="v">${k[0]}</div><div class="l">${k[1]}</div><div class="h">${k[2]}</div></div>`).join('');
   const sm=H.series.map((p,i,a)=>{const w=a.slice(Math.max(0,i-19),i+1).map(x=>x[1]).filter(x=>x!=null);return [p[0],w.reduce((u,v)=>u+v,0)/w.length]});
   $('#hindChart').innerHTML=line(sm,{fmt:v=>v.toFixed(2)});
@@ -416,9 +443,9 @@ function renderAll(){
   const q=$('#q').value.trim().toLowerCase(), sec=$('#sector').value;
   let rows=D.stocks.filter(s=>(!q||s.t.toLowerCase().includes(q)||s.n.toLowerCase().includes(q))&&(!sec||s.s===sec)&&(!labF||(labF==='pick'?s.port:s.l===labF)));
   rows.sort((a,b)=>{const x=a[sortKey]??-1e9,y=b[sortKey]??-1e9;return (x>y?1:x<y?-1:0)*sortDir});
-  const th=(k,t,c='')=>`<th class="${c}" data-k="${k}">${t}${sortKey===k?(sortDir>0?' ↑':' ↓'):''}</th>`;
-  $('#all').innerHTML='<tr>'+th('rk','Rank','num')+th('t','Stock')+th('s','Sector')+th('sc','Model score')+th('r1w','Last week','num')+'<th></th></tr>'+
-   rows.slice(0,200).map(s=>`<tr class="row" data-t="${s.t}"><td class="num">${s.rk}</td><td><b>${s.t}</b> <span class="mut">${esc(s.n)}</span></td><td class="mut">${esc(s.s)}</td><td><div class="bar" title="Percentile ${Math.round((1-(s.rk-1)/D.stocks.length)*100)}"><i style="width:${Math.round((1-(s.rk-1)/D.stocks.length)*100)}%"></i></div></td><td class="num ${cls(s.r1w)}">${pct(s.r1w,1)}</td><td>${tagFor(s)}</td></tr>`).join('');
+  const th=(k,t,c='')=>`<th class="${c}" data-k="${k}"${sortKey===k?` aria-sort="${sortDir>0?'ascending':'descending'}"`:''}><button type="button">${t}${sortKey===k?(sortDir>0?' ↑':' ↓'):''}</button></th>`;
+  $('#all').innerHTML='<tr>'+th('rk','Rank','num')+th('t','Stock')+th('s','Sector')+th('sc','Model score','hm')+th('r1w','Last week','num')+'<th></th></tr>'+
+   rows.slice(0,200).map(s=>`<tr class="row" tabindex="0" data-t="${esc(s.t)}"><td class="num">${s.rk}</td><td><b>${esc(s.t)}</b> <span class="mut">${esc(s.n)}</span></td><td class="mut">${esc(s.s)}</td><td class="hm"><div class="bar" title="Percentile ${Math.round((1-(s.rk-1)/D.stocks.length)*100)}"><i style="width:${Math.round((1-(s.rk-1)/D.stocks.length)*100)}%"></i></div></td><td class="num ${cls(s.r1w)}">${pct(s.r1w,1)}</td><td>${tagFor(s)}</td></tr>`).join('');
   $('#allNote').textContent=rows.length>200?`Showing 200 of ${rows.length}. Refine the search to see more.`:`${rows.length} stocks`;
 }
 function openStock(t){
@@ -430,17 +457,17 @@ function openStock(t){
   const cal=D.cal.find(c=>c.b===s.b)||{};
   const hist=s.h.map((v,i)=>[D.hist_dates[i],v]).concat([[D.asof,1-(s.rk-1)/D.stocks.length]]);
   $('#panel').innerHTML=`<button class="x" aria-label="Close" id="dx">×</button>
-  <div class="note">${esc(s.s)}</div><h1 id="dTitle" style="margin-top:2px">${s.t} <span class="mut" style="font-weight:500;font-size:18px">${esc(s.n)}</span></h1>
+  <div class="note">${esc(s.s)}</div><h1 id="dTitle" style="margin-top:2px">${esc(s.t)} <span class="mut" style="font-weight:500;font-size:18px">${esc(s.n)}</span></h1>
   <div style="display:flex;gap:8px;align-items:center;margin:6px 0 14px">${tagFor(s)}<span class="note">Rank ${s.rk} of ${D.stocks.length} · last close $${s.c??'–'}</span></div>
-  <div class="card"><h2>Model view</h2><p style="margin:0 0 8px">Rank group <b>${esc(s.b)}</b>. In past weeks this group averaged <b class="${cls(cal.m)}">${pct(cal.m,2)}</b> versus the S&amp;P 500 the following week, beating it ${pct(cal.p,0,false)} of the time.</p>
+  <div class="card"><h2>Model view</h2><p style="margin:0 0 8px">Rank group <b>${esc(s.b)}</b>. In past weeks this group averaged <b class="${cls(cal.m)}">${pct(cal.m,2)}</b> versus the S&amp;P 500 the following week, beating it ${pct(cal.p,0,false)} of the time.${s.port&&cal.m!=null&&cal.m<0?' It is on the list because of its rank; so far this rank group has not beaten the index.':''}</p>
    <div class="grid g3">${['gbm','ridge','blend'].map((k,i)=>`<div class="kpi"><div class="v">${s.m[k]==null?'–':Math.round(s.m[k]*100)}</div><div class="l">${['Boosted trees','Linear model','Signal blend'][i]} (percentile)</div></div>`).join('')}</div></div>
   <div class="card"><h2>Signals (percentile vs other stocks)</h2>${facs.map(([k,v])=>`<div class="fac"><span>${fl[k]}</span><div class="bar"><i style="width:${Math.round(v*100)}%"></i></div><span class="num">${Math.round(v*100)}</span></div>`).join('')}</div>
   <div class="card"><h2>Price over the past year</h2>${series.length?line(series,{fmt:v=>pct(v,0)}):'<p class="note">No price history.</p>'}<div class="legend"><span><i style="background:var(--acc)"></i>${s.t}</span></div>${line(spy,{color:'var(--mut)',h:90,fmt:v=>pct(v,0)})}<div class="legend"><span><i style="background:var(--mut)"></i>S&amp;P 500 (SPY)</span></div></div>
   <div class="card"><h2>Blind daily record, past year</h2><div id="sHind"><p class="note">Loading…</p></div></div>`;
-  $('#drawer').classList.add('on'); stockHind(s.t); $('#dx').focus(); $('#dx').onclick=closeStock; history.replaceState(null,'','#'+t);
+  $('#drawer').classList.add('on'); setInert(true); stockHind(s.t); $('#dx').focus(); $('#dx').onclick=closeStock; history.replaceState(null,'','#'+t);
 }
 let stockReturn=null;
-function closeStock(){if(!$('#drawer').classList.contains('on'))return;$('#drawer').classList.remove('on');history.replaceState(null,'',location.pathname+location.search);if(stockReturn&&stockReturn.focus)stockReturn.focus()}
+function closeStock(){if(!$('#drawer').classList.contains('on'))return;$('#drawer').classList.remove('on');setInert(false);history.replaceState(null,'',location.pathname+location.search);if(stockReturn&&stockReturn.focus)stockReturn.focus()}
 function calc(){
   const e=D.eval, a=SET.a, fee=SET.fee, pf=SET.pf/100;
   $('#calcWho').textContent=`For $${a.toLocaleString('en-US')} split across ${D.cfg.n} stocks, minimum fee $${fee}, fee ${SET.pf}% of trade.`;
@@ -457,12 +484,13 @@ function tabs(){
 }
 function wire(){
   document.addEventListener('click',ev=>{const t=ev.target.closest('[data-t]'); if(t&&!ev.target.closest('#panel'))openStock(t.dataset.t);
-    const th=ev.target.closest('th[data-k]'); if(th){const k=th.dataset.k; sortDir=sortKey===k?-sortDir:(k==='rk'||k==='t'||k==='s'?1:-1); sortKey=k; renderAll()}
+    const th=ev.target.closest('th[data-k]'); if(th){const k=th.dataset.k; sortDir=sortKey===k?-sortDir:(k==='rk'||k==='t'||k==='s'?1:-1); sortKey=k; renderAll(); const nb=document.querySelector(`th[data-k="${k}"] button`); if(nb)nb.focus()}
     if(ev.target.id==='drawer')closeStock()});
-  document.addEventListener('keydown',ev=>{if(ev.key==='Escape'){closeStock();closeSettings()} if(ev.key===' '&&ev.target.getAttribute&&ev.target.getAttribute('role')==='button'&&ev.target.dataset.t){ev.preventDefault();openStock(ev.target.dataset.t)} if(ev.key==='Enter'&&ev.target.dataset&&ev.target.dataset.t)openStock(ev.target.dataset.t); if(ev.key==='Enter'&&ev.target.dataset&&ev.target.dataset.day){tSel=tSel===ev.target.dataset.day?null:ev.target.dataset.day;renderTest()}});
+  document.addEventListener('keydown',ev=>{if(ev.key==='Escape'){if($('#setDlg').classList.contains('on'))closeSettings();else closeStock()} if(ev.key===' '&&ev.target.getAttribute&&ev.target.getAttribute('role')==='button'&&ev.target.dataset.t){ev.preventDefault();openStock(ev.target.dataset.t)} if(ev.key==='Enter'&&ev.target.dataset&&ev.target.dataset.t)openStock(ev.target.dataset.t); if((ev.key==='Enter'||ev.key===' ')&&ev.target.dataset&&ev.target.dataset.day){ev.preventDefault();const d=ev.target.dataset.day;tSel=tSel===d?null:d;renderTest();const r=document.querySelector(`tr[data-day="${d}"]`);if(r)r.focus()}});
   $('#q').oninput=renderAll; $('#sector').onchange=renderAll;
   $('#lab').onclick=ev=>{const b=ev.target.closest('button');if(!b)return;labF=b.dataset.v;$('#lab').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));renderAll()};
-  ['sTheme','sTab','sAmt','sN','acct','fee','pctfee'].forEach(id=>{$('#'+id).onchange=readSettings;$('#'+id).oninput=readSettings});
+  let tmo=null; ['sTheme','sTab','sN'].forEach(id=>{$('#'+id).onchange=readSettings});
+  ['sAmt','acct','fee','pctfee'].forEach(id=>{$('#'+id).oninput=()=>{clearTimeout(tmo);tmo=setTimeout(()=>readSettings(false),500)};$('#'+id).onchange=()=>{clearTimeout(tmo);readSettings(true)}});
   $('#gear').onclick=openSettings; $('#setX').onclick=closeSettings; $('#setDlg').addEventListener('click',ev=>{if(ev.target.id==='setDlg')closeSettings()});
   $('#setReset').onclick=()=>{SET=Object.assign({},DEF);saveSet();applyTheme();openSettings();renderTest();calc()};
   $('#tView').onclick=ev=>{const b=ev.target.closest('button');if(!b)return;tView=b.dataset.v;$('#tView').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));renderTest()};
@@ -483,7 +511,7 @@ function wire(){
 
   $('#foot').innerHTML=`Research tool, not financial advice. Prices: Yahoo Finance (unofficial, free), may be delayed or incomplete. Last update ${esc(new Date(D.generated).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'}))}.`;
   if(D.health&&D.health.removed_with_data!=null)$('#survLine').textContent=`Prices come from a free, unofficial source. ${D.health.removed_with_data} stocks that left the index are included in the history; others are missing, which can make past results look better than they were.`;
-  tabs(); wire(); renderWeek(); renderRunning(); renderTest(); renderRecord(); renderHind(); renderAll(); calc();
+  tabs(); wire(); [renderWeek,renderRunning,renderTest,renderRecord,renderHind,renderAll,calc].forEach(safe);
   if(SET.tab&&SET.tab!=='week'){const b=document.querySelector(`nav button[data-tab="${SET.tab}"]`);if(b)b.click()}
   if(location.hash.length>1)openStock(location.hash.slice(1).toUpperCase());
   if('serviceWorker' in navigator&&!EMBED)navigator.serviceWorker.register('sw.js').catch(()=>{});

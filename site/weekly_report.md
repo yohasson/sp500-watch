@@ -20,8 +20,8 @@
 
 ## How much to trust this
 
-- Over 204 replayed weeks (2022-12-09 to 2026-11-13), this plan beat the S&P 500 by +0.02% a week on average before costs (-0.03% after costs at a $0-commission broker).
-- It beat the index in 53% of weeks. The worst stretch was -26% behind the index.
-- Probability the edge is real (not luck): about 78%. Statistically proving it would take ~994 weeks of results.
+- Over 204 replayed weeks (2022-12-09 to 2026-11-13), this plan beat the S&P 500 by +0.04% a week on average before costs (+0.00% after costs at a $0-commission broker).
+- It beat the index in 49% of weeks. The worst stretch was -27% behind the index.
+- Probability the edge is real (not luck): about 72%. Statistically proving it would take ~1703 weeks of results.
 
 _Research output, not financial advice. Paper-trade first._
