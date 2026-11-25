@@ -77,7 +77,7 @@ def run(update=True, seal=True, log=print, offline_universe=False):
     live["last_close"] = px["close"].loc[last].reindex(live.index)
     live = live.sort_values("rank")
     entry, *_, exit_ = next_trading_days(last, CFG.horizon_days, None)
-    daily_all, daily = R.daily_backtest(rep, days=252, top=5)
+    daily_all, daily = R.daily_backtest(rep, days=252, top=10)
     daily_all.to_csv(os.path.join(DATA_DIR, "hindsight_daily.csv.gz"), index=False, compression="gzip", float_format="%.5f")
     # ---- seal
     sealed = None; seal_note = ""

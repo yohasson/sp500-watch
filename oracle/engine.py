@@ -178,7 +178,7 @@ class Replay:
                 p0 = O.loc[e0] * (A.loc[e0] / C.loc[e0]); ret = A.loc[e1] / p0 - 1
                 df["actual"] = (ret.reindex(df.ticker) - ret[bench]).values
                 rp = ret[picks].astype(float)
-                row.update({"exit": e1, "ret": float(rp.mean()), "bench": float(ret[bench]),
+                row.update({"exit": e1, "ret": float(rp.iloc[:5].mean()), "bench": float(ret[bench]),
                             "each": {k: round(float(v), 4) for k, v in rp.items()}})
             else:
                 df["actual"] = np.nan

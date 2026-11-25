@@ -10,7 +10,12 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <style>
 :root{--bg:#f7f8fa;--card:#fff;--ink:#0f172a;--mut:#475569;--line:#e5e7eb;--acc:#2563eb;--pos:#047857;--neg:#b91c1c;--warn:#b45309;--chip:#f1f5f9;--r:14px}
-@media (prefers-color-scheme:dark){:root{--bg:#0b1120;--card:#111827;--ink:#e5e7eb;--mut:#94a3b8;--line:#334155;--acc:#60a5fa;--pos:#34d399;--neg:#f87171;--warn:#fbbf24;--chip:#1f2937}}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0b1120;--card:#111827;--ink:#e5e7eb;--mut:#94a3b8;--line:#334155;--acc:#60a5fa;--pos:#34d399;--neg:#f87171;--warn:#fbbf24;--chip:#1f2937}}
+[data-theme=dark]{--bg:#0b1120;--card:#111827;--ink:#e5e7eb;--mut:#94a3b8;--line:#334155;--acc:#60a5fa;--pos:#34d399;--neg:#f87171;--warn:#fbbf24;--chip:#1f2937}
+.iconbtn{all:unset;cursor:pointer;border:1px solid var(--line);border-radius:10px;padding:5px 9px;color:var(--mut);font-size:14px;line-height:1}
+.iconbtn:hover,.iconbtn:focus-visible{color:var(--ink);border-color:var(--acc)}
+.set{display:grid;grid-template-columns:1fr auto;gap:10px 16px;align-items:center;margin:10px 0}
+.set label{font-weight:600}.set .note{grid-column:1/-1;margin-top:-6px}
 *{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 .wrap{max-width:1040px;margin:0 auto;padding:16px 16px 64px}
 header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:8px 0 4px}
@@ -84,7 +89,7 @@ tr.sel td{background:var(--chip)}
 <div class="wrap">
 <header>
   <div class="brand"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#2563eb"/><path d="M6 22l6-7 5 4 9-10" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>S&amp;P 500 Oracle</div>
-  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="asof" id="asof"></span><span class="pill" id="health"><span class="dot"></span><span>…</span></span></div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="asof" id="asof"></span><span class="pill" id="health"><span class="dot"></span><span>…</span></span><button class="iconbtn" id="gear" aria-label="Settings" title="Settings">⚙︎ Settings</button></div>
 </header>
 <div class="banner" id="banner">Paper trading only · research tool, not financial advice</div>
 <nav role="tablist">
@@ -116,8 +121,8 @@ tr.sel td{background:var(--chip)}
 
 <section id="test" class="hide">
   <div class="card">
-    <h2>If you had put $1,000 into the top 5 picks on any day of the past year</h2>
-    <p class="note" style="margin-top:-6px">For every trading day: $1,000 split equally across that day's top 5 stocks, bought at the next open and sold 5 trading days (one calendar week) later. Compared with putting the same $1,000 into the S&amp;P 500 (SPY) for the same week. Replay using only information known on each day; dividends included, trading costs and taxes not.</p>
+    <h2 id="tTitle">If you had put $1,000 into the top 5 picks on any day of the past year</h2>
+    <p class="note" style="margin-top:-6px" id="tSub">For every trading day: the amount split equally across that day's top stocks, bought at the next open and sold 5 trading days (one calendar week) later. Compared with putting the same amount into the S&amp;P 500 (SPY) for the same week. Replay using only information known on each day; dividends included, trading costs and taxes not.</p>
     <div class="grid g4" id="tKpis"></div>
   </div>
   <div class="card">
@@ -190,13 +195,9 @@ tr.sel td{background:var(--chip)}
   </div>
   <div class="card">
     <h2>Cost check: does the edge survive the broker's fees?</h2>
-    <div class="calc">
-      <div><label for="acct">Amount invested (USD)</label><input id="acct" type="number" min="1000" step="1000"></div>
-      <div><label for="fee">Minimum fee per trade (USD)</label><input id="fee" type="number" min="0" step="1"></div>
-      <div><label for="pctfee">Fee as % of trade</label><input id="pctfee" type="number" min="0" step="0.01"></div>
-    </div>
-    <div style="margin-top:14px"><span class="big" id="calcOut"></span> <span class="note" id="calcNote"></span></div>
-    <p class="note">Saved on this device only. Based on the history replay: average edge before costs and how often positions change.</p>
+    <div><span class="big" id="calcOut"></span> <span class="note" id="calcNote"></span></div>
+    <p class="note" id="calcWho"></p>
+    <button class="iconbtn" onclick="openSettings()">Change broker settings</button>
   </div>
   <div class="card">
     <h2>Honest limits</h2>
@@ -215,6 +216,24 @@ tr.sel td{background:var(--chip)}
 <div class="foot" id="foot"></div>
 </div>
 
+<div class="drawer" id="setDlg" role="dialog" aria-modal="true" aria-labelledby="setTitle"><div class="panel">
+  <button class="x" aria-label="Close" id="setX">×</button><h1 id="setTitle">Settings</h1><p class="note">Saved on this device only.</p>
+  <div class="card"><h2>Appearance</h2>
+    <div class="set"><label for="sTheme">Theme</label><select id="sTheme"><option value="system">Match my device</option><option value="light">Light</option><option value="dark">Dark</option></select></div>
+    <div class="set"><label for="sTab">Open on</label><select id="sTab"><option value="week">This week</option><option value="test">$1,000 test</option><option value="record">Track record</option><option value="explore">All stocks</option></select></div>
+  </div>
+  <div class="card"><h2>$1,000 test</h2>
+    <div class="set"><label for="sAmt">Amount invested each day ($)</label><input id="sAmt" type="number" min="100" step="100" style="width:120px"></div>
+    <div class="set"><label for="sN">Number of top stocks</label><select id="sN"><option>1</option><option>3</option><option>5</option><option>10</option></select></div>
+  </div>
+  <div class="card"><h2>Your broker</h2>
+    <div class="set"><label for="acct">Total amount invested ($)</label><input id="acct" type="number" min="1000" step="1000" style="width:120px"></div>
+    <div class="set"><label for="fee">Minimum fee per trade ($)</label><input id="fee" type="number" min="0" step="1" style="width:120px"></div>
+    <div class="set"><label for="pctfee">Fee as % of trade</label><input id="pctfee" type="number" min="0" step="0.01" style="width:120px"></div>
+    <p class="note">Used by the cost check in How it works.</p>
+  </div>
+  <button class="iconbtn" id="setReset">Reset to defaults</button>
+</div></div>
 <div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dTitle"><div class="panel" id="panel"></div></div>
 
 <script>
@@ -293,25 +312,38 @@ function renderRecord(){
   const best=[...D.cal].sort((a,b)=>b.m-a.m)[0], top=D.cal[0], avg=D.cal.reduce((a,c)=>a+c.m,0)/D.cal.length;
   $('#calNote').textContent=`Average next-week return versus the S&P 500 for each rank group (best-ranked on the left). Top 2%: ${pct(top.m,2)}; average group: ${pct(avg,2)}; best group: ${esc(lab[best.b]||best.b)} (${pct(best.m,2)}). A useful model shows bars falling from left to right.`;
 }
+const DEF={theme:'system',tab:'week',amt:1000,n:5,a:50000,fee:0,pf:0};
+let SET=Object.assign({},DEF); try{SET=Object.assign(SET,JSON.parse(localStorage.getItem('oracleSettings')||'{}'))}catch(e){}
+function saveSet(){try{localStorage.setItem('oracleSettings',JSON.stringify(SET))}catch(e){}}
+function applyTheme(){if(SET.theme==='system')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',SET.theme)}
+applyTheme();
+let setReturn=null;
+function openSettings(){setReturn=document.activeElement;$('#sTheme').value=SET.theme;$('#sTab').value=SET.tab;$('#sAmt').value=SET.amt;$('#sN').value=String(SET.n);$('#acct').value=SET.a;$('#fee').value=SET.fee;$('#pctfee').value=SET.pf;$('#setDlg').classList.add('on');$('#setX').focus()}
+function closeSettings(){$('#setDlg').classList.remove('on');if(setReturn)setReturn.focus()}
+function readSettings(){SET.theme=$('#sTheme').value;SET.tab=$('#sTab').value;SET.amt=Math.max(100,+$('#sAmt').value||1000);SET.n=+$('#sN').value||5;
+  SET.a=Math.max(1000,+$('#acct').value||0);SET.fee=Math.max(0,+$('#fee').value||0);SET.pf=Math.max(0,+$('#pctfee').value||0);saveSet();applyTheme();renderTest();calc()}
 let tView='diff',tF='',tSel=null;
 function renderTest(){
-  const R=(D.daily||[]).filter(r=>r.v!=null&&r.b!=null);
+  const A=SET.amt, N=SET.n;
+  $('#tTitle').textContent=`If you had put $${A.toLocaleString('en-US')} into the top ${N} pick${N>1?'s':''} on any day of the past year`;
+  const R=(D.daily||[]).filter(r=>r.e&&r.b!=null).map(r=>{const ps=r.p.slice(0,N).filter(t=>r.e[t]!=null);const m=ps.reduce((a,t)=>a+r.e[t],0)/(ps.length||1);
+    return {d:r.d,x:r.x,p:ps,e:Object.fromEntries(ps.map(t=>[t,r.e[t]])),v:A*(1+m),b:A*(r.b/1000)}});
   if(!R.length){$('#tKpis').innerHTML='<p class="note">Not available yet.</p>';return}
-  const n=R.length, avgV=R.reduce((a,r)=>a+r.v,0)/n, avgB=R.reduce((a,r)=>a+r.b,0)/n, wins=R.filter(r=>r.v>r.b).length, pos=R.filter(r=>r.v>1000).length;
+  const n=R.length, avgV=R.reduce((a,r)=>a+r.v,0)/n, avgB=R.reduce((a,r)=>a+r.b,0)/n, wins=R.filter(r=>r.v>r.b).length, pos=R.filter(r=>r.v>A).length;
   const best=R.reduce((a,r)=>r.v-r.b>a.v-a.b?r:a), worst=R.reduce((a,r)=>r.v-r.b<a.v-a.b?r:a);
   const usd=x=>'$'+x.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0}), sd=x=>(x>=0?'+$':'−$')+Math.abs(x).toFixed(0);
-  $('#tKpis').innerHTML=[[usd(avgV),'average value after a week: top 5',`${sd(avgV-1000)} per week on $1,000`],[usd(avgB),'average value after a week: S&P 500',`${sd(avgB-1000)} per week on $1,000`],
-    [pct(wins/n,0,false),'of days the top 5 beat the S&P 500',`${wins} of ${n} days; top 5 made money on ${pos}`],[sd(avgV-avgB),'average difference per week',`best day ${sd(best.v-best.b)}, worst ${sd(worst.v-worst.b)}`]]
+  $('#tKpis').innerHTML=[[usd(avgV),`average value after a week: top ${N}`,`${sd(avgV-A)} per week on ${usd(A)}`],[usd(avgB),'average value after a week: S&P 500',`${sd(avgB-A)} per week on ${usd(A)}`],
+    [pct(wins/n,0,false),`of days the top ${N} beat the S&P 500`,`${wins} of ${n} days; made money on ${pos}`],[sd(avgV-avgB),'average difference per week',`best day ${sd(best.v-best.b)}, worst ${sd(worst.v-worst.b)}`]]
     .map(k=>`<div class="kpi"><div class="v ${k[0].startsWith('−')?'neg':''}">${k[0]}</div><div class="l">${k[1]}</div><div class="h">${k[2]}</div></div>`).join('');
   if(tView==='diff'){ $('#tChart').innerHTML=bars2(R.map(r=>({l:r.d,v:r.v-r.b})));
-    $('#tLegend').innerHTML='<span><i style="background:var(--pos)"></i>Top 5 ended higher</span><span><i style="background:var(--neg)"></i>S&amp;P 500 ended higher</span>';}
-  else { $('#tChart').innerHTML=line2([R.map(r=>[r.d,r.v]),R.map(r=>[r.d,r.b])]);
-    $('#tLegend').innerHTML='<span><i style="background:var(--acc)"></i>Top 5 ($1,000 after a week)</span><span><i style="background:var(--mut)"></i>S&amp;P 500 ($1,000 after a week)</span>';}
+    $('#tLegend').innerHTML='<span><i style="background:var(--pos)"></i>Top picks ended higher</span><span><i style="background:var(--neg)"></i>S&amp;P 500 ended higher</span>';}
+  else { $('#tChart').innerHTML=line2([R.map(r=>[r.d,r.v]),R.map(r=>[r.d,r.b])],{base:A});
+    $('#tLegend').innerHTML=`<span><i style="background:var(--acc)"></i>Top ${N} (value after a week)</span><span><i style="background:var(--mut)"></i>S&amp;P 500 (value after a week)</span>`;}
   const rows=R.filter(r=>!tF||(tF==='win'?r.v>r.b:r.v<=r.b)).slice().reverse();
   $('#tCount').textContent=`${rows.length} days`;
-  $('#tTable').innerHTML='<tr><th>Bought</th><th>Sold</th><th>Top 5 that day</th><th class="num">Top 5</th><th class="num">S&amp;P 500</th><th class="num">Difference</th></tr>'+
-   rows.map(r=>`<tr class="row${tSel===r.d?' sel':''}" data-day="${esc(r.d)}" tabindex="0"><td>${fmtD(r.d)}</td><td class="mut">${fmtD(r.x)}</td><td class="mut">${r.p.map(esc).join(' · ')}</td><td class="num ${cls(r.v-1000)}">${usd(r.v)}</td><td class="num ${cls(r.b-1000)}">${usd(r.b)}</td><td class="num ${cls(r.v-r.b)}"><b>${sd(r.v-r.b)}</b></td></tr>`+
-     (tSel===r.d&&r.e?`<tr class="sel"><td></td><td colspan="5">${Object.entries(r.e).map(([t,v])=>`<span class="chip" data-t="${esc(t)}">${esc(t)} <span class="${cls(v)}">${pct(v,1)}</span> = ${usd(200*(1+v))}</span>`).join(' ')}</td></tr>`:'')).join('');
+  $('#tTable').innerHTML=`<tr><th>Bought</th><th>Sold</th><th>Top ${N} that day</th><th class="num">Top ${N}</th><th class="num">S&amp;P 500</th><th class="num">Difference</th></tr>`+
+   rows.map(r=>`<tr class="row${tSel===r.d?' sel':''}" data-day="${esc(r.d)}" tabindex="0"><td>${fmtD(r.d)}</td><td class="mut">${fmtD(r.x)}</td><td class="mut">${r.p.map(esc).join(' · ')}</td><td class="num ${cls(r.v-A)}">${usd(r.v)}</td><td class="num ${cls(r.b-A)}">${usd(r.b)}</td><td class="num ${cls(r.v-r.b)}"><b>${sd(r.v-r.b)}</b></td></tr>`+
+     (tSel===r.d&&r.e?`<tr class="sel"><td></td><td colspan="5">${Object.entries(r.e).map(([t,v])=>`<span class="chip" data-t="${esc(t)}">${esc(t)} <span class="${cls(v)}">${pct(v,1)}</span> = ${usd(A/N*(1+v))}</span>`).join(' ')}</td></tr>`:'')).join('');
 }
 function bars2(items,{w=640,h=170}={}){
   const mx=Math.max(...items.map(i=>Math.abs(i.v)),1e-6),bw=(w-40)/items.length,Y0=(h-24)/2+4;
@@ -320,9 +352,9 @@ function bars2(items,{w=640,h=170}={}){
   items.forEach((it,i)=>{const bh=Math.abs(it.v)/mx*(Y0-6),x=36+i*bw;s+=`<rect x="${x.toFixed(1)}" y="${(it.v>=0?Y0-bh:Y0).toFixed(1)}" width="${Math.max(bw*.8,.6).toFixed(2)}" height="${Math.max(bh,.5).toFixed(1)}" fill="${it.v>=0?'var(--pos)':'var(--neg)'}"><title>${it.l}: ${it.v>=0?'+':'−'}$${Math.abs(it.v).toFixed(0)}</title></rect>`});
   return s+`<text x="36" y="${h-2}">${esc(items[0].l.slice(0,7))}</text><text x="${w}" y="${h-2}" text-anchor="end">${esc(items[items.length-1].l.slice(0,7))}</text></svg>`;
 }
-function line2(sets,{w=640,h=190}={}){
+function line2(sets,{w=640,h=190,base=1000}={}){
   const all=sets.flat().map(p=>p[1]);let mn=Math.min(...all),mx=Math.max(...all);const n=sets[0].length,X=i=>40+(w-48)*i/(n-1),Y=v=>8+(h-28)*(1-(v-mn)/(mx-mn||1));
-  let s=`<svg viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="Values after one week"><line x1="40" x2="${w-8}" y1="${Y(1000)}" y2="${Y(1000)}" stroke="var(--line)" stroke-dasharray="3 3"/>`;
+  let s=`<svg viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="Values after one week"><line x1="40" x2="${w-8}" y1="${Y(base)}" y2="${Y(base)}" stroke="var(--line)" stroke-dasharray="3 3"/>`;
   s+=`<text x="0" y="${Y(mx)+4}">$${mx.toFixed(0)}</text><text x="0" y="${Y(mn)}">$${mn.toFixed(0)}</text>`;
   ['var(--mut)','var(--acc)'].forEach((c,k)=>{const set=sets[1-k];s+=`<path d="${set.map((p,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(p[1]).toFixed(1)).join('')}" fill="none" stroke="${c}" stroke-width="${k?1.6:1.2}"/>`});
   return s+`<text x="40" y="${h-2}">${esc(sets[0][0][0].slice(0,7))}</text><text x="${w-8}" y="${h-2}" text-anchor="end">${esc(sets[0][n-1][0].slice(0,7))}</text></svg>`;
@@ -386,8 +418,8 @@ function openStock(t){
 }
 function closeStock(){$('#drawer').classList.remove('on');history.replaceState(null,'',location.pathname)}
 function calc(){
-  const e=D.eval, a=Math.max(1000,+$('#acct').value||0), fee=Math.max(0,+$('#fee').value||0), pf=Math.max(0,+$('#pctfee').value||0)/100;
-  try{localStorage.setItem('oracleCalc',JSON.stringify({a,fee,pf:pf*100}))}catch(e){}
+  const e=D.eval, a=SET.a, fee=SET.fee, pf=SET.pf/100;
+  $('#calcWho').textContent=`For $${a.toLocaleString('en-US')} split across ${D.cfg.n} stocks, minimum fee $${fee}, fee ${SET.pf}% of trade.`;
   const pos=a/D.cfg.n, oneway=(pos>0?Math.max(fee/pos,pf):0)+0.0003, net=e.gross-2*oneway*e.turn, ann=Math.pow(1+net,52)-1;
   $('#calcOut').textContent=pct(ann,1); $('#calcOut').className='big '+cls(ann);
   $('#calcNote').textContent=`a year versus the S&P 500 in the history replay, after trading costs, before taxes (cost per trade ≈ ${pct(oneway,2,false)}; break-even ≈ ${pct(e.be,2,false)}).`+(net<0?' Fees would erase the edge at this size.':'');
@@ -400,10 +432,12 @@ function wire(){
   document.addEventListener('click',ev=>{const t=ev.target.closest('[data-t]'); if(t&&!ev.target.closest('#panel'))openStock(t.dataset.t);
     const th=ev.target.closest('th[data-k]'); if(th){const k=th.dataset.k; sortDir=sortKey===k?-sortDir:(k==='rk'||k==='t'||k==='s'?1:-1); sortKey=k; renderAll()}
     if(ev.target.id==='drawer')closeStock()});
-  document.addEventListener('keydown',ev=>{if(ev.key==='Escape')closeStock(); if(ev.key==='Enter'&&ev.target.dataset&&ev.target.dataset.t)openStock(ev.target.dataset.t); if(ev.key==='Enter'&&ev.target.dataset&&ev.target.dataset.day){tSel=tSel===ev.target.dataset.day?null:ev.target.dataset.day;renderTest()}});
+  document.addEventListener('keydown',ev=>{if(ev.key==='Escape'){closeStock();closeSettings()} if(ev.key==='Enter'&&ev.target.dataset&&ev.target.dataset.t)openStock(ev.target.dataset.t); if(ev.key==='Enter'&&ev.target.dataset&&ev.target.dataset.day){tSel=tSel===ev.target.dataset.day?null:ev.target.dataset.day;renderTest()}});
   $('#q').oninput=renderAll; $('#sector').onchange=renderAll;
   $('#lab').onclick=ev=>{const b=ev.target.closest('button');if(!b)return;labF=b.dataset.v;$('#lab').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));renderAll()};
-  ['acct','fee','pctfee'].forEach(id=>$('#'+id).oninput=calc);
+  ['sTheme','sTab','sAmt','sN','acct','fee','pctfee'].forEach(id=>{$('#'+id).onchange=readSettings;$('#'+id).oninput=readSettings});
+  $('#gear').onclick=openSettings; $('#setX').onclick=closeSettings; $('#setDlg').addEventListener('click',ev=>{if(ev.target.id==='setDlg')closeSettings()});
+  $('#setReset').onclick=()=>{SET=Object.assign({},DEF);saveSet();applyTheme();openSettings();renderTest();calc()};
   $('#tView').onclick=ev=>{const b=ev.target.closest('button');if(!b)return;tView=b.dataset.v;$('#tView').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));renderTest()};
   $('#tFilter').onclick=ev=>{const b=ev.target.closest('button');if(!b)return;tF=b.dataset.v;$('#tFilter').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));renderTest()};
   $('#tTable').addEventListener('click',ev=>{const r=ev.target.closest('tr[data-day]');if(!r||ev.target.closest('[data-t]'))return;tSel=tSel===r.dataset.day?null:r.dataset.day;renderTest()});
@@ -418,9 +452,10 @@ function wire(){
   h.title=D.ks.map(k=>(k.ok?'✓ ':'✗ ')+k.id+': '+k.detail).join('\n');
   $('#sector').innerHTML='<option value="">All sectors</option>'+[...new Set(D.stocks.map(s=>s.s))].sort().map(s=>`<option>${esc(s)}</option>`).join('');
   $('#ks').innerHTML=D.ks.map(k=>`<li>${k.ok?'✅':'⚠️'} <b>${esc(k.id)}</b> – ${esc(k.detail)}</li>`).join('')+`<li>Last run ${esc(D.generated)} UTC · ${D.health.current_members_with_data}/${D.health.current_members} stocks updated · model ${esc(D.cfg.model)}</li>`;
-  let c={a:50000,fee:0,pf:0}; try{c=JSON.parse(localStorage.getItem('oracleCalc'))||c}catch(e){} $('#acct').value=c.a; $('#fee').value=c.fee; $('#pctfee').value=c.pf;
+
   $('#foot').innerHTML='Research tool, not financial advice. Prices: free public sources, may be delayed or incomplete.';
   tabs(); wire(); renderWeek(); renderTest(); renderRecord(); renderHind(); renderAll(); calc();
+  if(SET.tab&&SET.tab!=='week'){const b=document.querySelector(`nav button[data-tab="${SET.tab}"]`);if(b)b.click()}
   if(location.hash.length>1)openStock(location.hash.slice(1).toUpperCase());
   if('serviceWorker' in navigator&&!EMBED)navigator.serviceWorker.register('sw.js').catch(()=>{});
 })();

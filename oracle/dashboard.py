@@ -45,7 +45,7 @@ def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entr
             "c": _r(r["last_close"], 2), "why": why,
             "f": {k: _r(r[f"f_{k}"], 3) for k in E.FACTORS},
             "m": {"gbm": _r(live["gbm"].rank(pct=True)[t], 3), "ridge": _r(live["ridge"].rank(pct=True)[t], 3), "blend": _r(live["blend"].rank(pct=True)[t], 3)},
-            "px": None if ser is None or ser.isna().all() else (ser / ser.dropna().iloc[0]).round(4).where(ser.notna(), None).tolist(),
+            "px": None if ser is None or ser.isna().all() else [_r(v, 4) for v in (ser / ser.dropna().iloc[0])],
             "h": [None if (t not in piv.columns or pd.isna(piv.loc[d, t])) else _r(1 - piv.loc[d, t], 3) for d in hist_dates],
             "r1w": _r(A[t].iloc[-1] / A[t].iloc[-6] - 1, 4) if t in A.columns else None,
         })
@@ -86,7 +86,7 @@ def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entr
         "health": status["steps"]["data"],
         "daily": [{"d": r["date"].strftime("%Y-%m-%d"), "p": r["picks"], "x": r["exit"].strftime("%Y-%m-%d") if "exit" in r else None,
                    "v": _r(1000 * (1 + r["ret"]), 2) if "ret" in r else None, "b": _r(1000 * (1 + r["bench"]), 2) if "bench" in r else None,
-                   "e": r.get("each")} for r in (daily or [])],
+                   "e": r.get("each")} for r in (daily or [])],   # e = top-10 picks in rank order with their returns
     }
     # blind daily hindsight: one small file per stock (loaded when the stock is opened) + daily summary
     if daily_all is not None and len(daily_all):
@@ -104,7 +104,13 @@ def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entr
                         "dir_hit": _r(hit.mean(), 3), "series": [[k, _r(v, 3)] for k, v in dic.items()]}
     tpl = open(os.path.join(os.path.dirname(__file__), "dashboard_template.html"), encoding="utf-8").read()
     open(os.path.join(DOCS_DIR, "index.html"), "w", encoding="utf-8").write(tpl)
-    json.dump(data, open(os.path.join(DOCS_DIR, "data.json"), "w"), separators=(",", ":"))
+    def _clean(o):
+        if isinstance(o, float): return None if (math.isnan(o) or math.isinf(o)) else o
+        if isinstance(o, dict): return {k: _clean(v) for k, v in o.items()}
+        if isinstance(o, (list, tuple)): return [_clean(v) for v in o]
+        return o
+    data = _clean(data)
+    json.dump(data, open(os.path.join(DOCS_DIR, "data.json"), "w"), separators=(",", ":"), allow_nan=False)
     html = tpl.replace("/*__DATA__*/null", json.dumps(data, separators=(",", ":"), ensure_ascii=False))
     os.makedirs(DATA_DIR, exist_ok=True); open(os.path.join(DATA_DIR, "dashboard_offline.html"), "w", encoding="utf-8").write(html)
     _report(data)
