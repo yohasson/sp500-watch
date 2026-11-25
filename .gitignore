@@ -1,0 +1,5 @@
+__pycache__/
+data/prices/
+data/replay.csv.gz
+data/dashboard_offline.html
+run.log
