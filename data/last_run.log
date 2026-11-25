@@ -1,1 +1,22 @@
-status=cancelled run=45517335068 utc=2026-11-25T01:20:51Z
+[universe] change table not found; removed stocks skipped
+[data] 0/506 symbols, 10s
+[data] 100/506 symbols, 150s
+[data] 200/506 symbols, 352s
+[data] 300/506 symbols, 580s
+[data] 400/506 symbols, 782s
+[data] 500/506 symbols, 985s
+[data] fetched 0 symbols ({}); failed 506: ['MMM', 'AOS', 'ABT', 'ABBV', 'ACN', 'ADBE', 'AMD', 'AES', 'AFL', 'A', 'APD', 'ABNB', 'AKAM', 'ALB', 'ARE']
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/runner/work/sp500-watch/sp500-watch/oracle/__main__.py", line 8, in <module>
+    st = pipeline.run(update=not a.no_update, seal=not a.no_seal, offline_universe=a.offline_universe)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/sp500-watch/sp500-watch/oracle/pipeline.py", line 22, in run
+    px = D.load_prices()
+         ^^^^^^^^^^^^^^^
+  File "/home/runner/work/sp500-watch/sp500-watch/oracle/data.py", line 119, in load_prices
+    if "close" not in c: raise RuntimeError("no price cache; run update first")
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: no price cache; run update first
+status=failure run=45530288857 utc=2026-11-25T02:26:34Z
