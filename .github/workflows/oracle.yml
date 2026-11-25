@@ -1,8 +1,8 @@
 name: Oracle run
 on:
   schedule:
-    - cron: "30 22 * * 1-5"   # after the US close: update prices, grade, seal on the last trading day of the week
-    - cron: "0 5,11,13 * * 1-5"  # retries before the US open (seal deadline 14:30 UTC)
+    - cron: "23 21,22,23 * * 1-5"   # after the US close (off-peak minutes; GitHub may delay or drop top-of-hour schedules)
+    - cron: "41 2,5,9,11,12,13 * * 1-5"  # retries before the US open (lock deadline 14:30 UTC)
   workflow_dispatch:
   push:
     branches: [main]
