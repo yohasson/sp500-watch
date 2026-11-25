@@ -95,7 +95,7 @@ def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entr
             print(f"[dashboard] could not load sealed plan: {e}")
     ev = evaluation; pc = ev["portfolio"]["chosen"]
     data = {
-        "generated": status["run_utc"], "asof": str(last.date()), "entry": str(plan_entry.date()), "exit": str(plan_exit.date()),
+        "generated": status["run_utc"], "asof": str(last.date()), "entry": str(plan_entry.date()), "exit": str(plan_exit.date()), "next_entry": str(entry.date()), "next_exit": str(exit_.date()),
         "regime": {"name": reg, "text": reg_txt, "vix": _r(vix, 1), "vix_prev": _r(vix_prev, 1),
                    "spy_1w": _r(spy.iloc[-1] / spy.iloc[-6] - 1, 4), "spy_1m": _r(spy.iloc[-1] / spy.iloc[-22] - 1, 4)},
         "seal": status["steps"].get("seal"), "ks": status["kill_switches"],
@@ -111,7 +111,7 @@ def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entr
         "cum": cum_s, "ic26": [[d.strftime("%Y-%m-%d"), _r(v, 4)] for d, v in ic26.items()],
         "weeks": weeks, "spyw": spy_w, "hist_dates": [pd.Timestamp(d).strftime("%Y-%m-%d") for d in hist_dates],
         "stocks": stocks, "portfolio": plan_port, "sells": sells, "forecasts": fcs,
-        "cfg": {"n": CFG.portfolio_n, "k": CFG.portfolio_hold_k, "model": CFG.model_version},
+        "cfg": {"n": CFG.portfolio_n, "k": CFG.portfolio_hold_k, "cap": CFG.max_per_sector, "model": CFG.model_version},
         "health": status["steps"]["data"],
         "running": running,
         "daily": [{"d": r["date"].strftime("%Y-%m-%d"), "p": r["picks"], "x": r["exit"].strftime("%Y-%m-%d") if "exit" in r else None,
@@ -129,9 +129,13 @@ def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entr
                       open(os.path.join(sd, f"{t}.json"), "w"), separators=(",", ":"))
         dk = da.dropna(subset=["actual"])
         dic = dk.groupby("d").apply(lambda x: x["pct"].corr(x["actual"], method="spearman") * -1)
-        hit = dk.assign(ok=np.sign(dk["proj"]) == np.sign(dk["actual"])).groupby("d")["ok"].mean()
+        dkp = dk[dk["proj"] != 0]
+        hit = dkp.assign(ok=np.sign(dkp["proj"]) == np.sign(dkp["actual"])).groupby("d")["ok"].mean()
+        up = float((dkp["actual"] > 0).mean()) if len(dkp) else None
+        pu = float((dkp["proj"] > 0).mean()) if len(dkp) else None
+        base = (pu * up + (1 - pu) * (1 - up)) if up is not None else None   # hit rate of random guesses with the same up/down mix
         data["hind"] = {"days": int(dk["d"].nunique()), "rows": int(len(dk)), "ic": _r(dic.mean(), 4), "pos": _r((dic > 0).mean(), 3),
-                        "dir_hit": _r(hit.mean(), 3), "series": [[k, _r(v, 3)] for k, v in dic.items()]}
+                        "dir_hit": _r(hit.mean(), 3), "base": _r(base, 3), "series": [[k, _r(v, 3)] for k, v in dic.items()]}
     tpl = open(os.path.join(os.path.dirname(__file__), "dashboard_template.html"), encoding="utf-8").read()
     open(os.path.join(DOCS_DIR, "index.html"), "w", encoding="utf-8").write(tpl)
     def _clean(o):
