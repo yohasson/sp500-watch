@@ -47,7 +47,7 @@ def fetch_universe() -> dict:
                 removed[t] = {"name": str(r[ncol[0]]) if ncol else t, "sector": "Unknown", "sub_industry": "",
                               "start": None, "end": d.strftime("%Y-%m-%d")}
     except StopIteration:
-        print("[universe] change table not found; removed stocks skipped")
+        print("[universe] change table not found; removed stocks skipped. Tables seen: " + " | ".join(str([flat(c) for c in t.columns][:6]) for t in tables[:4]))
     uni = {"fetched_utc": dt.datetime.utcnow().isoformat(timespec="seconds"), "source": URL,
            "members": members, "removed": removed}
     os.makedirs(DATA_DIR, exist_ok=True)

@@ -63,11 +63,39 @@ def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entr
                     "ic": _r(g["rank_ic"], 3) if g else None, "port": _r(g["portfolio_excess"], 4) if g else None,
                     "hit": _r(g["portfolio_hit_rate"], 2) if g else None, "bench": _r(g["benchmark_return"], 4) if g else None,
                     "best": g.get("best") if g else None, "worst": g.get("worst") if g else None})
+    # running result of the latest sealed weekly forecast (updated after every close)
+    running = None
+    sysf = [r for r in L.forecasts() if r.get("convention") == "next_open"]
+    if sysf:
+        fr = sysf[-1]; en = pd.Timestamp(fr["entry_date"]); ex = pd.Timestamp(fr["exit_date"])
+        if en in A.index and en <= A.index.max():
+            upto = min(A.index.max(), ex)
+            O, C = px["open"], px["close"]
+            p0 = O.loc[en] * (A.loc[en] / C.loc[en]); rr = A.loc[upto] / p0 - 1
+            picks = [t for t in fr.get("portfolio", []) if t in rr.index and not pd.isna(rr[t])]
+            if picks:
+                running = {"id": fr["id"], "entry": str(en.date()), "exit": str(ex.date()), "asof": str(upto.date()), "done": bool(upto >= ex),
+                           "picks": {t: _r(rr[t], 4) for t in picks}, "avg": _r(float(rr[picks].mean()), 4), "bench": _r(float(rr[CFG.benchmark]), 4)}
     port = live[live.in_portfolio]
     sells = live[live.action == "SELL"].index.tolist()
+    plan_entry, plan_exit, plan_port = entry, exit_, port.index.tolist()
+    # between weekly seals, the plan shown is the sealed one (not today's re-ranking)
+    if sysf and pd.Timestamp(sysf[-1]["exit_date"]) >= A.index.max() and sysf[-1]["decision_date"] != str(last.date()):
+        fr = sysf[-1]
+        try:
+            fc = pd.read_csv(os.path.join(os.path.dirname(L.LEDGER), fr["file"])).set_index("ticker")
+            plan_port = [t for t in fr.get("portfolio", []) if t in fc.index]
+            acts = fc["action"].fillna("").to_dict()
+            for st in stocks:
+                st["port"] = st["t"] in plan_port
+                st["a"] = acts.get(st["t"], "") if st["port"] or acts.get(st["t"], "") == "SELL" else ""
+            sells = [t for t, a in acts.items() if a == "SELL"]
+            plan_entry, plan_exit = pd.Timestamp(fr["entry_date"]), pd.Timestamp(fr["exit_date"])
+        except Exception as e:
+            print(f"[dashboard] could not load sealed plan: {e}")
     ev = evaluation; pc = ev["portfolio"]["chosen"]
     data = {
-        "generated": status["run_utc"], "asof": str(last.date()), "entry": str(entry.date()), "exit": str(exit_.date()),
+        "generated": status["run_utc"], "asof": str(last.date()), "entry": str(plan_entry.date()), "exit": str(plan_exit.date()),
         "regime": {"name": reg, "text": reg_txt, "vix": _r(vix, 1), "vix_prev": _r(vix_prev, 1),
                    "spy_1w": _r(spy.iloc[-1] / spy.iloc[-6] - 1, 4), "spy_1m": _r(spy.iloc[-1] / spy.iloc[-22] - 1, 4)},
         "seal": status["steps"].get("seal"), "ks": status["kill_switches"],
@@ -82,9 +110,10 @@ def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entr
         "cal": [{"b": b, "m": _r(v["mean_excess"], 5), "p": _r(v["p_beat"], 3)} for b, v in ev["calibration"].items()],
         "cum": cum_s, "ic26": [[d.strftime("%Y-%m-%d"), _r(v, 4)] for d, v in ic26.items()],
         "weeks": weeks, "spyw": spy_w, "hist_dates": [pd.Timestamp(d).strftime("%Y-%m-%d") for d in hist_dates],
-        "stocks": stocks, "portfolio": port.index.tolist(), "sells": sells, "forecasts": fcs,
+        "stocks": stocks, "portfolio": plan_port, "sells": sells, "forecasts": fcs,
         "cfg": {"n": CFG.portfolio_n, "k": CFG.portfolio_hold_k, "model": CFG.model_version},
         "health": status["steps"]["data"],
+        "running": running,
         "daily": [{"d": r["date"].strftime("%Y-%m-%d"), "p": r["picks"], "x": r["exit"].strftime("%Y-%m-%d") if "exit" in r else None,
                    "v": _r(1000 * (1 + r["ret"]), 2) if "ret" in r else None, "b": _r(1000 * (1 + r["bench"]), 2) if "bench" in r else None,
                    "e": r.get("each")} for r in (daily or [])],   # e = top-10 picks in rank order with their returns
