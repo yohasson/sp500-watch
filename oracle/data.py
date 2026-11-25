@@ -53,6 +53,34 @@ class StooqProvider:
         df = df[df.index >= pd.Timestamp.today() - pd.Timedelta(days=365 * years)]
         return pd.DataFrame({"open": df["Open"], "close": df["Close"], "adjclose": df["Close"]})
 
+def yf_bulk(symbols, period, log=print, chunk=100):
+    """Bulk download through the yfinance library (handles Yahoo cookies/crumb; works from cloud runners)."""
+    try:
+        import yfinance as yf
+    except Exception as e:
+        log(f"[data] yfinance unavailable: {e}"); return {}
+    out = {}
+    for i in range(0, len(symbols), chunk):
+        part = symbols[i:i + chunk]
+        try:
+            df = yf.download(part, period=period, interval="1d", auto_adjust=False, actions=False,
+                             group_by="ticker", threads=True, progress=False)
+        except Exception as e:
+            log(f"[data] yfinance chunk {i} failed: {e}"); continue
+        if df is None or df.empty: continue
+        for sym in part:
+            try:
+                sub = df[sym] if isinstance(df.columns, pd.MultiIndex) else df
+                d = pd.DataFrame({"open": sub["Open"], "close": sub["Close"],
+                                  "adjclose": sub["Adj Close"] if "Adj Close" in sub else sub["Close"]}).dropna(subset=["close"])
+                if len(d):
+                    d.index = pd.to_datetime(d.index).tz_localize(None).normalize()
+                    out[sym] = d[~d.index.duplicated(keep="last")]
+            except Exception:
+                pass
+        log(f"[data] yfinance {min(i + chunk, len(symbols))}/{len(symbols)} -> {len(out)} ok")
+    return out
+
 def _load_cache():
     out = {}
     for f in ("open", "close", "adjclose"):
@@ -73,7 +101,7 @@ def update_prices(symbols, years=10, providers=None, workers=12, log=print, budg
     have = set(cache["close"].columns) if "close" in cache else set()
     last_date = cache["close"].index.max() if "close" in cache else None
     stale_days = (pd.Timestamp.today().normalize() - last_date).days if last_date is not None else 9999
-    deadline = time.time() + (budget_s or float(os.environ.get("ORACLE_DATA_BUDGET", 1200)))
+    deadline = time.time() + (budget_s or float(os.environ.get("ORACLE_DATA_BUDGET", 600)))
     def job(sym):
         if time.time() > deadline: return sym, None, None
         full = sym not in have
@@ -85,8 +113,14 @@ def update_prices(symbols, years=10, providers=None, workers=12, log=print, budg
             except Exception as e:
                 pass
         return sym, None, None
-    got, failed, used = {}, [], {}
     t0 = time.time()
+    got, failed, used = {}, [], {}
+    full_syms = [x for x in symbols if x not in have]; part_syms = [x for x in symbols if x in have]
+    for group, period in ((full_syms, f"{years}y"), (part_syms, "3mo" if stale_days < 80 else "1y")):
+        if group:
+            res = yf_bulk(group, period, log=log); got.update(res); used["yfinance"] = used.get("yfinance", 0) + len(res)
+    symbols = [x for x in symbols if x not in got]
+    log(f"[data] after yfinance: {len(got)} ok, {len(symbols)} left for direct download, {time.time()-t0:.0f}s")
     with cf.ThreadPoolExecutor(workers) as ex:
         for i, (sym, df, pn) in enumerate(ex.map(job, symbols)):
             if i % 100 == 0: log(f"[data] {i}/{len(symbols)} symbols, {time.time()-t0:.0f}s")

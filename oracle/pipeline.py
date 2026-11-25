@@ -19,7 +19,10 @@ def run(update=True, seal=True, log=print, offline_universe=False):
     failed = []
     if update:
         _, failed = D.update_prices(syms, CFG.history_years, log=log)
-    px = D.load_prices()
+    try:
+        px = D.load_prices()
+    except Exception as e:
+        log(f"[run] stopping: no prices could be downloaded ({e})"); return status
     A = px["adjclose"]; last = A.index.max()
     have_cur = [t for t in cur if t in A.columns and not pd.isna(A[t].iloc[-1])]
     health = len(have_cur) / max(len(cur), 1)
