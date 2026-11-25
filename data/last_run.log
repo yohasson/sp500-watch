@@ -1,15 +1,15 @@
-[universe] change table not found; removed stocks skipped
+[universe] change table not found; removed stocks skipped. Tables seen: ['Symbol', 'Security', 'GICS Sector', 'GICS Sub-Industry', 'Headquarters Location', 'Date added'] | ['vteS&P 500 companies', 'vteS&P 500 companies.1']
 [data] yfinance 100/506 -> 100 ok
 [data] yfinance 200/506 -> 200 ok
 [data] yfinance 300/506 -> 300 ok
 [data] yfinance 400/506 -> 400 ok
 [data] yfinance 500/506 -> 500 ok
 [data] yfinance 506/506 -> 506 ok
-[data] after yfinance: 506 ok, 0 left for direct download, 42s
+[data] after yfinance: 506 ok, 0 left for direct download, 29s
 [data] fetched 506 symbols ({'yfinance': 506}); failed 0: []
-[run] data health 100% (502/503), last date 2026-11-24, 46s
-[run] prices ready (1761, 506), 47s
+[run] data health 100% (502/503), last date 2026-11-24, 35s
+[run] prices ready (1761, 506), 35s
 [replay] 208 decision weeks 2022-12-09..2026-11-24
-[run] replay done 58s
-[run] done: last data 2026-11-24, seal: sealed, graded 0, ledger problems 0
-status=success run=45533549778 utc=2026-11-25T02:33:07Z
+[run] replay done 49s
+[run] done: last data 2026-11-24, seal: already sealed for this decision date, graded 0, ledger problems 0
+status=success run=45536100161 utc=2026-11-25T02:54:57Z
