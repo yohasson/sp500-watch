@@ -19,6 +19,13 @@ def regime_text(vix):
     if vix < 30: return ("Nervous", "Volatility is elevated; expect bigger daily swings.")
     return ("Stressed", "Volatility is high; one-week predictions are least reliable now.")
 
+def _clean(o):
+    if isinstance(o, float): return None if (math.isnan(o) or math.isinf(o)) else o
+    if isinstance(o, dict): return {k: _clean(v) for k, v in o.items()}
+    if isinstance(o, (list, tuple)): return [_clean(v) for v in o]
+    return o
+
+
 def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entry, exit_, last, uni, daily=None, daily_all=None):
     os.makedirs(DOCS_DIR, exist_ok=True)
     A = px["adjclose"]
@@ -34,7 +41,7 @@ def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entr
     rp = rep.copy(); rp["pct"] = rp.groupby("date")["ens"].rank(pct=True, ascending=False)
     hist_dates = sorted(rp.date.unique())[-26:]
     piv = rp[rp.date.isin(hist_dates)].pivot(index="date", columns="ticker", values="pct")
-    stocks = []
+    stocks = []; pxmap = {}
     for t, r in live.iterrows():
         drivers = sorted([(k, r[f"f_{k}"]) for k in E.FACTORS if not pd.isna(r[f"f_{k}"])], key=lambda x: -x[1])
         why = [SHORT[k] for k, v in drivers[:2] if v >= 0.7]
@@ -45,10 +52,9 @@ def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entr
             "c": _r(r["last_close"], 2), "why": why,
             "f": {k: _r(r[f"f_{k}"], 3) for k in E.FACTORS},
             "m": {"gbm": _r(live["gbm"].rank(pct=True)[t], 3), "ridge": _r(live["ridge"].rank(pct=True)[t], 3), "blend": _r(live["blend"].rank(pct=True)[t], 3)},
-            "px": None if ser is None or ser.isna().all() else [_r(v, 4) for v in (ser / ser.dropna().iloc[0])],
-            "h": [None if (t not in piv.columns or pd.isna(piv.loc[d, t])) else _r(1 - piv.loc[d, t], 3) for d in hist_dates],
             "r1w": _r(A[t].iloc[-1] / A[t].iloc[-6] - 1, 4) if t in A.columns else None,
         })
+        pxmap[t] = None if ser is None or ser.isna().all() else [_r(v, 4) for v in (ser / ser.dropna().iloc[0])]
     # replay cumulative (chosen config) vs benchmark
     ch = sims["chosen"]; cum = (1 + ch.net).cumprod()
     cum_s = [[d.strftime("%Y-%m-%d"), _r(v - 1, 4)] for d, v in cum.items()]
@@ -119,14 +125,16 @@ def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entr
                    "e": r.get("each")} for r in (daily or [])],   # e = top-10 picks in rank order with their returns
     }
     # blind daily hindsight: one small file per stock (loaded when the stock is opened) + daily summary
+    sd = os.path.join(DOCS_DIR, "stocks"); os.makedirs(sd, exist_ok=True)
+    written = set()
     if daily_all is not None and len(daily_all):
-        sd = os.path.join(DOCS_DIR, "stocks"); os.makedirs(sd, exist_ok=True)
         da = daily_all.copy(); da["d"] = da["date"].dt.strftime("%Y-%m-%d")
         for t, g in da.groupby("ticker"):
             if not str(t).replace("-", "").isalnum(): continue
-            json.dump({"t": t, "d": g["d"].tolist(), "r": g["rank"].astype(int).tolist(),
-                       "p": [_r(x, 5) for x in g["proj"]], "a": [_r(x, 5) for x in g["actual"]]},
-                      open(os.path.join(sd, f"{t}.json"), "w"), separators=(",", ":"))
+            json.dump(_clean({"t": t, "d": g["d"].tolist(), "r": g["rank"].astype(int).tolist(),
+                       "p": [_r(x, 5) for x in g["proj"]], "a": [_r(x, 5) for x in g["actual"]], "px": pxmap.get(t)}),
+                      open(os.path.join(sd, f"{t}.json"), "w"), separators=(",", ":"), allow_nan=False)
+            written.add(t)
         dk = da.dropna(subset=["actual"])
         dic = dk.groupby("d").apply(lambda x: x["pct"].corr(x["actual"], method="spearman") * -1)
         dkp = dk[dk["proj"] != 0]
@@ -136,13 +144,11 @@ def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entr
         base = (pu * up + (1 - pu) * (1 - up)) if up is not None else None   # hit rate of random guesses with the same up/down mix
         data["hind"] = {"days": int(dk["d"].nunique()), "rows": int(len(dk)), "ic": _r(dic.mean(), 4), "pos": _r((dic > 0).mean(), 3),
                         "dir_hit": _r(hit.mean(), 3), "base": _r(base, 3), "series": [[k, _r(v, 3)] for k, v in dic.items()]}
+    for t, v in pxmap.items():
+        if t not in written and str(t).replace("-", "").isalnum():
+            json.dump(_clean({"t": t, "d": [], "r": [], "p": [], "a": [], "px": v}), open(os.path.join(sd, f"{t}.json"), "w"), separators=(",", ":"), allow_nan=False)
     tpl = open(os.path.join(os.path.dirname(__file__), "dashboard_template.html"), encoding="utf-8").read()
     open(os.path.join(DOCS_DIR, "index.html"), "w", encoding="utf-8").write(tpl)
-    def _clean(o):
-        if isinstance(o, float): return None if (math.isnan(o) or math.isinf(o)) else o
-        if isinstance(o, dict): return {k: _clean(v) for k, v in o.items()}
-        if isinstance(o, (list, tuple)): return [_clean(v) for v in o]
-        return o
     data = _clean(data)
     json.dump(data, open(os.path.join(DOCS_DIR, "data.json"), "w"), separators=(",", ":"), allow_nan=False)
     html = tpl.replace("/*__DATA__*/null", json.dumps(data, separators=(",", ":"), ensure_ascii=False))

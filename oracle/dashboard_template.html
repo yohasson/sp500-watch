@@ -9,6 +9,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <style>
+:root{color-scheme:light dark}[data-theme=light]{color-scheme:light}[data-theme=dark]{color-scheme:dark}
 :root{--bg:#f7f8fa;--card:#fff;--ink:#0f172a;--mut:#475569;--line:#e5e7eb;--acc:#2563eb;--pos:#047857;--neg:#b91c1c;--warn:#b45309;--chip:#f1f5f9;--r:14px}
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0b1120;--card:#111827;--ink:#e5e7eb;--mut:#94a3b8;--line:#334155;--acc:#60a5fa;--pos:#34d399;--neg:#f87171;--warn:#fbbf24;--chip:#1f2937}}
 [data-theme=dark]{--bg:#0b1120;--card:#111827;--ink:#e5e7eb;--mut:#94a3b8;--line:#334155;--acc:#60a5fa;--pos:#34d399;--neg:#f87171;--warn:#fbbf24;--chip:#1f2937}
@@ -196,7 +197,7 @@ tr.sel td{background:var(--chip)}
     <div class="tools">
       <input type="search" id="q" placeholder="Search ticker or company" aria-label="Search">
       <select id="sector" aria-label="Sector"></select>
-      <div class="seg" id="lab" role="group" aria-label="Filter"><button aria-pressed="true" data-v="">All</button><button aria-pressed="false" data-v="pick">Picks</button><button aria-pressed="false" data-v="Avoid">Avoid</button></div>
+      <div class="seg" id="lab" role="group" aria-label="Filter"><button aria-pressed="true" data-v="">All</button><button aria-pressed="false" data-v="pick">Picks</button><button aria-pressed="false" data-v="bottom">Bottom 10%</button></div>
     </div>
     <div style="overflow-x:auto"><table id="all"></table></div>
     <p class="note" id="allNote"></p>
@@ -240,7 +241,7 @@ tr.sel td{background:var(--chip)}
   <button class="x" aria-label="Close" id="setX">×</button><h1 id="setTitle">Settings</h1><p class="note">Saved on this device only.</p>
   <div class="card"><h2>Appearance</h2>
     <div class="set"><label for="sTheme">Theme</label><select id="sTheme"><option value="system">Match my device</option><option value="light">Light</option><option value="dark">Dark</option></select></div>
-    <div class="set"><label for="sTab">Open on</label><select id="sTab"><option value="week">This week</option><option value="test">$1,000 test</option><option value="record">Track record</option><option value="explore">All stocks</option></select></div>
+    <div class="set"><label for="sTab">Open on</label><select id="sTab"><option value="week">This week</option><option value="test">$1,000 test</option><option value="record">Track record</option><option value="explore">All stocks</option><option value="how">How it works</option></select></div>
   </div>
   <div class="card"><h2>$1,000 test</h2>
     <div class="set"><label for="sAmt">Amount invested each day ($)</label><input id="sAmt" type="number" min="100" step="100" style="width:120px"></div>
@@ -259,7 +260,7 @@ tr.sel td{background:var(--chip)}
 <script>
 const EMBED=/*__DATA__*/null;
 const $=s=>document.querySelector(s), el=(t,a={},h='')=>{const e=document.createElement(t);for(const k in a)e.setAttribute(k,a[k]);e.innerHTML=h;return e};
-const pct=(x,d=1,s=true)=>x==null?'–':((s&&x>0?'+':'')+(x*100).toFixed(d)+'%');
+const pct=(x,d=1,s=true)=>x==null?'–':((x<0?'\u2212':(s&&x>0?'+':''))+Math.abs(x*100).toFixed(d)+'%');
 const cls=x=>x==null?'':(x>0?'pos':x<0?'neg':'');
 const fmtD=s=>{if(!s)return'–';const d=new Date(s+'T12:00:00Z');return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'})};
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -271,14 +272,14 @@ async function load(){
   for(const u of srcs){try{const r=await fetch(u,{cache:'no-cache'});if(r.ok)return await r.json()}catch(e){}}
   throw new Error('no data');
 }
-function line(series,{w=640,h=180,color='var(--acc)',zero=true,fmt=v=>pct(v,0),band=null,dates=null}={}){
+function line(series,{w=640,h=180,color='var(--acc)',zero=true,fmt=v=>pct(v,0),band=null,dates=null,label='Line chart'}={}){
   const pts=series.filter(p=>p[1]!=null); if(pts.length<2)return '';
   let ys=pts.map(p=>p[1]); if(band)ys=ys.concat(band); let mn=Math.min(...ys,zero?0:Infinity),mx=Math.max(...ys,zero?0:-Infinity); if(mx===mn){mx+=1e-3}
   const pad=28,X=i=>pad+(w-pad-8)*i/(pts.length-1),Y=v=>8+(h-26)*(1-(v-mn)/(mx-mn));
   let d=pts.map((p,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(p[1]).toFixed(1)).join('');
-  let s=`<svg viewBox="0 0 ${w} ${h}" width="100%" role="img">`;
+  let s=`<svg viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="${esc(label)}">`;
   if(band)s+=`<rect x="${pad}" y="${Y(band[1])}" width="${w-pad-8}" height="${Y(band[0])-Y(band[1])}" fill="var(--chip)"/>`;
-  if(zero&&mn<0&&mx>0)s+=`<line x1="${pad}" x2="${w-8}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--line)" stroke-dasharray="3 3"/>`;
+  if(zero)s+=`<line x1="${pad}" x2="${w-8}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--line)" stroke-dasharray="3 3"/>`;
   s+=`<text x="0" y="${Y(mx)+4}">${fmt(mx)}</text><text x="0" y="${Y(mn)}">${fmt(mn)}</text>`;
   s+=`<path d="${d}" fill="none" stroke="${color}" stroke-width="2"/>`;
   const lab=dates||pts.map(p=>p[0]); s+=`<text x="${pad}" y="${h-2}">${esc((lab[0]||'').slice(0,7))}</text><text x="${w-8}" y="${h-2}" text-anchor="end">${esc((lab[lab.length-1]||'').slice(0,7))}</text>`;
@@ -296,7 +297,7 @@ function tagFor(s){ if(s.a==='BUY')return '<span class="tag">New</span>'; if(s.a
   if(s.l==='Strong Buy')return '<span class="tag">Top 2%</span>'; if(s.l==='Avoid')return '<span class="tag avoid">Avoid</span>'; return ''}
 
 const CLOSED={'2026-11-26':'closed (Thanksgiving)','2026-11-27':'half day','2026-12-24':'half day','2026-12-25':'closed (Christmas)','2027-01-01':'closed (New Year)','2027-01-18':'closed (MLK Day)','2027-02-15':'closed (Presidents Day)','2027-03-26':'closed (Good Friday)','2027-05-31':'closed (Memorial Day)','2027-06-18':'closed (Juneteenth)','2027-07-05':'closed (Independence Day)','2027-09-06':'closed (Labor Day)','2027-11-25':'closed (Thanksgiving)','2027-11-26':'half day','2027-12-24':'closed (Christmas)'};
-function closures(a,b){return Object.entries(CLOSED).filter(([d])=>d>=a&&d<=b).map(([d,t])=>`${fmtD(d)} ${t}`).join(', ')}
+function closures(a,b){return Object.entries(CLOSED).filter(([d])=>d>=a&&d<=b).map(([d,t])=>`${fmtD(d)}: ${t}`).join('; ')}
 function isWeak(e){return e.t==null||e.t<2||e.dsr==null||e.dsr<0.95}
 function integrityBad(){const k=(D.ks||[]).find(k=>k.id==='Ledger integrity');return k&&!k.ok?k.detail:null}
 function renderWeek(){
@@ -312,9 +313,9 @@ function renderWeek(){
   const why=weak?`In the history replay this ranking's edge is too small to tell from luck (t = ${e.t==null?'–':e.t.toFixed(1)}; about 2 is needed), so treat the list as an experiment to track, not a tip.`
     :`In the history replay, picks like these averaged ${pct(e.gross,2)} a week above the S&P 500 before costs.`;
   $('#subline').textContent=(state==='over'?'Last week\'s locked list has finished (result below). The new list is locked before the next market open. ':`The ${D.portfolio.length} stocks the models rank highest for the next 5 trading days. `)+why;
-  const cl=closures(D.entry,D.exit);
+  const cl=closures(D.entry,D.exit), P0=D.portfolio.map(t=>BY[t]).filter(Boolean);
   $('#steps').classList.toggle('hide',state!=='sealed');
-  $('#steps').innerHTML=[['Buy',`At the open on ${fmtD(D.entry)}, equal amounts`],['Hold',`5 trading days${cl?' (market '+cl+')':''}; review if there is major news`],['Sell',`At the close on ${fmtD(D.exit)}, unless still in the top ${D.cfg.k}`]].map(x=>`<div class="step"><b>${x[0]}</b>${x[1]}</div>`).join('');
+  $('#steps').innerHTML=[['Buy',`At the open on ${fmtD(D.entry)}: ${P0.filter(s=>s.a==='BUY').length===P0.length?'all '+P0.length:P0.filter(s=>s.a==='BUY').length+' new'} names, equal amounts`],['Hold',`5 trading days${cl?' (market '+cl+')':''}. Review if there is major news`],['Sell',`At the close on ${fmtD(D.exit)}, unless still in the top ${D.cfg.k}`]].map(x=>`<div class="step"><b>${x[0]}</b>${x[1]}</div>`).join('');
   if(bad){$('#banner').classList.add('bad');$('#banner').textContent='Integrity check failed for this week\'s locked list: it may have been changed after locking. Do not rely on it.'}
   const P=D.portfolio.map(t=>BY[t]);
   $('#picksTitle').textContent=state==='over'?`Last week's ${P.length} locked picks`:`The ${P.length} picks`;
@@ -342,9 +343,9 @@ function renderRecord(){
   const e=D.eval, F=[...D.forecasts].reverse();
   if(!F.length){$('#fcTable').innerHTML='<tr><td class="note">No live forecasts yet. The first one is locked before the next market open and graded 5 trading days later.</td></tr>'}else
   $('#fcTable').innerHTML='<tr><th>Decided</th><th>Window</th><th>Model</th><th>Status</th><th class="num">Picks vs S&amp;P</th><th class="num">Hit rate</th><th class="num">Rank accuracy</th></tr>'+
-   F.map(f=>`<tr><td>${fmtD(f.decision)}</td><td class="mut">${fmtD(f.entry||f.decision)} → ${fmtD(f.exit)}</td><td class="mut">${esc(f.model)}</td><td>${f.status==='graded'?'Graded':f.status==='open'?'<span class="tag keep">Running</span>':'Waiting for prices'}</td><td class="num ${cls(f.port)}">${pct(f.port,2)}</td><td class="num">${f.hit==null?'–':pct(f.hit,0,false)}</td><td class="num">${f.ic==null?'–':f.ic.toFixed(2)}</td></tr>`).join('');
+   F.map(f=>`<tr><td>${fmtD(f.decision)}</td><td class="mut">${fmtD(f.entry||f.decision)} → ${fmtD(f.exit)}</td><td class="mut">${esc(f.model)}</td><td>${f.status==='graded'?'Graded':f.status==='open'&&f.exit<=D.asof?'Grading…':f.status==='open'?'<span class="tag keep">Running</span>':'Waiting for prices'}</td><td class="num ${cls(f.port)}">${pct(f.port,2)}</td><td class="num">${f.hit==null?'–':pct(f.hit,0,false)}</td><td class="num">${f.ic==null?'–':f.ic.toFixed(2)}</td></tr>`).join('');
   $('#replayKpis').innerHTML=[[pct(e.gross,2),'avg weekly edge, before costs'],[pct(e.ann,1),`per year after costs (${(e.first||'').slice(0,4)}–${(e.last||'').slice(0,4)})`],[pct(e.hitw,0,false),'weeks beating the index'],[pct(e.dd,0),'worst drawdown vs index']]
-    .map(k=>`<div class="kpi"><div class="v ${k[0].startsWith('-')?'neg':''}">${k[0]}</div><div class="l">${k[1]}</div></div>`).join('');
+    .map(k=>`<div class="kpi"><div class="v ${k[0].startsWith('\u2212')?'neg':''}">${k[0]}</div><div class="l">${k[1]}</div></div>`).join('');
   $('#cumChart').innerHTML=line(D.cum,{fmt:v=>pct(v,0)});
   $('#skill').innerHTML=[[e.ic==null?'–':e.ic.toFixed(3),'average rank accuracy (IC)','0 = no skill; 0.02–0.05 is useful'],[pct(e.pctpos,0,false),'weeks with positive accuracy',''],[pct(e.dsr,0,false),'overfitting-adjusted confidence','95% would count as proven']]
     .map(k=>`<div class="kpi"><div class="v">${k[0]}</div><div class="l">${k[1]}</div><div class="h">${k[2]}</div></div>`).join('');
@@ -352,7 +353,7 @@ function renderRecord(){
   $('#skillNote').textContent=`Rank accuracy by year. Over any 13 weeks, an average between ${e.band13[0]} and ${e.band13[1]} is normal noise even if the model works.`;
   const L=e.league||{};
   $('#league').innerHTML='<tr><th>Model</th><th class="num">Rank accuracy</th><th class="num">t-stat</th><th class="num">Last 52 weeks</th><th class="num">Top 10, per year after costs</th></tr>'+
-    Object.entries(L).map(([k,v])=>`<tr><td>${esc(k)}</td><td class="num ${cls(v.ic)}">${v.ic==null?'–':v.ic.toFixed(3)}</td><td class="num">${v.t==null?'–':v.t.toFixed(1)}</td><td class="num ${cls(v.last52)}">${v.last52==null?'–':v.last52.toFixed(3)}</td><td class="num ${cls(v.net_ann)}">${pct(v.net_ann,1)}</td></tr>`).join('');
+    Object.entries(L).map(([k,v])=>`<tr><td>${esc(k)}</td><td class="num ${cls(v.ic)}">${v.ic==null?'–':v.ic.toFixed(3)}</td><td class="num">${v.t==null?'–':v.t.toFixed(1)}</td><td class="num ${cls(v.last52)}">${v.last52==null?'–':v.last52.toFixed(3)}</td><td class="num">${pct(v.net_ann,1)}</td></tr>`).join('')+`<tr><td colspan="5" class="note">With ${Object.keys(L).length} models compared, one of them looking best over a short stretch is expected by chance alone.</td></tr>`;
   const lab={'Top 2%':'Top 2%','Top 2–10%':'2–10%','Top 10–20%':'10–20%','Upper middle':'20–50%','Lower middle':'50–80%','Bottom 10–20%':'80–90%','Bottom 2–10%':'90–98%','Bottom 2%':'Last 2%'};
   $('#calChart').innerHTML=bars(D.cal.map(c=>({l:lab[c.b]||c.b,v:c.m})));
   const best=[...D.cal].sort((a,b)=>b.m-a.m)[0], top=D.cal[0], W=[.02,.08,.10,.30,.30,.10,.08,.02], avg=D.cal.reduce((a,c,i)=>a+c.m*(W[i]??1/D.cal.length),0);
@@ -361,7 +362,8 @@ function renderRecord(){
 const DEF={theme:'system',tab:'week',amt:1000,n:5,a:50000,fee:0,pf:0};
 let SET=Object.assign({},DEF); try{SET=Object.assign(SET,JSON.parse(localStorage.getItem('oracleSettings')||'{}'))}catch(e){}
 function saveSet(){try{localStorage.setItem('oracleSettings',JSON.stringify(SET))}catch(e){}}
-function applyTheme(){if(SET.theme==='system')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',SET.theme)}
+function applyTheme(){if(SET.theme==='system')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',SET.theme);
+  try{const dk=SET.theme==='dark'||(SET.theme==='system'&&matchMedia('(prefers-color-scheme:dark)').matches);document.querySelector('meta[name=theme-color]').content=dk?'#0b1120':'#f7f8fa'}catch(e){}}
 applyTheme();
 let setReturn=null;
 function openSettings(){setReturn=document.activeElement;$('#sTheme').value=SET.theme;$('#sTab').value=SET.tab;$('#sAmt').value=SET.amt;$('#sN').value=String(SET.n);$('#acct').value=SET.a;$('#fee').value=SET.fee;$('#pctfee').value=SET.pf;$('#setDlg').classList.add('on');setInert(true);$('#setX').focus()}
@@ -384,7 +386,7 @@ function renderTest(){
   const usd=x=>'$'+x.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0}), sd=x=>(x>=0?'+$':'−$')+Math.abs(x).toFixed(0);
   $('#tKpis').innerHTML=[[usd(avgV),`average value after a week: top ${N}`,`${sd(avgV-A)} per week on ${usd(A)}`],[usd(avgB),'average value after a week: S&P 500',`${sd(avgB-A)} per week on ${usd(A)}`],
     [pct(wins/n,0,false),`of days the top ${N} beat the S&P 500`,`${wins} of ${n} days; made money on ${pos}`],[sd(avgV-avgB),'average difference per week',`best day ${sd(best.v-best.b)}, worst ${sd(worst.v-worst.b)}`]]
-    .map(k=>`<div class="kpi"><div class="v ${k[0].startsWith('−')?'neg':''}">${k[0]}</div><div class="l">${k[1]}</div><div class="h">${k[2]}</div></div>`).join('');
+    .map((k,i)=>`<div class="kpi"><div class="v ${i===3?cls(avgV-avgB):k[0].startsWith('−')?'neg':''}">${k[0]}</div><div class="l">${k[1]}</div><div class="h">${k[2]}</div></div>`).join('');
   if(tView==='diff'){ $('#tChart').innerHTML=bars2(R.map(r=>({l:r.d,v:r.v-r.b})));
     $('#tLegend').innerHTML='<span><i style="background:var(--pos)"></i>Top picks ended higher</span><span><i style="background:var(--neg)"></i>S&amp;P 500 ended higher</span>';}
   else { $('#tChart').innerHTML=line2([R.map(r=>[r.d,r.v]),R.map(r=>[r.d,r.b])],{base:A});
@@ -393,7 +395,7 @@ function renderTest(){
   $('#tCount').textContent=`${rows.length} days`;
   $('#tTable').innerHTML=`<tr><th>Bought</th><th>Sold</th><th>Top ${N} that day</th><th class="num">Top ${N}</th><th class="num">S&amp;P 500</th><th class="num">Difference</th></tr>`+
    rows.map(r=>`<tr class="row${tSel===r.d?' sel':''}" data-day="${esc(r.d)}" tabindex="0"><td>${fmtD(r.d)}</td><td class="mut">${fmtD(r.x)}</td><td class="mut">${r.p.map(esc).join(' · ')}</td><td class="num ${cls(r.v-A)}">${usd(r.v)}</td><td class="num ${cls(r.b-A)}">${usd(r.b)}</td><td class="num ${cls(r.v-r.b)}"><b>${sd(r.v-r.b)}</b></td></tr>`+
-     (tSel===r.d&&r.e?`<tr class="sel"><td></td><td colspan="5">${Object.entries(r.e).map(([t,v])=>`<span class="chip" role="button" tabindex="0" data-t="${esc(t)}">${esc(t)} <span class="${cls(v)}">${pct(v,1)}</span> = ${usd(A/N*(1+v)-cpos)}</span>`).join(' ')}</td></tr>`:'')).join('');
+     (tSel===r.d&&r.e?`<tr class="sel"><td></td><td colspan="5">${Object.entries(r.e).map(([t,v])=>`<span class="chip" role="button" tabindex="0" data-t="${esc(t)}">${esc(t)} <span class="${cls(v)}">${pct(v,1)}</span> = ${usd(A/r.p.length*(1+v)-2*ow*A/r.p.length)}</span>`).join(' ')}</td></tr>`:'')).join('');
 }
 function bars2(items,{w=640,h=170}={}){
   const mx=Math.max(...items.map(i=>Math.abs(i.v)),1e-6),bw=(w-40)/items.length,Y0=(h-24)/2+4;
@@ -415,11 +417,14 @@ function renderHind(){
     .map(k=>`<div class="kpi"><div class="v">${k[0]}</div><div class="l">${k[1]}</div><div class="h">${k[2]}</div></div>`).join('');
   const sm=H.series.map((p,i,a)=>{const w=a.slice(Math.max(0,i-19),i+1).map(x=>x[1]).filter(x=>x!=null);return [p[0],w.reduce((u,v)=>u+v,0)/w.length]});
   $('#hindChart').innerHTML=line(sm,{fmt:v=>v.toFixed(2)});
-  $('#hindNote').textContent=`Rank accuracy per day, smoothed over 20 days. Above the dashed line the ranking was right more than wrong. On ${pct(H.pos,0,false)} of days it was positive.`;
+  $('#hindNote').textContent=`Rank accuracy per day, smoothed over 20 days. Above the dashed line, higher-ranked stocks tended to do better that week. On ${pct(H.pos,0,false)} of days it was positive.`;
 }
 async function stockHind(t){
   const el=$('#sHind'); if(!el)return;
   try{const r=await fetch('stocks/'+encodeURIComponent(t)+'.json',{cache:'no-cache'}); if(!r.ok)throw 0; const h=await r.json();
+    const px=$('#sPx'); if(px){const ser=(h.px||[]).map((v,i)=>[D.weeks[i],v==null?null:v-1]);
+      px.innerHTML=ser.filter(x=>x[1]!=null).length>1?line2b(ser,D.spyw.map((v,i)=>[D.weeks[i],v-1]),{label:'Price of '+t+' versus the S&P 500'})+`<div class="legend"><span><i style="background:var(--acc)"></i>${esc(t)}</span><span><i style="background:var(--mut)"></i>S&amp;P 500 (SPY)</span></div>`:'<p class="note">No price history.</p>'}
+    if(!h.d.length){el.innerHTML='<p class="note">No daily record for this stock yet.</p>';return}
     const n=h.d.length, done=h.a.map((a,i)=>[a,h.p[i],h.r[i]]).filter(x=>x[0]!=null);
     const hit=done.filter(x=>Math.sign(x[0])===Math.sign(x[1])).length/(done.length||1);
     const top=done.filter(x=>x[2]<=50), avgTop=top.length?top.reduce((u,x)=>u+x[0],0)/top.length:null;
@@ -430,69 +435,70 @@ async function stockHind(t){
       line2b(h.d.map((d,i)=>[d,h.p[i]]),h.d.map((d,i)=>[d,h.a[i]]))+
       '<div class="legend"><span><i style="background:var(--acc)"></i>Projected that day (blind)</span><span><i style="background:var(--mut)"></i>What happened the next week</span></div>'+
       line(h.d.map((d,i)=>[d,1-(h.r[i]-1)/D.stocks.length]),{h:90,fmt:v=>Math.round(v*100)+'',zero:false})+'<p class="note">Daily model rank (100 = top). Projections are tiny next to real moves: one week of price noise is far larger than the edge.</p>';
-  }catch(e){el.innerHTML='<p class="note">Daily history not available yet.</p>'}
+  }catch(e){el.innerHTML='<p class="note">Daily history not available yet.</p>';const px=$('#sPx');if(px&&px.textContent.includes('Loading'))px.innerHTML='<p class="note">No price history.</p>'}
 }
-function line2b(a,b,{w=640,h=170}={}){
+function line2b(a,b,{w=640,h=170,label='Projected versus actual'}={}){
   const ys=a.concat(b).map(p=>p[1]).filter(v=>v!=null); if(ys.length<2)return '';
   let mn=Math.min(...ys,0),mx=Math.max(...ys,0); const n=a.length,X=i=>36+(w-44)*i/(n-1),Y=v=>8+(h-26)*(1-(v-mn)/(mx-mn||1));
   const path=S=>{let d='',pen=false;S.forEach((p,i)=>{if(p[1]==null){pen=false;return}d+=(pen?'L':'M')+X(i).toFixed(1)+' '+Y(p[1]).toFixed(1);pen=true});return d};
-  return `<svg viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="Projected versus actual"><line x1="36" x2="${w-8}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--line)" stroke-dasharray="3 3"/><text x="0" y="${Y(mx)+4}">${pct(mx,0)}</text><text x="0" y="${Y(mn)}">${pct(mn,0)}</text><path d="${path(b)}" fill="none" stroke="var(--mut)" stroke-width="1"/><path d="${path(a)}" fill="none" stroke="var(--acc)" stroke-width="2"/><text x="36" y="${h-2}">${esc(a[0][0].slice(0,7))}</text><text x="${w-8}" y="${h-2}" text-anchor="end">${esc(a[n-1][0].slice(0,7))}</text></svg>`;
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="${esc(label)}"><line x1="36" x2="${w-8}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--line)" stroke-dasharray="3 3"/><text x="0" y="${Y(mx)+4}">${pct(mx,0)}</text><text x="0" y="${Y(mn)}">${pct(mn,0)}</text><path d="${path(b)}" fill="none" stroke="var(--mut)" stroke-width="1"/><path d="${path(a)}" fill="none" stroke="var(--acc)" stroke-width="2"/><text x="36" y="${h-2}">${esc(a[0][0].slice(0,7))}</text><text x="${w-8}" y="${h-2}" text-anchor="end">${esc(a[n-1][0].slice(0,7))}</text></svg>`;
 }
 let sortKey='rk',sortDir=1,labF='';
 function renderAll(){
   const q=$('#q').value.trim().toLowerCase(), sec=$('#sector').value;
-  let rows=D.stocks.filter(s=>(!q||s.t.toLowerCase().includes(q)||s.n.toLowerCase().includes(q))&&(!sec||s.s===sec)&&(!labF||(labF==='pick'?s.port:s.l===labF)));
+  let rows=D.stocks.filter(s=>(!q||s.t.toLowerCase().includes(q)||s.n.toLowerCase().includes(q))&&(!sec||s.s===sec)&&(!labF||(labF==='pick'?s.port:labF==='bottom'?s.rk>D.stocks.length*0.9:s.l===labF)));
   rows.sort((a,b)=>{const x=a[sortKey]??-1e9,y=b[sortKey]??-1e9;return (x>y?1:x<y?-1:0)*sortDir});
   const th=(k,t,c='')=>`<th class="${c}" data-k="${k}"${sortKey===k?` aria-sort="${sortDir>0?'ascending':'descending'}"`:''}><button type="button">${t}${sortKey===k?(sortDir>0?' ↑':' ↓'):''}</button></th>`;
   $('#all').innerHTML='<tr>'+th('rk','Rank','num')+th('t','Stock')+th('s','Sector')+th('sc','Model score','hm')+th('r1w','Last week','num')+'<th></th></tr>'+
    rows.slice(0,200).map(s=>`<tr class="row" tabindex="0" data-t="${esc(s.t)}"><td class="num">${s.rk}</td><td><b>${esc(s.t)}</b> <span class="mut">${esc(s.n)}</span></td><td class="mut">${esc(s.s)}</td><td class="hm"><div class="bar" title="Percentile ${Math.round((1-(s.rk-1)/D.stocks.length)*100)}"><i style="width:${Math.round((1-(s.rk-1)/D.stocks.length)*100)}%"></i></div></td><td class="num ${cls(s.r1w)}">${pct(s.r1w,1)}</td><td>${tagFor(s)}</td></tr>`).join('');
+  if(!rows.length)$('#all').innerHTML='<tr><td class="note">No stocks match.</td></tr>';
   $('#allNote').textContent=rows.length>200?`Showing 200 of ${rows.length}. Refine the search to see more.`:`${rows.length} stocks`;
 }
 function openStock(t){
   const s=BY[t]; if(!s)return; stockReturn=document.activeElement;
-  const series=(s.px||[]).map((v,i)=>[D.weeks[i],v==null?null:v-1]);
-  const spy=D.spyw.map((v,i)=>[D.weeks[i],v-1]);
   const fl={rev5:'Weak last week (bounce-back)',rev20:'Weak last month (bounce-back)',mom12_1:'12-month trend',mom6_1:'6-month trend',lowvol:'Calm price',hi52:'Near 52-week high',lowbeta:'Low market sensitivity',secrev5:'Lagged its sector last week'};
   const facs=Object.entries(s.f).filter(x=>x[1]!=null).sort((a,b)=>b[1]-a[1]);
   const cal=D.cal.find(c=>c.b===s.b)||{};
-  const hist=s.h.map((v,i)=>[D.hist_dates[i],v]).concat([[D.asof,1-(s.rk-1)/D.stocks.length]]);
   $('#panel').innerHTML=`<button class="x" aria-label="Close" id="dx">×</button>
   <div class="note">${esc(s.s)}</div><h1 id="dTitle" style="margin-top:2px">${esc(s.t)} <span class="mut" style="font-weight:500;font-size:18px">${esc(s.n)}</span></h1>
   <div style="display:flex;gap:8px;align-items:center;margin:6px 0 14px">${tagFor(s)}<span class="note">Rank ${s.rk} of ${D.stocks.length} · last close $${s.c??'–'}</span></div>
   <div class="card"><h2>Model view</h2><p style="margin:0 0 8px">Rank group <b>${esc(s.b)}</b>. In past weeks this group averaged <b class="${cls(cal.m)}">${pct(cal.m,2)}</b> versus the S&amp;P 500 the following week, beating it ${pct(cal.p,0,false)} of the time.${s.port&&cal.m!=null&&cal.m<0?' It is on the list because of its rank; so far this rank group has not beaten the index.':''}</p>
    <div class="grid g3">${['gbm','ridge','blend'].map((k,i)=>`<div class="kpi"><div class="v">${s.m[k]==null?'–':Math.round(s.m[k]*100)}</div><div class="l">${['Boosted trees','Linear model','Signal blend'][i]} (percentile)</div></div>`).join('')}</div></div>
   <div class="card"><h2>Signals (percentile vs other stocks)</h2>${facs.map(([k,v])=>`<div class="fac"><span>${fl[k]}</span><div class="bar"><i style="width:${Math.round(v*100)}%"></i></div><span class="num">${Math.round(v*100)}</span></div>`).join('')}</div>
-  <div class="card"><h2>Price over the past year</h2>${series.length?line(series,{fmt:v=>pct(v,0)}):'<p class="note">No price history.</p>'}<div class="legend"><span><i style="background:var(--acc)"></i>${s.t}</span></div>${line(spy,{color:'var(--mut)',h:90,fmt:v=>pct(v,0)})}<div class="legend"><span><i style="background:var(--mut)"></i>S&amp;P 500 (SPY)</span></div></div>
+  <div class="card"><h2>Price over the past year</h2><div id="sPx"><p class="note">Loading…</p></div></div>
   <div class="card"><h2>Blind daily record, past year</h2><div id="sHind"><p class="note">Loading…</p></div></div>`;
-  $('#drawer').classList.add('on'); setInert(true); stockHind(s.t); $('#dx').focus(); $('#dx').onclick=closeStock; history.replaceState(null,'','#'+t);
+  $('#drawer').classList.add('on'); setInert(true); stockHind(s.t); $('#dx').focus(); $('#dx').onclick=closeStock; if(history.state&&history.state.stock)history.replaceState({stock:t},'','#'+encodeURIComponent(t));else history.pushState({stock:t},'','#'+encodeURIComponent(t));
 }
 let stockReturn=null;
-function closeStock(){if(!$('#drawer').classList.contains('on'))return;$('#drawer').classList.remove('on');setInert(false);history.replaceState(null,'',location.pathname+location.search);if(stockReturn&&stockReturn.focus)stockReturn.focus()}
+function closeStock(fromPop){if(!$('#drawer').classList.contains('on'))return;$('#drawer').classList.remove('on');setInert(false);
+  if(fromPop!==true){if(history.state&&history.state.stock)history.back();else history.replaceState(null,'',location.pathname+location.search)}if(stockReturn&&stockReturn.focus)stockReturn.focus()}
 function calc(){
   const e=D.eval, a=SET.a, fee=SET.fee, pf=SET.pf/100;
   $('#calcWho').textContent=`For $${a.toLocaleString('en-US')} split across ${D.cfg.n} stocks, minimum fee $${fee}, fee ${SET.pf}% of trade.`;
   const pos=a/D.cfg.n, oneway=(pos>0?Math.max(fee/pos,pf):0)+0.0003, net=e.gross-2*oneway*e.turn, ann=Math.pow(1+net,52)-1;
-  $('#calcOut').textContent=pct(ann,1); $('#calcOut').className='big '+cls(ann);
-  $('#calcNote').textContent=`a year versus the S&P 500 in the history replay, after trading costs, before taxes (cost per trade ≈ ${pct(oneway,2,false)}; break-even ≈ ${pct(e.be,2,false)}).`+(net<0?' Fees would erase the edge at this size.':'');
+  $('#calcOut').textContent=pct(ann,1); $('#calcOut').className='big '+(isWeak(e)?'mut':cls(ann));
+  $('#calcNote').textContent=`a year versus the S&P 500 in the history replay, after trading costs, before taxes ≈ $${Math.round(a*ann).toLocaleString('en-US')} a year on $${a.toLocaleString('en-US')} (cost per trade ≈ ${pct(oneway,2,false)} incl. a 0.03% spread; break-even ≈ ${pct(e.be,2,false)}).`+(net<0?' Fees would erase the edge at this size.':'');
 }
 function tabs(){
   const bs=[...document.querySelectorAll('nav button')];
   bs.forEach((b,i)=>{b.id='tab-'+b.dataset.tab;b.setAttribute('aria-controls',b.dataset.tab);$('#'+b.dataset.tab).setAttribute('role','tabpanel');$('#'+b.dataset.tab).setAttribute('aria-labelledby',b.id);
     b.onkeydown=ev=>{if(ev.key==='ArrowRight'||ev.key==='ArrowLeft'){const n=bs[(i+(ev.key==='ArrowRight'?1:bs.length-1))%bs.length];n.focus();n.click()}}});
   document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-selected',x===b));
-    ['week','test','record','explore','how'].forEach(id=>$('#'+id).classList.toggle('hide',id!==b.dataset.tab)); window.scrollTo({top:0})});
+    ['week','test','record','explore','how'].forEach(id=>$('#'+id).classList.toggle('hide',id!==b.dataset.tab)); bs.forEach(x=>x.tabIndex=x===b?0:-1); if(!$('#drawer').classList.contains('on'))history.replaceState(null,'',b.dataset.tab==='week'?location.pathname+location.search:'#'+b.dataset.tab); window.scrollTo({top:0})});
+  bs.forEach((x,i)=>x.tabIndex=i?-1:0);
 }
 function wire(){
   document.addEventListener('click',ev=>{const t=ev.target.closest('[data-t]'); if(t&&!ev.target.closest('#panel'))openStock(t.dataset.t);
     const th=ev.target.closest('th[data-k]'); if(th){const k=th.dataset.k; sortDir=sortKey===k?-sortDir:(k==='rk'||k==='t'||k==='s'?1:-1); sortKey=k; renderAll(); const nb=document.querySelector(`th[data-k="${k}"] button`); if(nb)nb.focus()}
     if(ev.target.id==='drawer')closeStock()});
   document.addEventListener('keydown',ev=>{if(ev.key==='Escape'){if($('#setDlg').classList.contains('on'))closeSettings();else closeStock()} if(ev.key===' '&&ev.target.getAttribute&&ev.target.getAttribute('role')==='button'&&ev.target.dataset.t){ev.preventDefault();openStock(ev.target.dataset.t)} if(ev.key==='Enter'&&ev.target.dataset&&ev.target.dataset.t)openStock(ev.target.dataset.t); if((ev.key==='Enter'||ev.key===' ')&&ev.target.dataset&&ev.target.dataset.day){ev.preventDefault();const d=ev.target.dataset.day;tSel=tSel===d?null:d;renderTest();const r=document.querySelector(`tr[data-day="${d}"]`);if(r)r.focus()}});
+  window.addEventListener('popstate',()=>{if($('#drawer').classList.contains('on'))closeStock(true)});
   $('#q').oninput=renderAll; $('#sector').onchange=renderAll;
   $('#lab').onclick=ev=>{const b=ev.target.closest('button');if(!b)return;labF=b.dataset.v;$('#lab').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));renderAll()};
   let tmo=null; ['sTheme','sTab','sN'].forEach(id=>{$('#'+id).onchange=readSettings});
   ['sAmt','acct','fee','pctfee'].forEach(id=>{$('#'+id).oninput=()=>{clearTimeout(tmo);tmo=setTimeout(()=>readSettings(false),500)};$('#'+id).onchange=()=>{clearTimeout(tmo);readSettings(true)}});
   $('#gear').onclick=openSettings; $('#setX').onclick=closeSettings; $('#setDlg').addEventListener('click',ev=>{if(ev.target.id==='setDlg')closeSettings()});
-  $('#setReset').onclick=()=>{SET=Object.assign({},DEF);saveSet();applyTheme();openSettings();renderTest();calc()};
+  $('#setReset').onclick=()=>{const r=setReturn;SET=Object.assign({},DEF);saveSet();applyTheme();openSettings();setReturn=r;safe(renderTest);safe(calc)};
   $('#tView').onclick=ev=>{const b=ev.target.closest('button');if(!b)return;tView=b.dataset.v;$('#tView').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));renderTest()};
   $('#tFilter').onclick=ev=>{const b=ev.target.closest('button');if(!b)return;tF=b.dataset.v;$('#tFilter').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));renderTest()};
   $('#tTable').addEventListener('click',ev=>{const r=ev.target.closest('tr[data-day]');if(!r||ev.target.closest('[data-t]'))return;tSel=tSel===r.dataset.day?null:r.dataset.day;renderTest()});
@@ -510,10 +516,11 @@ function wire(){
   $('#ks').innerHTML=D.ks.map(k=>`<li>${k.ok?'✅':'⚠️'} <b>${esc(k.id)}</b> – ${esc(k.detail)}</li>`).join('')+`<li>Last run ${esc(new Date(D.generated).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'}))} · ${D.health.current_members_with_data}/${D.health.current_members} stocks updated · model ${esc(D.cfg.model)}</li>`;
 
   $('#foot').innerHTML=`Research tool, not financial advice. Prices: Yahoo Finance (unofficial, free), may be delayed or incomplete. Last update ${esc(new Date(D.generated).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'}))}.`;
-  if(D.health&&D.health.removed_with_data!=null)$('#survLine').textContent=`Prices come from a free, unofficial source. ${D.health.removed_with_data} stocks that left the index are included in the history; others are missing, which can make past results look better than they were.`;
+  if(D.health&&D.health.removed_with_data!=null)$('#survLine').textContent=D.health.removed_with_data===0?'Prices come from a free, unofficial source. Stocks that left the index are not included at all, so past results look better than they were.':`Prices come from a free, unofficial source. ${D.health.removed_with_data} stocks that left the index are included in the history; others are missing, which can make past results look better than they were.`;
   tabs(); wire(); [renderWeek,renderRunning,renderTest,renderRecord,renderHind,renderAll,calc].forEach(safe);
-  if(SET.tab&&SET.tab!=='week'){const b=document.querySelector(`nav button[data-tab="${SET.tab}"]`);if(b)b.click()}
-  if(location.hash.length>1)openStock(location.hash.slice(1).toUpperCase());
+  const hh=location.hash.slice(1), TABS=['week','test','record','explore','how'], startTab=TABS.includes(hh)?hh:SET.tab;
+  if(startTab&&startTab!=='week'){const b=document.querySelector(`nav button[data-tab="${startTab}"]`);if(b)b.click()}
+  if(hh&&!TABS.includes(hh))openStock(decodeURIComponent(hh).toUpperCase());
   if('serviceWorker' in navigator&&!EMBED)navigator.serviceWorker.register('sw.js').catch(()=>{});
 })();
 </script>
