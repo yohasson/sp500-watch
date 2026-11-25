@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>S&amp;P 500 Oracle</title>
+<meta name="theme-color" content="#0f172a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--ink:#0f172a;--mut:#64748b;--line:#e5e7eb;--acc:#2563eb;--pos:#047857;--neg:#b91c1c;--warn:#b45309;--chip:#f1f5f9;--r:14px}
+@media (prefers-color-scheme:dark){:root{--bg:#0b1120;--card:#111827;--ink:#e5e7eb;--mut:#94a3b8;--line:#1f2937;--acc:#60a5fa;--pos:#34d399;--neg:#f87171;--warn:#fbbf24;--chip:#1f2937}}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:16px 16px 64px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:8px 0 4px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;letter-spacing:-.01em}
+.brand svg{width:26px;height:26px}
+.asof{color:var(--mut);font-size:13px}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600;background:var(--chip);color:var(--mut)}
+.pill .dot{width:8px;height:8px;border-radius:50%;background:var(--pos)}
+.pill.bad .dot{background:var(--neg)}
+nav{display:flex;gap:4px;margin:12px 0 18px;border-bottom:1px solid var(--line);overflow-x:auto}
+nav button{all:unset;cursor:pointer;padding:10px 14px;color:var(--mut);font-weight:600;border-bottom:2px solid transparent;white-space:nowrap}
+nav button[aria-selected=true]{color:var(--ink);border-color:var(--acc)}
+nav button:focus-visible{outline:2px solid var(--acc);outline-offset:-2px;border-radius:6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;margin-bottom:16px}
+h1{font-size:24px;line-height:1.25;margin:4px 0 6px;letter-spacing:-.02em}
+h2{font-size:16px;margin:0 0 12px}
+.sub{color:var(--mut);margin:0}
+.grid{display:grid;gap:12px}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+@media (max-width:760px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+.kpi .v{font-size:22px;font-weight:700;letter-spacing:-.02em}.kpi .l{color:var(--mut);font-size:12.5px}
+.kpi .h{font-size:12px;color:var(--mut);margin-top:2px}
+.pos{color:var(--pos)}.neg{color:var(--neg)}.mut{color:var(--mut)}
+.picks{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media (max-width:760px){.picks{grid-template-columns:1fr}}
+.pick{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;background:var(--card);transition:border-color .15s}
+.pick:hover,.pick:focus-visible{border-color:var(--acc);outline:none}
+.tk{font-weight:800;font-size:15px;min-width:54px}
+.pick .nm{font-weight:600}.pick .ws{color:var(--mut);font-size:13px}
+.tag{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--chip);color:var(--mut);white-space:nowrap}
+.tag.buy{background:rgba(4,120,87,.12);color:var(--pos)}.tag.keep{background:rgba(37,99,235,.12);color:var(--acc)}.tag.sell,.tag.avoid{background:rgba(185,28,28,.1);color:var(--neg)}
+.tag.sb{background:rgba(4,120,87,.18);color:var(--pos)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+@media (max-width:760px){.steps{grid-template-columns:1fr}}
+.step{background:var(--chip);border-radius:10px;padding:10px 12px;font-size:13.5px}.step b{display:block;font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+.note{font-size:13px;color:var(--mut)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;color:var(--mut);font-weight:600;font-size:12px;padding:8px 6px;border-bottom:1px solid var(--line);white-space:nowrap;cursor:pointer;user-select:none}
+td{padding:9px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr.row{cursor:pointer}tr.row:hover td{background:var(--chip)}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.bar{height:6px;border-radius:3px;background:var(--chip);overflow:hidden;min-width:60px}.bar i{display:block;height:100%;background:var(--acc)}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+input,select{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+input[type=search]{flex:1;min-width:180px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{all:unset;cursor:pointer;padding:7px 12px;font-size:13px;color:var(--mut)}.seg button[aria-pressed=true]{background:var(--chip);color:var(--ink);font-weight:600}
+svg text{fill:var(--mut);font-size:11px}
+.drawer{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;z-index:20}
+.drawer.on{display:block}
+.panel{position:absolute;right:0;top:0;bottom:0;width:min(520px,100%);background:var(--bg);overflow:auto;padding:18px;box-shadow:-8px 0 30px rgba(0,0,0,.2)}
+.x{all:unset;cursor:pointer;float:right;font-size:22px;line-height:1;color:var(--mut);padding:4px 8px}
+.fac{display:grid;grid-template-columns:1fr 120px 38px;gap:8px;align-items:center;font-size:13px;margin:6px 0}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--mut);margin-top:6px}.legend i{display:inline-block;width:12px;height:3px;border-radius:2px;margin-right:5px;vertical-align:middle}
+details{border-top:1px solid var(--line);padding:10px 0}details summary{cursor:pointer;font-weight:600}
+.calc{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}@media (max-width:760px){.calc{grid-template-columns:1fr}}
+.calc label{font-size:12px;color:var(--mut);display:block;margin-bottom:4px}.calc input,.calc select{width:100%}
+.big{font-size:28px;font-weight:800;letter-spacing:-.02em}
+.foot{color:var(--mut);font-size:12px;text-align:center;margin-top:24px}
+.hide{display:none}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{background:var(--chip);border-radius:999px;padding:3px 10px;font-size:13px;cursor:pointer}
+.status li{margin:4px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="brand"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#2563eb"/><path d="M6 22l6-7 5 4 9-10" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>S&amp;P 500 Oracle</div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="asof" id="asof"></span><span class="pill" id="health"><span class="dot"></span><span>…</span></span></div>
+</header>
+<nav role="tablist">
+  <button role="tab" aria-selected="true" data-tab="week">This week</button>
+  <button role="tab" aria-selected="false" data-tab="record">Track record</button>
+  <button role="tab" aria-selected="false" data-tab="explore">All stocks</button>
+  <button role="tab" aria-selected="false" data-tab="how">How it works</button>
+</nav>
+
+<section id="week">
+  <div class="card">
+    <div class="note" id="mood"></div>
+    <h1 id="headline"></h1>
+    <p class="sub" id="subline"></p>
+    <div class="steps" id="steps"></div>
+  </div>
+  <div class="card">
+    <h2 id="picksTitle">The 10 picks</h2>
+    <div class="picks" id="picks"></div>
+    <div id="sells" class="note" style="margin-top:12px"></div>
+  </div>
+  <div class="card">
+    <h2>How much to trust this week's list</h2>
+    <div class="grid g3" id="trust"></div>
+    <p class="note" style="margin-top:12px" id="trustNote"></p>
+  </div>
+</section>
+
+<section id="record" class="hide">
+  <div class="card">
+    <h2>Live, sealed forecasts</h2>
+    <p class="note" style="margin-top:-6px">Each forecast is locked with a SHA-256 fingerprint before the market opens, then graded automatically after it ends.</p>
+    <div style="overflow-x:auto"><table id="fcTable"></table></div>
+  </div>
+  <div class="card">
+    <h2>History replay: the same rules applied to past weeks</h2>
+    <div class="grid g4" id="replayKpis"></div>
+    <div id="cumChart" style="margin-top:14px"></div>
+    <div class="legend"><span><i style="background:var(--acc)"></i>Picks minus S&amp;P 500, after costs (cumulative)</span></div>
+  </div>
+  <div class="card">
+    <h2>Is it skill or luck?</h2>
+    <div class="grid g3" id="skill"></div>
+    <div id="icChart" style="margin-top:12px"></div>
+    <p class="note" id="skillNote"></p>
+  </div>
+  <div class="card">
+    <h2>What each rank group delivered (history replay)</h2>
+    <div id="calChart"></div>
+    <p class="note">Average next-week return versus the S&amp;P 500 for stocks in each rank group. Only the top groups beat the index on average, and only slightly.</p>
+  </div>
+</section>
+
+<section id="explore" class="hide">
+  <div class="card">
+    <div class="tools">
+      <input type="search" id="q" placeholder="Search ticker or company" aria-label="Search">
+      <select id="sector" aria-label="Sector"></select>
+      <div class="seg" id="lab" role="group" aria-label="Filter"><button aria-pressed="true" data-v="">All</button><button aria-pressed="false" data-v="pick">Picks</button><button aria-pressed="false" data-v="Avoid">Avoid</button></div>
+    </div>
+    <div style="overflow-x:auto"><table id="all"></table></div>
+    <p class="note" id="allNote"></p>
+  </div>
+</section>
+
+<section id="how" class="hide">
+  <div class="card">
+    <h2>What the Oracle does</h2>
+    <div class="steps" style="grid-template-columns:repeat(2,1fr)">
+      <div class="step"><b>1 · Scores every stock</b>Each week, after Friday's close, it ranks all S&amp;P 500 stocks on 8 well-studied price signals using three models (two machine-learning models and a simple blend).</div>
+      <div class="step"><b>2 · Picks 10</b>It suggests the top 10. A stock already held is kept while it stays in the top 50, which cuts trading costs.</div>
+      <div class="step"><b>3 · Locks the forecast</b>The full list is sealed with a fingerprint before the market opens, so it cannot be changed afterwards.</div>
+      <div class="step"><b>4 · Grades itself</b>After 5 trading days it scores the forecast against what really happened, and keeps a public track record.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Cost check: does the edge survive the broker's fees?</h2>
+    <div class="calc">
+      <div><label for="acct">Amount invested (USD)</label><input id="acct" type="number" min="1000" step="1000"></div>
+      <div><label for="fee">Minimum fee per trade (USD)</label><input id="fee" type="number" min="0" step="1"></div>
+      <div><label for="pctfee">Fee as % of trade</label><input id="pctfee" type="number" min="0" step="0.01"></div>
+    </div>
+    <div style="margin-top:14px"><span class="big" id="calcOut"></span> <span class="note" id="calcNote"></span></div>
+    <p class="note">Saved on this device only. Based on the history replay: average edge before costs and how often positions change.</p>
+  </div>
+  <div class="card">
+    <h2>Honest limits</h2>
+    <ul class="note" style="padding-left:18px;margin:0">
+      <li>Uses prices only. No earnings dates, news or company fundamentals yet, so earnings surprises can swamp the signal.</li>
+      <li>The edge is small and not yet statistically proven. Long losing streaks are normal.</li>
+      <li>Prices come from a free, unofficial source. Stocks that left the index are only partly covered, which can flatter history.</li>
+      <li>Research output, not financial advice. Paper-trade first.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h2>System status</h2>
+    <ul class="status note" id="ks" style="padding-left:18px;margin:0"></ul>
+  </div>
+</section>
+<div class="foot" id="foot"></div>
+</div>
+
+<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dTitle"><div class="panel" id="panel"></div></div>
+
+<script>
+const EMBED=/*__DATA__*/null;
+const $=s=>document.querySelector(s), el=(t,a={},h='')=>{const e=document.createElement(t);for(const k in a)e.setAttribute(k,a[k]);e.innerHTML=h;return e};
+const pct=(x,d=1,s=true)=>x==null?'–':((s&&x>0?'+':'')+(x*100).toFixed(d)+'%');
+const cls=x=>x==null?'':(x>0?'pos':x<0?'neg':'');
+const fmtD=s=>{if(!s)return'–';const d=new Date(s+'T12:00:00Z');return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})};
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let D, BY={};
+
+async function load(){
+  if(EMBED) return EMBED;
+  const srcs=['data.json?t='+Date.now(),'https://raw.githubusercontent.com/yohasson/sp500-watch/main/site/data.json?t='+Date.now()];
+  for(const u of srcs){try{const r=await fetch(u,{cache:'no-store'});if(r.ok)return await r.json()}catch(e){}}
+  throw new Error('no data');
+}
+function line(series,{w=640,h=180,color='var(--acc)',zero=true,fmt=v=>pct(v,0),band=null,dates=null}={}){
+  const pts=series.filter(p=>p[1]!=null); if(pts.length<2)return '';
+  let ys=pts.map(p=>p[1]); if(band)ys=ys.concat(band); let mn=Math.min(...ys,zero?0:Infinity),mx=Math.max(...ys,zero?0:-Infinity); if(mx===mn){mx+=1e-3}
+  const pad=28,X=i=>pad+(w-pad-8)*i/(pts.length-1),Y=v=>8+(h-26)*(1-(v-mn)/(mx-mn));
+  let d=pts.map((p,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(p[1]).toFixed(1)).join('');
+  let s=`<svg viewBox="0 0 ${w} ${h}" width="100%" role="img">`;
+  if(band)s+=`<rect x="${pad}" y="${Y(band[1])}" width="${w-pad-8}" height="${Y(band[0])-Y(band[1])}" fill="var(--chip)"/>`;
+  if(zero&&mn<0&&mx>0)s+=`<line x1="${pad}" x2="${w-8}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--line)" stroke-dasharray="3 3"/>`;
+  s+=`<text x="0" y="${Y(mx)+4}">${fmt(mx)}</text><text x="0" y="${Y(mn)}">${fmt(mn)}</text>`;
+  s+=`<path d="${d}" fill="none" stroke="${color}" stroke-width="2"/>`;
+  const lab=dates||pts.map(p=>p[0]); s+=`<text x="${pad}" y="${h-2}">${esc((lab[0]||'').slice(0,7))}</text><text x="${w-8}" y="${h-2}" text-anchor="end">${esc((lab[lab.length-1]||'').slice(0,7))}</text>`;
+  return s+'</svg>';
+}
+function bars(items,{w=640,h=170,fmt=v=>pct(v,2)}={}){
+  const vs=items.map(i=>i.v),mx=Math.max(...vs.map(Math.abs),1e-6),bw=(w-20)/items.length,Y0=(h-30)/2+6;
+  let s=`<svg viewBox="0 0 ${w} ${h}" width="100%" role="img"><line x1="10" x2="${w-10}" y1="${Y0}" y2="${Y0}" stroke="var(--line)"/>`;
+  items.forEach((it,i)=>{const bh=Math.abs(it.v)/mx*(Y0-14),x=10+i*bw+bw*.18,y=it.v>=0?Y0-bh:Y0;
+    s+=`<rect x="${x}" y="${y}" width="${bw*.64}" height="${Math.max(bh,1)}" rx="3" fill="${it.v>=0?'var(--pos)':'var(--neg)'}" opacity=".85"/>`;
+    s+=`<text x="${x+bw*.32}" y="${it.v>=0?y-4:y+bh+12}" text-anchor="middle">${fmt(it.v)}</text><text x="${x+bw*.32}" y="${h-4}" text-anchor="middle">${esc(it.l)}</text>`});
+  return s+'</svg>';
+}
+function tagFor(s){ if(s.a==='BUY')return '<span class="tag buy">Buy</span>'; if(s.a==='KEEP')return '<span class="tag keep">Keep</span>'; if(s.a==='SELL')return '<span class="tag sell">Sell</span>';
+  if(s.l==='Strong Buy')return '<span class="tag sb">Top 2%</span>'; if(s.l==='Avoid')return '<span class="tag avoid">Avoid</span>'; return ''}
+
+function renderWeek(){
+  const r=D.regime,e=D.eval;
+  $('#mood').innerHTML=`Market mood: <b>${esc(r.name)}</b> · VIX ${r.vix??'–'} · S&amp;P 500 ${pct(r.spy_1w)} this week, ${pct(r.spy_1m)} this month`;
+  $('#headline').textContent=`Plan for ${fmtD(D.entry)} – ${fmtD(D.exit)}`;
+  $('#subline').textContent=`10 stocks the models rank highest for the next 5 trading days. Expected edge is small: about ${pct(e.gross,1)} a week above the S&P 500 on average, before costs.`;
+  $('#steps').innerHTML=[['Buy',`At the open on ${fmtD(D.entry)}, in equal amounts`],['Hold',`5 trading days, no checking needed`],['Sell',`At the close on ${fmtD(D.exit)}, unless kept next week`]].map(x=>`<div class="step"><b>${x[0]}</b>${x[1]}</div>`).join('');
+  const P=D.portfolio.map(t=>BY[t]);
+  $('#picksTitle').textContent=`The ${P.length} picks`;
+  $('#picks').innerHTML=P.map(s=>`<div class="pick" tabindex="0" data-t="${s.t}"><div class="tk">${s.t}</div><div style="flex:1;min-width:0"><div class="nm">${esc(s.n)}</div><div class="ws">${esc(s.why.join(' · ')||'Overall model blend')}</div></div>${tagFor(s)}</div>`).join('');
+  $('#sells').innerHTML=D.sells.length?`<b>Sell:</b> ${D.sells.map(t=>`<span class="chip" data-t="${t}">${t}</span>`).join(' ')} – dropped out of the top ${D.cfg.k}.`:'';
+  $('#trust').innerHTML=[
+    [pct(e.hitw,0,false),'of past weeks beat the S&P 500',`over ${e.weeks} replayed weeks`],
+    [pct(e.p_ic_pos,0,false),'chance the edge is real',`not proven yet (needs ~${Math.round((e.weeks_needed||0)/52)} years of results)`],
+    [pct(e.dd,0),'worst losing stretch vs the index','losing streaks are normal']
+  ].map(k=>`<div class="kpi"><div class="v">${k[0]}</div><div class="l">${k[1]}</div><div class="h">${k[2]}</div></div>`).join('');
+  $('#trustNote').innerHTML=`Research output, not financial advice. Start with paper trading. Forecast locked before the open: ${D.forecasts.length?'<code>'+esc(D.forecasts[D.forecasts.length-1].sha)+'…</code>':'pending'}.`;
+}
+function renderRecord(){
+  const e=D.eval, F=[...D.forecasts].reverse();
+  $('#fcTable').innerHTML='<tr><th>Decided</th><th>Window</th><th>Model</th><th>Status</th><th class="num">Picks vs S&amp;P</th><th class="num">Hit rate</th><th class="num">Rank accuracy</th></tr>'+
+   F.map(f=>`<tr><td>${fmtD(f.decision)}</td><td class="mut">${fmtD(f.entry||f.decision)} → ${fmtD(f.exit)}</td><td class="mut">${esc(f.model)}</td><td>${f.status==='graded'?'Graded':f.status==='open'?'<span class="tag keep">Running</span>':'Waiting for prices'}</td><td class="num ${cls(f.port)}">${pct(f.port,2)}</td><td class="num">${f.hit==null?'–':pct(f.hit,0,false)}</td><td class="num">${f.ic==null?'–':f.ic.toFixed(2)}</td></tr>`).join('');
+  $('#replayKpis').innerHTML=[[pct(e.gross,2),'avg weekly edge, before costs'],[pct(e.ann,1),'per year after costs'],[pct(e.hitw,0,false),'weeks beating the index'],[pct(e.dd,0),'worst drawdown vs index']]
+    .map(k=>`<div class="kpi"><div class="v ${k[0].startsWith('-')?'neg':''}">${k[0]}</div><div class="l">${k[1]}</div></div>`).join('');
+  $('#cumChart').innerHTML=line(D.cum,{fmt:v=>pct(v,0)});
+  $('#skill').innerHTML=[[e.ic==null?'–':e.ic.toFixed(3),'average rank accuracy (IC)','0 = no skill; 0.02–0.05 is useful'],[pct(e.pctpos,0,false),'weeks with positive accuracy',''],[pct(e.dsr,0,false),'overfitting-adjusted confidence','95% would count as proven']]
+    .map(k=>`<div class="kpi"><div class="v">${k[0]}</div><div class="l">${k[1]}</div><div class="h">${k[2]}</div></div>`).join('');
+  $('#icChart').innerHTML=bars(Object.entries(e.byyear).map(([y,v])=>({l:y,v})),{fmt:v=>v.toFixed(3)});
+  $('#skillNote').textContent=`Rank accuracy by year. Over any 13 weeks, an average between ${e.band13[0]} and ${e.band13[1]} is normal noise even if the model works.`;
+  $('#calChart').innerHTML=bars(D.cal.map(c=>({l:c.b.replace('Top ','T').replace('Bottom ','B').replace('Upper middle','Mid+').replace('Lower middle','Mid−'),v:c.m})));
+}
+let sortKey='rk',sortDir=1,labF='';
+function renderAll(){
+  const q=$('#q').value.trim().toLowerCase(), sec=$('#sector').value;
+  let rows=D.stocks.filter(s=>(!q||s.t.toLowerCase().includes(q)||s.n.toLowerCase().includes(q))&&(!sec||s.s===sec)&&(!labF||(labF==='pick'?s.port:s.l===labF)));
+  rows.sort((a,b)=>((a[sortKey]??-1e9)>(b[sortKey]??-1e9)?1:-1)*sortDir);
+  const th=(k,t,c='')=>`<th class="${c}" data-k="${k}">${t}${sortKey===k?(sortDir>0?' ↑':' ↓'):''}</th>`;
+  $('#all').innerHTML='<tr>'+th('rk','Rank','num')+th('t','Stock')+th('s','Sector')+th('sc','Model score')+th('r1w','Last week','num')+'<th></th></tr>'+
+   rows.slice(0,200).map(s=>`<tr class="row" data-t="${s.t}"><td class="num">${s.rk}</td><td><b>${s.t}</b> <span class="mut">${esc(s.n)}</span></td><td class="mut">${esc(s.s)}</td><td><div class="bar"><i style="width:${Math.round((1-(s.rk-1)/D.stocks.length)*100)}%"></i></div></td><td class="num ${cls(s.r1w)}">${pct(s.r1w,1)}</td><td>${tagFor(s)}</td></tr>`).join('');
+  $('#allNote').textContent=rows.length>200?`Showing 200 of ${rows.length}. Refine the search to see more.`:`${rows.length} stocks`;
+}
+function openStock(t){
+  const s=BY[t]; if(!s)return;
+  const series=(s.px||[]).map((v,i)=>[D.weeks[i],v==null?null:v-1]);
+  const spy=D.spyw.map((v,i)=>[D.weeks[i],v-1]);
+  const fl={rev5:'Weak last week (bounce-back)',rev20:'Weak last month (bounce-back)',mom12_1:'12-month trend',mom6_1:'6-month trend',lowvol:'Calm price',hi52:'Near 52-week high',lowbeta:'Low market sensitivity',secrev5:'Lagged its sector last week'};
+  const facs=Object.entries(s.f).filter(x=>x[1]!=null).sort((a,b)=>b[1]-a[1]);
+  const cal=D.cal.find(c=>c.b===s.b)||{};
+  const hist=s.h.map((v,i)=>[D.hist_dates[i],v]).concat([[D.asof,1-(s.rk-1)/D.stocks.length]]);
+  $('#panel').innerHTML=`<button class="x" aria-label="Close" id="dx">×</button>
+  <div class="note">${esc(s.s)}</div><h1 id="dTitle" style="margin-top:2px">${s.t} <span class="mut" style="font-weight:500;font-size:18px">${esc(s.n)}</span></h1>
+  <div style="display:flex;gap:8px;align-items:center;margin:6px 0 14px">${tagFor(s)}<span class="note">Rank ${s.rk} of ${D.stocks.length} · last close $${s.c??'–'}</span></div>
+  <div class="card"><h2>Model view</h2><p style="margin:0 0 8px">Rank group <b>${esc(s.b)}</b>. In past weeks this group averaged <b class="${cls(cal.m)}">${pct(cal.m,2)}</b> versus the S&amp;P 500 the following week, beating it ${pct(cal.p,0,false)} of the time.</p>
+   <div class="grid g3">${['gbm','ridge','blend'].map((k,i)=>`<div class="kpi"><div class="v">${s.m[k]==null?'–':Math.round(s.m[k]*100)}</div><div class="l">${['Boosted trees','Linear model','Signal blend'][i]} (percentile)</div></div>`).join('')}</div></div>
+  <div class="card"><h2>Signals (percentile vs other stocks)</h2>${facs.map(([k,v])=>`<div class="fac"><span>${fl[k]}</span><div class="bar"><i style="width:${Math.round(v*100)}%"></i></div><span class="num">${Math.round(v*100)}</span></div>`).join('')}</div>
+  <div class="card"><h2>Price over the past year</h2>${series.length?line(series,{fmt:v=>pct(v,0)}):'<p class="note">No price history.</p>'}<div class="legend"><span><i style="background:var(--acc)"></i>${s.t}</span></div>${line(spy,{color:'var(--mut)',h:90,fmt:v=>pct(v,0)})}<div class="legend"><span><i style="background:var(--mut)"></i>S&amp;P 500 (SPY)</span></div></div>
+  <div class="card"><h2>Model rank over recent weeks</h2>${line(hist,{fmt:v=>Math.round(v*100)+'',zero:false})}<p class="note">Higher = ranked closer to the top (100 = best).</p></div>`;
+  $('#drawer').classList.add('on'); $('#dx').focus(); $('#dx').onclick=closeStock; history.replaceState(null,'','#'+t);
+}
+function closeStock(){$('#drawer').classList.remove('on');history.replaceState(null,'',location.pathname)}
+function calc(){
+  const e=D.eval, a=+$('#acct').value||0, fee=+$('#fee').value||0, pf=(+$('#pctfee').value||0)/100;
+  localStorage.setItem('oracleCalc',JSON.stringify({a,fee,pf:pf*100}));
+  const pos=a/D.cfg.n, oneway=(pos>0?Math.max(fee/pos,pf):0)+0.0003, net=e.gross-2*oneway*e.turn, ann=Math.pow(1+net,52)-1;
+  $('#calcOut').textContent=pct(ann,1); $('#calcOut').className='big '+cls(ann);
+  $('#calcNote').textContent=`a year versus the S&P 500 after costs (cost per trade ≈ ${pct(oneway,2,false)}; break-even ≈ ${pct(e.be,2,false)}).`+(net<0?' Fees would erase the edge at this size.':'');
+}
+function tabs(){
+  document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-selected',x===b));
+    ['week','record','explore','how'].forEach(id=>$('#'+id).classList.toggle('hide',id!==b.dataset.tab)); window.scrollTo({top:0})});
+}
+function wire(){
+  document.addEventListener('click',ev=>{const t=ev.target.closest('[data-t]'); if(t&&!ev.target.closest('#panel'))openStock(t.dataset.t);
+    const th=ev.target.closest('th[data-k]'); if(th){const k=th.dataset.k; sortDir=sortKey===k?-sortDir:(k==='rk'||k==='t'||k==='s'?1:-1); sortKey=k; renderAll()}
+    if(ev.target.id==='drawer')closeStock()});
+  document.addEventListener('keydown',ev=>{if(ev.key==='Escape')closeStock(); if(ev.key==='Enter'&&ev.target.dataset&&ev.target.dataset.t)openStock(ev.target.dataset.t)});
+  $('#q').oninput=renderAll; $('#sector').onchange=renderAll;
+  $('#lab').onclick=ev=>{const b=ev.target.closest('button');if(!b)return;labF=b.dataset.v;$('#lab').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));renderAll()};
+  ['acct','fee','pctfee'].forEach(id=>$('#'+id).oninput=calc);
+}
+(async()=>{
+  try{D=await load()}catch(e){document.querySelector('.wrap').innerHTML+='<div class="card">Data could not be loaded. Try again later.</div>';return}
+  D.stocks.forEach(s=>BY[s.t]=s);
+  $('#asof').textContent='Prices as of '+fmtD(D.asof)+' close';
+  const bad=D.ks.filter(k=>!k.ok); const h=$('#health'); h.classList.toggle('bad',bad.length>0); h.lastElementChild.textContent=bad.length?bad[0].id+': check':'All checks passed';
+  h.title=D.ks.map(k=>(k.ok?'✓ ':'✗ ')+k.id+': '+k.detail).join('\n');
+  $('#sector').innerHTML='<option value="">All sectors</option>'+[...new Set(D.stocks.map(s=>s.s))].sort().map(s=>`<option>${esc(s)}</option>`).join('');
+  $('#ks').innerHTML=D.ks.map(k=>`<li>${k.ok?'✅':'⚠️'} <b>${esc(k.id)}</b> – ${esc(k.detail)}</li>`).join('')+`<li>Last run ${esc(D.generated)} UTC · ${D.health.current_members_with_data}/${D.health.current_members} stocks updated · model ${esc(D.cfg.model)}</li>`;
+  const c=JSON.parse(localStorage.getItem('oracleCalc')||'null')||{a:50000,fee:0,pf:0}; $('#acct').value=c.a; $('#fee').value=c.fee; $('#pctfee').value=c.pf;
+  $('#foot').innerHTML='Research tool, not financial advice. Prices: free public sources, may be delayed or incomplete.';
+  tabs(); wire(); renderWeek(); renderRecord(); renderAll(); calc();
+  if(location.hash.length>1)openStock(location.hash.slice(1).toUpperCase());
+  if('serviceWorker' in navigator&&!EMBED)navigator.serviceWorker.register('sw.js').catch(()=>{});
+})();
+</script>
+</body>
+</html>
