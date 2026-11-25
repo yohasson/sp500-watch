@@ -19,22 +19,23 @@ def _norm(t):
 def fetch_universe() -> dict:
     html = requests.get(URL, headers=UA, timeout=30).text
     tables = pd.read_html(io.StringIO(html))
-    cur = tables[0]
-    cur.columns = [str(c) for c in cur.columns]
+    flat = lambda c: "_".join(str(x) for x in c) if isinstance(c, tuple) else str(c)
+    cur = next(t for t in tables if {"Symbol", "GICS Sector"} <= {flat(c) for c in t.columns})
+    cur.columns = [flat(c) for c in cur.columns]
     members = {}
     for _, r in cur.iterrows():
         t = _norm(r["Symbol"])
         added = pd.to_datetime(str(r.get("Date added", ""))[:10], errors="coerce")
-        members[t] = {"name": str(r["Security"]), "sector": str(r["GICS Sector"]),
+        members[t] = {"name": str(r.get("Security", t)), "sector": str(r["GICS Sector"]),
                       "sub_industry": str(r.get("GICS Sub-Industry", "")),
                       "start": None if pd.isna(added) else added.strftime("%Y-%m-%d"), "end": None}
     removed = {}
-    if len(tables) > 1:
-        ch = tables[1]
-        ch.columns = ["_".join([str(x) for x in c]) if isinstance(c, tuple) else str(c) for c in ch.columns]
-        dcol = [c for c in ch.columns if c.lower().startswith("date") or "effective" in c.lower()][0]
-        rcol = [c for c in ch.columns if c.lower().startswith("removed") and "ticker" in c.lower()]
-        ncol = [c for c in ch.columns if c.lower().startswith("removed") and "security" in c.lower()]
+    try:
+        ch = next(t for t in tables if any("removed" in flat(c).lower() for c in t.columns))
+        ch.columns = [flat(c) for c in ch.columns]
+        dcol = next(c for c in ch.columns if "date" in c.lower())
+        rcol = [c for c in ch.columns if "removed" in c.lower() and ("ticker" in c.lower() or "symbol" in c.lower())]
+        ncol = [c for c in ch.columns if "removed" in c.lower() and ("security" in c.lower() or "name" in c.lower())]
         for _, r in ch.iterrows():
             d = pd.to_datetime(str(r[dcol]), errors="coerce")
             if pd.isna(d) or not rcol: continue
@@ -45,6 +46,8 @@ def fetch_universe() -> dict:
             if t not in removed or d.strftime("%Y-%m-%d") > removed[t]["end"]:
                 removed[t] = {"name": str(r[ncol[0]]) if ncol else t, "sector": "Unknown", "sub_industry": "",
                               "start": None, "end": d.strftime("%Y-%m-%d")}
+    except StopIteration:
+        print("[universe] change table not found; removed stocks skipped")
     uni = {"fetched_utc": dt.datetime.utcnow().isoformat(timespec="seconds"), "source": URL,
            "members": members, "removed": removed}
     os.makedirs(DATA_DIR, exist_ok=True)
