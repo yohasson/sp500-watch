@@ -20,11 +20,4 @@ for k, (u, h) in T.items():
         out[k] = {"ok": False, "err": str(e)[:200], "s": round(time.time() - t0, 1)}
     print(k, out[k].get("ok"), out[k].get("bytes"), out[k].get("err", ""), flush=True)
     time.sleep(1)
-if False:
-    import yfinance as yf
-    for t in ["TWTR", "ATVI", "SIVB", "XLNX"]:
-        try:
-            df = yf.Ticker(t).history(period="max"); out["yf_" + t] = {"rows": len(df)}
-        except Exception as e: out["yf_" + t] = {"err": str(e)[:100]}
-except Exception as e: out["yf"] = str(e)
 os.makedirs("data", exist_ok=True); json.dump(out, open("data/probe.json", "w"), indent=1)
