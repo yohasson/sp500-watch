@@ -1,5 +1,5 @@
 {
- "run_utc": "2026-11-25T10:50:12.414377+00:00",
+ "run_utc": "2026-11-25T10:59:09.718018+00:00",
  "variants": {
   "baseline": {
    "overrides": {},
@@ -10,7 +10,7 @@
    "t_last2y": 1.2647363451404596,
    "net_ann": -0.05137093393146208,
    "turnover": 0.7205882352941176,
-   "secs": 15
+   "secs": 16
   },
   "fund": {
    "overrides": {
@@ -23,7 +23,7 @@
    "t_last2y": 1.5131578282098923,
    "net_ann": -0.0731406945291706,
    "turnover": 0.5529411764705883,
-   "secs": 19
+   "secs": 20
   },
   "macro": {
    "overrides": {
@@ -63,7 +63,7 @@
    "t_last2y": 1.2469719271712865,
    "net_ann": 0.02013002344912418,
    "turnover": 0.7274509803921567,
-   "secs": 13
+   "secs": 14
   }
  },
  "adopt": {
@@ -72,7 +72,7 @@
   "fund+macro": false
  },
  "survivorship": {
-  "leavers_with_data": 136,
+  "leavers_with_data": 123,
   "leavers_total": 129,
   "ic_without": 0.0091557300180395,
   "ic_with": 0.005562058100741489,
