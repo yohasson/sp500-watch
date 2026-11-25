@@ -201,7 +201,7 @@ def _asof_daily(points, idx):
     if points is None or not len(points): return pd.Series(np.nan, index=idx)
     p = points.sort_values("avail")
     s = pd.Series(p["val"].values, index=pd.to_datetime(p["avail"].values) + pd.Timedelta(days=1))
-    s = s[~s.index.duplicated(keep="last")]
+    s = s[~s.index.duplicated(keep="last")].sort_index()
     return s.reindex(idx.union(s.index)).ffill().reindex(idx)
 
 
@@ -212,8 +212,24 @@ def fundamental_features(F, Ev, px, stocks, log=print):
     out["evt"] = pd.DataFrame(0.0, index=idx, columns=stocks)
     if F is None or not len(F): return out
     n = 0
+    bad = 0
     for t, g in F.groupby("t"):
         if t not in stocks or t not in A.columns: continue
+        try:
+            _one_company(t, g, out, A, C, idx); n += 1
+        except Exception as e:
+            bad += 1
+            if bad <= 3: log(f"[src] fundamentals skipped for {t}: {e!r}")
+    if bad: log(f"[src] fundamentals skipped for {bad} companies")
+    _events(Ev, out, stocks, idx)
+    for k, v in out.items():
+        out[k] = v.replace([np.inf, -np.inf], np.nan)
+    log(f"[src] fundamentals computed for {n} companies")
+    return out
+
+
+def _one_company(t, g, out, A, C, idx):
+    if True:
         q = {k: _quarters(g[g.k == k]) for k in ("ni", "rev", "gp", "cogs", "cfo")}
         inst = {k: _instant(g[g.k == k]) for k in INSTANT}
         ttm = {k: _ttm(v) for k, v in q.items()}
@@ -222,7 +238,7 @@ def fundamental_features(F, Ev, px, stocks, log=print):
         # market cap without split errors: shares x (close/adjclose at the day the share count became usable) x adjclose today
         ratio = (C[t] / A[t])
         if len(inst["shares"]):
-            sp = inst["shares"].sort_values("avail"); days = pd.to_datetime(sp["avail"].values) + pd.Timedelta(days=1)
+            sp = inst["shares"].sort_values("avail"); days = pd.DatetimeIndex(pd.to_datetime(sp["avail"].values) + pd.Timedelta(days=1)).unique()
             rpts = pd.Series(ratio.reindex(idx.union(days)).bfill().reindex(days).values, index=days)
             rpts = rpts[~rpts.index.duplicated(keep="last")]
             r_at = rpts.reindex(idx.union(rpts.index)).ffill().reindex(idx)
@@ -257,17 +273,15 @@ def fundamental_features(F, Ev, px, stocks, log=print):
             last_av = _asof_daily(pd.DataFrame({"val": pd.to_datetime(su["avail"]).map(pd.Timestamp.toordinal), "avail": su["avail"]}), idx)
             age = pd.Series(idx.map(pd.Timestamp.toordinal), index=idx) - last_av
             out["sue"][t] = s_d.where(age <= 90)
-        n += 1
+
+
+def _events(Ev, out, stocks, idx):
     if Ev is not None and len(Ev):
         ev = Ev[Ev.t.isin(stocks)].copy(); ev["date"] = pd.to_datetime(ev["date"])
         cnt = ev.groupby(["date", "t"]).size().unstack(fill_value=0)
         cnt = cnt.reindex(idx.union(cnt.index), fill_value=0)
         roll = cnt.rolling("7D").sum().reindex(idx).fillna(0)   # 8-K filings in the last 7 calendar days (filed by that day)
         out["evt"] = roll.reindex(columns=stocks).fillna(0).shift(1).fillna(0)  # usable the next trading day
-    for k, v in out.items():
-        out[k] = v.replace([np.inf, -np.inf], np.nan)
-    log(f"[src] fundamentals computed for {n} companies")
-    return out
 
 
 # ----------------------------------------------------------------------------- Wikipedia page views (attention)

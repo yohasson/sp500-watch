@@ -46,7 +46,7 @@ def main():
     for k in ("fund", "macro", "fund+macro"):
         v = out[k]; verdict[k] = bool(v["t"] >= b["t"] + 0.5 and v["ic_last2y"] >= b["ic_last2y"] and v["net_ann"] >= b["net_ann"])
     nl = out["no_leavers (bias check)"]
-    bias = {"leavers_with_data": len([t for t in tick if t not in uni["members"]]), "leavers_total": len(uni["removed"]),
+    bias = {"leavers_with_data": len([t for t in tick if t not in uni["members"]]), "leavers_total": len([t for t, v in uni["removed"].items() if (v.get("end") or "") >= str(A.index.min().date())]),
             "ic_without": nl["ic"], "ic_with": b["ic"], "net_ann_without": nl["net_ann"], "net_ann_with": b["net_ann"]}
     print("verdict", json.dumps(verdict), "bias", json.dumps(bias), flush=True)
     json.dump({"run_utc": pd.Timestamp.utcnow().isoformat(), "variants": out, "adopt": verdict, "survivorship": bias,
