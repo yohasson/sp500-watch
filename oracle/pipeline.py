@@ -30,8 +30,10 @@ def run(update=True, seal=True, log=print, offline_universe=False):
     names = {t: v["name"] for t, v in {**uni["removed"], **uni["members"]}.items()}
     tick = [t for t in A.columns if t in sectors]
     member = U.membership_frame(uni, A.index, tick)
+    log(f"[run] prices ready {A.shape}, {(_now_utc()-t0).seconds}s")
     R = E.Replay(px, sectors, member)
     rep = R.run(log=log)
+    log(f"[run] replay done {(_now_utc()-t0).seconds}s")
     os.makedirs(DATA_DIR, exist_ok=True)
     rep.to_csv(os.path.join(DATA_DIR, "replay.csv.gz"), index=False, compression="gzip", float_format="%.5f")
     # ---- evaluation

@@ -21,13 +21,14 @@ class YahooProvider:
         rng = rng or f"{years}y"
         ysym = sym.replace("^", "%5E")
         last = None
-        for attempt in range(4):
+        for attempt in range(3):
             host = self.hosts[attempt % 2]
             url = f"{host}/v8/finance/chart/{ysym}?range={rng}&interval=1d&events=div%7Csplit&includeAdjustedClose=true"
             try:
                 r = self.s.get(url, timeout=20)
                 if r.status_code == 429:
-                    time.sleep(2 + 3 * attempt); continue
+                    time.sleep(1 + 2 * attempt); continue
+                if r.status_code == 404: return None
                 r.raise_for_status()
                 res = r.json()["chart"]["result"][0]
                 ts = res.get("timestamp")
@@ -83,8 +84,10 @@ def update_prices(symbols, years=10, providers=None, workers=8, log=print):
                 pass
         return sym, None, None
     got, failed, used = {}, [], {}
+    t0 = time.time()
     with cf.ThreadPoolExecutor(workers) as ex:
-        for sym, df, pn in ex.map(job, symbols):
+        for i, (sym, df, pn) in enumerate(ex.map(job, symbols)):
+            if i % 100 == 0: log(f"[data] {i}/{len(symbols)} symbols, {time.time()-t0:.0f}s")
             if df is None: failed.append(sym)
             else: got[sym] = df; used[pn] = used.get(pn, 0) + 1
     frames = {}

@@ -11,7 +11,7 @@ DOCS_DIR = os.path.join(ROOT, "site")
 class Config:
     model_version: str = "ensemble-v1.1"
     horizon_days: int = 5              # trading days: entry at next open, exit at close of day 5
-    history_years: int = 10            # price history requested from the provider
+    history_years: int = 7             # price history requested from the provider
     min_train_weeks: int = int(os.environ.get("ORACLE_MIN_TRAIN", 104))         # walk-forward: minimum training history
     retrain_every_weeks: int = 13
     portfolio_n: int = 10              # buy the top N ...
