@@ -165,6 +165,11 @@ tr.sel td{background:var(--chip)}
     <p class="note" id="skillNote"></p>
   </div>
   <div class="card">
+    <h2>Model league (history replay)</h2>
+    <div style="overflow-x:auto"><table id="league"></table></div>
+    <p class="note">The ensemble is fixed in advance; the others are shown for comparison only. Picking the best one after the fact would overstate results.</p>
+  </div>
+  <div class="card">
     <h2>What each rank group delivered (history replay)</h2>
     <div id="calChart"></div>
     <p class="note" id="calNote"></p>
@@ -204,7 +209,7 @@ tr.sel td{background:var(--chip)}
     <ul class="note" style="padding-left:18px;margin:0">
       <li>Uses prices only. No earnings dates, news or company fundamentals yet, so earnings surprises can swamp the signal.</li>
       <li>The edge is small and not yet statistically proven. Long losing streaks are normal.</li>
-      <li>Prices come from a free, unofficial source. Stocks that left the index are only partly covered, which can flatter history.</li>
+      <li id="survLine">Prices come from a free, unofficial source. Stocks that left the index are only partly covered, which can flatter history.</li>
       <li>Research output, not financial advice. Paper-trade first.</li>
     </ul>
   </div>
@@ -283,11 +288,13 @@ function renderWeek(){
   $('#headline').textContent=(sealed?'Paper plan':'Preview (not sealed yet)')+` for ${fmtD(D.entry)} – ${fmtD(D.exit)}`;
   $('#subline').textContent=weak?`The 10 stocks the models rank highest for the next 5 trading days. In the history replay this ranking has not shown a reliable edge, so treat the list as an experiment to track, not a tip.`
     :`The 10 stocks the models rank highest for the next 5 trading days. In the history replay, picks like these averaged ${pct(e.gross,2)} a week above the S&P 500 before costs. Small, and not yet proven.`;
-  $('#steps').innerHTML=[['Buy',`At the open on ${fmtD(D.entry)}, equal amounts`],['Hold',`5 trading days; review if there is major news`],['Sell',`At the close on ${fmtD(D.exit)}, unless still in the top ${D.cfg.k}`]].map(x=>`<div class="step"><b>${x[0]}</b>${x[1]}</div>`).join('');
+  $('#steps').innerHTML=[['Buy',`At the open on ${fmtD(D.entry)}, equal amounts`],['Hold',`5 trading days${D.entry<='2026-11-26'&&D.exit>='2026-11-26'?' (market closed Thu 26 Nov, half day Fri 27 Nov)':''}; review if there is major news`],['Sell',`At the close on ${fmtD(D.exit)}, unless still in the top ${D.cfg.k}`]].map(x=>`<div class="step"><b>${x[0]}</b>${x[1]}</div>`).join('');
   const P=D.portfolio.map(t=>BY[t]);
   $('#picksTitle').textContent=`The ${P.length} picks`;
   $('#picks').innerHTML=P.map(s=>`<div class="pick" tabindex="0" role="button" data-t="${esc(s.t)}"><div class="tk">${esc(s.t)}</div><div style="flex:1;min-width:0"><div class="nm">${esc(s.n)}</div><div class="ws">${esc(s.why.join(' · ')||'Overall model blend')}</div></div>${tagFor(s)}</div>`).join('');
-  $('#sells').innerHTML=D.sells.length?`<b>Sell:</b> ${D.sells.map(t=>`<span class="chip" data-t="${t}">${t}</span>`).join(' ')} – dropped out of the top ${D.cfg.k}.`:'';
+  const secs={};P.forEach(s=>secs[s.s]=(secs[s.s]||0)+1);
+  const skipped=D.stocks.filter(s=>!s.port&&s.rk<=Math.max(...P.map(p=>p.rk))).length;
+  $('#sells').innerHTML=`<div class="note" style="margin-bottom:6px">Sectors: ${Object.entries(secs).map(([k,v])=>esc(k)+' '+v).join(' · ')}. At most 3 per sector${skipped?`, so ${skipped} higher-ranked stock${skipped>1?'s were':' was'} skipped for balance`:''}.</div>`+(D.sells.length?`<b>Sell:</b> ${D.sells.map(t=>`<span class="chip" data-t="${t}">${t}</span>`).join(' ')} – dropped out of the top ${D.cfg.k}.`:'');
   $('#trust').innerHTML=[
     [pct(e.hitw,0,false),'of past weeks beat the S&P 500',`over ${e.weeks} replayed weeks`],
     [pct(e.p_ic_pos,0,false),'estimated chance the ranking has any skill',e.weeks_needed?`proof would need ~${Math.max(1,Math.round(e.weeks_needed/52))} years of live results`:'no positive edge measured yet'],
@@ -307,6 +314,9 @@ function renderRecord(){
     .map(k=>`<div class="kpi"><div class="v">${k[0]}</div><div class="l">${k[1]}</div><div class="h">${k[2]}</div></div>`).join('');
   $('#icChart').innerHTML=bars(Object.entries(e.byyear).map(([y,v])=>({l:y,v})),{fmt:v=>v.toFixed(3)});
   $('#skillNote').textContent=`Rank accuracy by year. Over any 13 weeks, an average between ${e.band13[0]} and ${e.band13[1]} is normal noise even if the model works.`;
+  const L=e.league||{};
+  $('#league').innerHTML='<tr><th>Model</th><th class="num">Rank accuracy</th><th class="num">t-stat</th><th class="num">Last 52 weeks</th><th class="num">Top 10, per year after costs</th></tr>'+
+    Object.entries(L).map(([k,v])=>`<tr><td>${esc(k)}</td><td class="num ${cls(v.ic)}">${v.ic==null?'–':v.ic.toFixed(3)}</td><td class="num">${v.t==null?'–':v.t.toFixed(1)}</td><td class="num ${cls(v.last52)}">${v.last52==null?'–':v.last52.toFixed(3)}</td><td class="num ${cls(v.net_ann)}">${pct(v.net_ann,1)}</td></tr>`).join('');
   const lab={'Top 2%':'Top 2%','Top 2–10%':'2–10%','Top 10–20%':'10–20%','Upper middle':'20–50%','Lower middle':'50–80%','Bottom 10–20%':'80–90%','Bottom 2–10%':'90–98%','Bottom 2%':'Last 2%'};
   $('#calChart').innerHTML=bars(D.cal.map(c=>({l:lab[c.b]||c.b,v:c.m})));
   const best=[...D.cal].sort((a,b)=>b.m-a.m)[0], top=D.cal[0], avg=D.cal.reduce((a,c)=>a+c.m,0)/D.cal.length;
@@ -392,14 +402,14 @@ let sortKey='rk',sortDir=1,labF='';
 function renderAll(){
   const q=$('#q').value.trim().toLowerCase(), sec=$('#sector').value;
   let rows=D.stocks.filter(s=>(!q||s.t.toLowerCase().includes(q)||s.n.toLowerCase().includes(q))&&(!sec||s.s===sec)&&(!labF||(labF==='pick'?s.port:s.l===labF)));
-  rows.sort((a,b)=>((a[sortKey]??-1e9)>(b[sortKey]??-1e9)?1:-1)*sortDir);
+  rows.sort((a,b)=>{const x=a[sortKey]??-1e9,y=b[sortKey]??-1e9;return (x>y?1:x<y?-1:0)*sortDir});
   const th=(k,t,c='')=>`<th class="${c}" data-k="${k}">${t}${sortKey===k?(sortDir>0?' ↑':' ↓'):''}</th>`;
   $('#all').innerHTML='<tr>'+th('rk','Rank','num')+th('t','Stock')+th('s','Sector')+th('sc','Model score')+th('r1w','Last week','num')+'<th></th></tr>'+
-   rows.slice(0,200).map(s=>`<tr class="row" data-t="${s.t}"><td class="num">${s.rk}</td><td><b>${s.t}</b> <span class="mut">${esc(s.n)}</span></td><td class="mut">${esc(s.s)}</td><td><div class="bar"><i style="width:${Math.round((1-(s.rk-1)/D.stocks.length)*100)}%"></i></div></td><td class="num ${cls(s.r1w)}">${pct(s.r1w,1)}</td><td>${tagFor(s)}</td></tr>`).join('');
+   rows.slice(0,200).map(s=>`<tr class="row" data-t="${s.t}"><td class="num">${s.rk}</td><td><b>${s.t}</b> <span class="mut">${esc(s.n)}</span></td><td class="mut">${esc(s.s)}</td><td><div class="bar" title="Percentile ${Math.round((1-(s.rk-1)/D.stocks.length)*100)}"><i style="width:${Math.round((1-(s.rk-1)/D.stocks.length)*100)}%"></i></div></td><td class="num ${cls(s.r1w)}">${pct(s.r1w,1)}</td><td>${tagFor(s)}</td></tr>`).join('');
   $('#allNote').textContent=rows.length>200?`Showing 200 of ${rows.length}. Refine the search to see more.`:`${rows.length} stocks`;
 }
 function openStock(t){
-  const s=BY[t]; if(!s)return;
+  const s=BY[t]; if(!s)return; stockReturn=document.activeElement;
   const series=(s.px||[]).map((v,i)=>[D.weeks[i],v==null?null:v-1]);
   const spy=D.spyw.map((v,i)=>[D.weeks[i],v-1]);
   const fl={rev5:'Weak last week (bounce-back)',rev20:'Weak last month (bounce-back)',mom12_1:'12-month trend',mom6_1:'6-month trend',lowvol:'Calm price',hi52:'Near 52-week high',lowbeta:'Low market sensitivity',secrev5:'Lagged its sector last week'};
@@ -416,7 +426,8 @@ function openStock(t){
   <div class="card"><h2>Blind daily record, past year</h2><div id="sHind"><p class="note">Loading…</p></div></div>`;
   $('#drawer').classList.add('on'); stockHind(s.t); $('#dx').focus(); $('#dx').onclick=closeStock; history.replaceState(null,'','#'+t);
 }
-function closeStock(){$('#drawer').classList.remove('on');history.replaceState(null,'',location.pathname)}
+let stockReturn=null;
+function closeStock(){if(!$('#drawer').classList.contains('on'))return;$('#drawer').classList.remove('on');history.replaceState(null,'',location.pathname+location.search);if(stockReturn&&stockReturn.focus)stockReturn.focus()}
 function calc(){
   const e=D.eval, a=SET.a, fee=SET.fee, pf=SET.pf/100;
   $('#calcWho').textContent=`For $${a.toLocaleString('en-US')} split across ${D.cfg.n} stocks, minimum fee $${fee}, fee ${SET.pf}% of trade.`;
@@ -425,6 +436,9 @@ function calc(){
   $('#calcNote').textContent=`a year versus the S&P 500 in the history replay, after trading costs, before taxes (cost per trade ≈ ${pct(oneway,2,false)}; break-even ≈ ${pct(e.be,2,false)}).`+(net<0?' Fees would erase the edge at this size.':'');
 }
 function tabs(){
+  const bs=[...document.querySelectorAll('nav button')];
+  bs.forEach((b,i)=>{b.id='tab-'+b.dataset.tab;b.setAttribute('aria-controls',b.dataset.tab);$('#'+b.dataset.tab).setAttribute('role','tabpanel');$('#'+b.dataset.tab).setAttribute('aria-labelledby',b.id);
+    b.onkeydown=ev=>{if(ev.key==='ArrowRight'||ev.key==='ArrowLeft'){const n=bs[(i+(ev.key==='ArrowRight'?1:bs.length-1))%bs.length];n.focus();n.click()}}});
   document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-selected',x===b));
     ['week','test','record','explore','how'].forEach(id=>$('#'+id).classList.toggle('hide',id!==b.dataset.tab)); window.scrollTo({top:0})});
 }
@@ -432,7 +446,7 @@ function wire(){
   document.addEventListener('click',ev=>{const t=ev.target.closest('[data-t]'); if(t&&!ev.target.closest('#panel'))openStock(t.dataset.t);
     const th=ev.target.closest('th[data-k]'); if(th){const k=th.dataset.k; sortDir=sortKey===k?-sortDir:(k==='rk'||k==='t'||k==='s'?1:-1); sortKey=k; renderAll()}
     if(ev.target.id==='drawer')closeStock()});
-  document.addEventListener('keydown',ev=>{if(ev.key==='Escape'){closeStock();closeSettings()} if(ev.key==='Enter'&&ev.target.dataset&&ev.target.dataset.t)openStock(ev.target.dataset.t); if(ev.key==='Enter'&&ev.target.dataset&&ev.target.dataset.day){tSel=tSel===ev.target.dataset.day?null:ev.target.dataset.day;renderTest()}});
+  document.addEventListener('keydown',ev=>{if(ev.key==='Escape'){closeStock();closeSettings()} if(ev.key===' '&&ev.target.getAttribute&&ev.target.getAttribute('role')==='button'&&ev.target.dataset.t){ev.preventDefault();openStock(ev.target.dataset.t)} if(ev.key==='Enter'&&ev.target.dataset&&ev.target.dataset.t)openStock(ev.target.dataset.t); if(ev.key==='Enter'&&ev.target.dataset&&ev.target.dataset.day){tSel=tSel===ev.target.dataset.day?null:ev.target.dataset.day;renderTest()}});
   $('#q').oninput=renderAll; $('#sector').onchange=renderAll;
   $('#lab').onclick=ev=>{const b=ev.target.closest('button');if(!b)return;labF=b.dataset.v;$('#lab').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));renderAll()};
   ['sTheme','sTab','sAmt','sN','acct','fee','pctfee'].forEach(id=>{$('#'+id).onchange=readSettings;$('#'+id).oninput=readSettings});
@@ -443,7 +457,8 @@ function wire(){
   $('#tTable').addEventListener('click',ev=>{const r=ev.target.closest('tr[data-day]');if(!r||ev.target.closest('[data-t]'))return;tSel=tSel===r.dataset.day?null:r.dataset.day;renderTest()});
 }
 (async()=>{
-  try{D=await load()}catch(e){document.querySelector('.wrap').innerHTML+='<div class="card">Data could not be loaded. Try again later.</div>';return}
+  try{D=await load()}catch(e){document.querySelector('.wrap').insertAdjacentHTML('beforeend','<div class="card">Data could not be loaded. <button class="iconbtn" onclick="location.reload()">Try again</button></div>');return}
+  const age=(Date.now()-new Date(D.asof+'T21:00:00Z'))/864e5; if(age>4)$('#banner').textContent=`Data is ${Math.floor(age)} days old: the automatic update may have failed. Paper trading only · not financial advice`;
   D.stocks.forEach(s=>BY[s.t]=s);
   $('#asof').textContent='Prices as of '+fmtD(D.asof)+' close';
   const bad=D.ks.filter(k=>!k.ok); const h=$('#health'); const graded=D.forecasts.filter(f=>f.status==='graded').length;
@@ -451,9 +466,10 @@ function wire(){
   h.lastElementChild.textContent=bad.length?bad[0].id+': check':(graded?`Checks OK · ${graded} live week${graded>1?'s':''} graded`:'Checks OK · no live results yet');
   h.title=D.ks.map(k=>(k.ok?'✓ ':'✗ ')+k.id+': '+k.detail).join('\n');
   $('#sector').innerHTML='<option value="">All sectors</option>'+[...new Set(D.stocks.map(s=>s.s))].sort().map(s=>`<option>${esc(s)}</option>`).join('');
-  $('#ks').innerHTML=D.ks.map(k=>`<li>${k.ok?'✅':'⚠️'} <b>${esc(k.id)}</b> – ${esc(k.detail)}</li>`).join('')+`<li>Last run ${esc(D.generated)} UTC · ${D.health.current_members_with_data}/${D.health.current_members} stocks updated · model ${esc(D.cfg.model)}</li>`;
+  $('#ks').innerHTML=D.ks.map(k=>`<li>${k.ok?'✅':'⚠️'} <b>${esc(k.id)}</b> – ${esc(k.detail)}</li>`).join('')+`<li>Last run ${esc(new Date(D.generated).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'}))} · ${D.health.current_members_with_data}/${D.health.current_members} stocks updated · model ${esc(D.cfg.model)}</li>`;
 
-  $('#foot').innerHTML='Research tool, not financial advice. Prices: free public sources, may be delayed or incomplete.';
+  $('#foot').innerHTML=`Research tool, not financial advice. Prices: Yahoo Finance (unofficial, free), may be delayed or incomplete. Last update ${esc(new Date(D.generated).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'}))}.`;
+  if(D.health&&D.health.removed_with_data!=null)$('#survLine').textContent=`Prices come from a free, unofficial source. ${D.health.removed_with_data} stocks that left the index are included in the history; others are missing, which can make past results look better than they were.`;
   tabs(); wire(); renderWeek(); renderTest(); renderRecord(); renderHind(); renderAll(); calc();
   if(SET.tab&&SET.tab!=='week'){const b=document.querySelector(`nav button[data-tab="${SET.tab}"]`);if(b)b.click()}
   if(location.hash.length>1)openStock(location.hash.slice(1).toUpperCase());
