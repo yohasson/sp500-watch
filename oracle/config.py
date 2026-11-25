@@ -28,6 +28,9 @@ class Config:
     benchmark: str = "SPY"
     random_seed: int = 0
     factor_blend: tuple = ("rev5", "secrev5", "mom12_1", "lowvol", "hi52")
+    extra_features: bool = False       # experimental features (see engine.EXTRA)
+    target: str = "market"             # "market" = rank of excess vs SPY; "sector" = rank within sector
+    ensemble: str = "gbm+ridge+blend"
 
     def oneway_cost(self) -> float:
         pos = self.account_usd / max(self.portfolio_n, 1)
@@ -44,3 +47,6 @@ class Config:
         return hashlib.sha256(json.dumps(self.to_dict(), sort_keys=True).encode()).hexdigest()
 
 CFG = Config()
+_v = os.environ.get("ORACLE_VARIANT")
+if _v:
+    for _k, _val in json.loads(_v).items(): setattr(CFG, _k, _val)

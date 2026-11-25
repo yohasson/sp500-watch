@@ -1,0 +1,37 @@
+name: Model experiments
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["tools/exp.txt"]
+permissions:
+  contents: write
+concurrency:
+  group: experiments
+  cancel-in-progress: true
+jobs:
+  exp:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - name: Restore price cache
+        uses: actions/cache/restore@v4
+        with:
+          path: data/prices
+          key: prices-exp-${{ github.run_id }}
+          restore-keys: prices-
+      - name: Run experiments
+        run: |
+          set -o pipefail
+          { pip install -q -r requirements.txt && python -u tools/experiments.py; } 2>&1 | tee /tmp/exp.log
+      - name: Commit results
+        if: always()
+        run: |
+          git config user.name "sp500-oracle-bot"; git config user.email "sp500-oracle-bot@users.noreply.github.com"
+          tail -c 20000 /tmp/exp.log > data/experiments.log 2>/dev/null || true
+          git add data/experiments.json data/experiments.log 2>/dev/null || git add data/experiments.log
+          git commit -m "Experiments $(date -u +%FT%TZ)" || true
+          for i in 1 2 3; do git pull --rebase -X ours origin main && git push origin HEAD:main && break; sleep 5; done

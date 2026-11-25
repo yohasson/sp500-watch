@@ -7,6 +7,7 @@ from .config import CFG
 warnings.filterwarnings("ignore")
 
 FACTORS = ["rev5", "rev20", "mom12_1", "mom6_1", "lowvol", "hi52", "lowbeta", "secrev5"]
+EXTRA = ["rev1", "vrev5", "max21", "idrev5", "gap1", "ma50"]
 FACTOR_LABELS = {"rev5": "Bounce-back after a weak week (1-week reversal)", "rev20": "Bounce-back after a weak month",
                  "mom12_1": "12-month trend (momentum)", "mom6_1": "6-month trend", "lowvol": "Calm price moves (low volatility)",
                  "hi52": "Close to its 52-week high", "lowbeta": "Moves less than the market (low beta)",
@@ -34,6 +35,18 @@ def build_features(px, sectors, member, bench="SPY"):
     r5 = S / S.shift(5) - 1
     sec = pd.Series({s: sectors.get(s, "Unknown") for s in stocks})
     f["secrev5"] = -(r5 - r5.T.groupby(sec).transform("mean").T)
+    vol = R.rolling(60, min_periods=40).std()
+    f["rev1"] = -R
+    f["vrev5"] = f["rev5"] / (vol * np.sqrt(5))
+    f["max21"] = -R.rolling(21, min_periods=15).max()
+    beta = cov.div(var, axis=0); m5 = M / M.shift(5) - 1
+    f["idrev5"] = -(r5 - beta.mul(m5, axis=0))
+    if "open" in px and "close" in px:
+        O = px["open"][stocks]; C = px["close"][stocks]
+        f["gap1"] = -(O / C.shift(1) - 1)
+    else:
+        f["gap1"] = f["rev1"] * 0
+    f["ma50"] = -(S / S.rolling(50, min_periods=40).mean() - 1)
     vix = A["^VIX"] if "^VIX" in A.columns else px["close"].get("^VIX", pd.Series(20.0, index=A.index))
     reg = pd.DataFrame({"vix": vix, "mkt20": M / M.shift(21) - 1, "mkt5": M / M.shift(5) - 1,
                         "disp5": r5.where(member.reindex(r5.index).fillna(False)).std(axis=1)})
@@ -64,7 +77,9 @@ class Replay:
         self.cfg = cfg; self.px = px
         self.f, self.reg, self.stocks = build_features(px, sectors, member, cfg.benchmark)
         self.member = member.reindex(px["adjclose"].index).fillna(False)[self.stocks]
-        self.F = {k: xrank(v.where(self.member)) for k, v in self.f.items()}
+        self.factors = FACTORS + (EXTRA if getattr(cfg, "extra_features", False) else [])
+        self.F = {k: xrank(v.where(self.member)) for k, v in self.f.items() if k in self.factors}
+        self.sectors = sectors
         self.dates = decision_dates(px["adjclose"].index)
         self.dates = self.dates[self.dates >= px["adjclose"].index[260]]
         self.fwd, self.exit = forward_excess(px, self.stocks, self.dates, cfg.benchmark, cfg.horizon_days, "open")
@@ -81,7 +96,10 @@ class Replay:
         if not hasattr(self, "_tc"): self._tc = {}
         if t not in self._tc:
             X = self.panel(t); y = self.fwd.loc[t].reindex(X.index).rank(pct=True) - 0.5
-            m = X[FACTORS].notna().all(1) & y.notna()
+            if getattr(self.cfg, "target", "market") == "sector":
+                fw = self.fwd.loc[t].reindex(X.index); sec = pd.Series({k: self.sectors.get(k, "U") for k in X.index})
+                y = fw.groupby(sec).rank(pct=True) - 0.5
+            m = X[self.factors].notna().all(1) & y.notna()
             Xd = None
             if m.sum() >= 50:
                 Xd = X[m].copy(); Xd["y"] = y[m]
@@ -89,7 +107,7 @@ class Replay:
         return self._tc[t]
 
     def _panel(self, d):
-        X = pd.DataFrame({k: self.F[k].loc[d] for k in FACTORS})
+        X = pd.DataFrame({k: self.F[k].loc[d] for k in self.factors})
         for c in REGIME: X[c] = self.reg.loc[d, c]
         return X[self.member.loc[d]]
 
@@ -103,18 +121,21 @@ class Replay:
             Xd = self._train_rows(t)
             if Xd is not None: rows.append(Xd)
         if not rows: return None
-        tr = pd.concat(rows); X = tr[FACTORS + REGIME].fillna(0); y = tr["y"]
+        tr = pd.concat(rows); X = tr[self.factors + REGIME].fillna(0); y = tr["y"]
         gb = HistGradientBoostingRegressor(max_iter=200, learning_rate=0.05, max_depth=3, min_samples_leaf=200,
                                            l2_regularization=1.0, random_state=self.cfg.random_seed).fit(X, y)
         rd = Ridge(alpha=10).fit(X, y)
         return gb, rd, len(rows)
 
     def score(self, d, models):
-        X = self.panel(d); Xf = X[FACTORS + REGIME].fillna(0)
+        X = self.panel(d); Xf = X[self.factors + REGIME].fillna(0)
         gb, rd = models[0], models[1]
         g = pd.Series(gb.predict(Xf), index=X.index); r = pd.Series(rd.predict(Xf), index=X.index)
         b = self.blend(d)[X.index]
-        ens = (g.rank(pct=True) + r.rank(pct=True) + b.rank(pct=True)) / 3
+        mode = getattr(self.cfg, "ensemble", "gbm+ridge+blend")
+        parts = {"gbm": g.rank(pct=True), "ridge": r.rank(pct=True), "blend": b.rank(pct=True)}
+        use = [k for k in mode.split("+") if k in parts] or list(parts)
+        ens = sum(parts[k] for k in use) / len(use)
         return pd.DataFrame({"ens": ens, "gbm": g, "ridge": r, "blend": b})
 
     def run(self, log=print):
