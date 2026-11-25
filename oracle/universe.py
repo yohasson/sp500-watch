@@ -51,13 +51,24 @@ def fetch_universe() -> dict:
     json.dump(uni, open(CACHE, "w"), indent=0)
     return uni
 
+SEED = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "universe_seed.csv")
+
+def _seed():
+    df = pd.read_csv(SEED, keep_default_na=False)
+    return {"fetched_utc": "seed", "source": "bundled seed (Nov 2026)", "removed": {},
+            "members": {r.ticker: {"name": r.ticker, "sector": r.sector, "sub_industry": "", "start": r.start or None, "end": None} for r in df.itertuples()}}
+
 def load_universe(refresh: bool = True) -> dict:
     if refresh:
         try:
-            return fetch_universe()
-        except Exception as e:  # network failure -> use cache
-            print(f"[universe] refresh failed ({e}); using cache")
-    return json.load(open(CACHE))
+            u = fetch_universe()
+            if len(u["members"]) >= 480: return u
+            print(f"[universe] only {len(u['members'])} members parsed; using cache/seed")
+        except Exception as e:  # network/parse failure -> use cache, then the bundled seed
+            print(f"[universe] refresh failed ({e!r}); using cache/seed")
+    if os.path.exists(CACHE): return json.load(open(CACHE))
+    if os.path.exists(SEED): return _seed()
+    raise RuntimeError("no S&P 500 member list available (Wikipedia unreachable and no cache)")
 
 def membership_frame(uni: dict, dates: pd.DatetimeIndex, tickers) -> pd.DataFrame:
     """Boolean frame: True where ticker was an index member on that date."""
