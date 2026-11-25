@@ -148,6 +148,14 @@ def update_prices(symbols, years=10, providers=None, workers=12, log=print, budg
     log(f"[data] fetched {len(got)} symbols ({used}); failed {len(failed)}: {failed[:15]}")
     return frames, failed
 
+def add_histories(got, log=print):
+    """Merge externally fetched histories ({sym: DataFrame[open, close, adjclose]}) into the price cache."""
+    cache = _load_cache(); frames = {}
+    for f in ("open", "close", "adjclose"):
+        new = pd.DataFrame({s: d[f] for s, d in got.items()})
+        frames[f] = cache[f].combine_first(new) if f in cache else new
+    _save_cache(frames); log(f"[data] merged {len(got)} extra histories")
+
 def load_prices():
     c = _load_cache()
     if "close" not in c: raise RuntimeError("no price cache; run update first")

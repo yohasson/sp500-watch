@@ -31,6 +31,8 @@ class Config:
     extra_features: bool = False       # experimental features (see engine.EXTRA)
     target: str = "market"             # "market" = rank of excess vs SPY; "sector" = rank within sector
     ensemble: str = "gbm+ridge+blend"
+    fundamentals: bool = False         # SEC financials + 8-K events + Wikipedia attention as model inputs (adopted only if the pre-registered test passes)
+    macro: bool = False                # FRED yield-curve and credit-spread regime inputs
 
     def oneway_cost(self) -> float:
         pos = self.account_usd / max(self.portfolio_n, 1)

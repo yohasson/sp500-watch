@@ -26,7 +26,41 @@ def _clean(o):
     return o
 
 
-def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entry, exit_, last, uni, daily=None, daily_all=None):
+def _load_exp():
+    try:
+        j = json.load(open(os.path.join(DATA_DIR, "experiments.json")))
+        keep = ("baseline", "fund", "macro", "fund+macro", "no_leavers (bias check)")
+        return {"run": j.get("run_utc"), "adopt": j.get("adopt"), "surv": j.get("survivorship"), "rule": j.get("rule"),
+                "v": {k: {kk: j["variants"][k].get(kk) for kk in ("ic", "t", "ic_last2y", "net_ann")} for k in keep if k in j.get("variants", {})}}
+    except Exception:
+        return None
+
+
+def _since_yesterday(stocks, last, keep=15):
+    """Compare today's ranks with the snapshot saved by the most recent earlier trading day (what the page showed then)."""
+    p = os.path.join(DATA_DIR, "rank_snap.json")
+    try: snaps = json.load(open(p))
+    except Exception: snaps = {}
+    today = str(last.date())
+    snaps[today] = {s["t"]: s["rk"] for s in stocks if s.get("rk") is not None}
+    snaps = dict(sorted(snaps.items())[-keep:])
+    os.makedirs(DATA_DIR, exist_ok=True); json.dump(snaps, open(p, "w"), separators=(",", ":"))
+    prev_days = [d for d in snaps if d < today]
+    if not prev_days: return None
+    pd_ = prev_days[-1]; prev = snaps[pd_]; n = len(stocks)
+    for s in stocks:
+        s["prk"] = prev.get(s["t"])
+    def top(k, ranks): return {t for t, r in ranks.items() if r <= k}
+    cur = {s["t"]: s["rk"] for s in stocks}
+    moves = sorted([(s["t"], prev[s["t"]] - s["rk"]) for s in stocks if s["t"] in prev], key=lambda x: -abs(x[1]))
+    return {"prev": pd_, "now": today,
+            "in10": sorted(top(10, cur) - top(10, prev), key=lambda t: cur[t]), "out10": sorted(top(10, prev) - top(10, cur), key=lambda t: prev[t]),
+            "in50": len(top(50, cur) - top(50, prev)),
+            "up": [[t, m] for t, m in moves if m > 0][:5], "down": [[t, m] for t, m in moves if m < 0][:5]}
+
+
+def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entry, exit_, last, uni, daily=None, daily_all=None, extras=None):
+    extras = extras or {}
     os.makedirs(DOCS_DIR, exist_ok=True)
     A = px["adjclose"]
     vix = float(px["close"]["^VIX"].dropna().iloc[-1]) if "^VIX" in px["close"] else None
@@ -53,8 +87,10 @@ def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entr
             "f": {k: _r(r[f"f_{k}"], 3) for k in E.FACTORS},
             "m": {"gbm": _r(live["gbm"].rank(pct=True)[t], 3), "ridge": _r(live["ridge"].rank(pct=True)[t], 3), "blend": _r(live["blend"].rank(pct=True)[t], 3)},
             "r1w": _r(A[t].iloc[-1] / A[t].iloc[-6] - 1, 4) if t in A.columns else None,
+            "r1d": _r(A[t].iloc[-1] / A[t].iloc[-2] - 1, 4) if t in A.columns else None,
         })
         pxmap[t] = None if ser is None or ser.isna().all() else [_r(v, 4) for v in (ser / ser.dropna().iloc[0])]
+    changes = _since_yesterday(stocks, last)
     # replay cumulative (chosen config) vs benchmark
     ch = sims["chosen"]; cum = (1 + ch.net).cumprod()
     cum_s = [[d.strftime("%Y-%m-%d"), _r(v - 1, 4)] for d, v in cum.items()]
@@ -119,7 +155,7 @@ def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entr
     data = {
         "generated": status["run_utc"], "asof": str(last.date()), "entry": str(plan_entry.date()), "exit": str(plan_exit.date()), "next_entry": str(entry.date()), "next_exit": str(exit_.date()),
         "regime": {"name": reg, "text": reg_txt, "vix": _r(vix, 1), "vix_prev": _r(vix_prev, 1),
-                   "spy_1w": _r(spy.iloc[-1] / spy.iloc[-6] - 1, 4), "spy_1m": _r(spy.iloc[-1] / spy.iloc[-22] - 1, 4)},
+                   "spy_1d": _r(spy.iloc[-1] / spy.iloc[-2] - 1, 4), "spy_1w": _r(spy.iloc[-1] / spy.iloc[-6] - 1, 4), "spy_1m": _r(spy.iloc[-1] / spy.iloc[-22] - 1, 4)},
         "seal": status["steps"].get("seal"), "ks": status["kill_switches"],
         "eval": {"weeks": ev["weeks"], "first": ev["first"], "last": ev["last"], "ic": _r(ev["ic"]["ic_mean"], 4), "t": _r(ev["ic"]["t"], 2),
                  "pctpos": _r(ev["ic"]["pct_pos"], 3), "p_ic_pos": _r(ev["ic"]["p_ic_pos"], 3), "weeks_needed": _r(ev["ic"]["weeks_needed"], 0),
@@ -135,20 +171,27 @@ def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entr
         "stocks": stocks, "portfolio": plan_port, "sells": sells, "forecasts": fcs,
         "cfg": {"n": CFG.portfolio_n, "k": CFG.portfolio_hold_k, "cap": CFG.max_per_sector, "model": CFG.model_version},
         "health": status["steps"]["data"],
-        "running": running,
+        "running": running, "changes": changes,
+        "sources": extras.get("sources", {}), "xchk": {k: v for k, v in (extras.get("xchk") or {}).items() if k != "mismatches"},
+        "model_inputs": extras.get("model_inputs", {}),
+        "exp": _load_exp(),
         "daily": [{"d": r["date"].strftime("%Y-%m-%d"), "p": r["picks"], "x": r["exit"].strftime("%Y-%m-%d") if "exit" in r else None,
                    "v": _r(1000 * (1 + r["ret"]), 2) if "ret" in r else None, "b": _r(1000 * (1 + r["bench"]), 2) if "bench" in r else None,
                    "e": r.get("each")} for r in (daily or [])],   # e = top-10 picks in rank order with their returns
     }
     # blind daily hindsight: one small file per stock (loaded when the stock is opened) + daily summary
     sd = os.path.join(DOCS_DIR, "stocks"); os.makedirs(sd, exist_ok=True)
+    def _more(t):
+        fi = {k: _r(v.get(t), 3) for k, v in (extras.get("finfo") or {}).items() if t in v.index and not pd.isna(v.get(t))}
+        raw = {k: _r(v.get(t), 4) for k, v in (extras.get("raw") or {}).items() if t in v.index and not pd.isna(v.get(t))}
+        return {"news": (extras.get("news") or {}).get(t, []), "filings": (extras.get("filings") or {}).get(t, []), "fi": fi, "raw": raw}
     written = set()
     if daily_all is not None and len(daily_all):
         da = daily_all.copy(); da["d"] = da["date"].dt.strftime("%Y-%m-%d")
         for t, g in da.groupby("ticker"):
             if not str(t).replace("-", "").isalnum(): continue
             json.dump(_clean({"t": t, "d": g["d"].tolist(), "r": g["rank"].astype(int).tolist(),
-                       "p": [_r(x, 5) for x in g["proj"]], "a": [_r(x, 5) for x in g["actual"]], "px": pxmap.get(t)}),
+                       "p": [_r(x, 5) for x in g["proj"]], "a": [_r(x, 5) for x in g["actual"]], "px": pxmap.get(t), **_more(t)}),
                       open(os.path.join(sd, f"{t}.json"), "w"), separators=(",", ":"), allow_nan=False)
             written.add(t)
         dk = da.dropna(subset=["actual"])
@@ -162,7 +205,7 @@ def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entr
                         "dir_hit": _r(hit.mean(), 3), "base": _r(base, 3), "series": [[k, _r(v, 3)] for k, v in dic.items()]}
     for t, v in pxmap.items():
         if t not in written and str(t).replace("-", "").isalnum():
-            json.dump(_clean({"t": t, "d": [], "r": [], "p": [], "a": [], "px": v}), open(os.path.join(sd, f"{t}.json"), "w"), separators=(",", ":"), allow_nan=False)
+            json.dump(_clean({"t": t, "d": [], "r": [], "p": [], "a": [], "px": v, **_more(t)}), open(os.path.join(sd, f"{t}.json"), "w"), separators=(",", ":"), allow_nan=False)
     tpl = open(os.path.join(os.path.dirname(__file__), "dashboard_template.html"), encoding="utf-8").read()
     open(os.path.join(DOCS_DIR, "index.html"), "w", encoding="utf-8").write(tpl)
     data = _clean(data)

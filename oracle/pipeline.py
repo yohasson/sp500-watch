@@ -3,13 +3,38 @@ import os, json, datetime as dt, math, hashlib
 from zoneinfo import ZoneInfo
 import numpy as np, pandas as pd
 from .config import CFG, DATA_DIR, DOCS_DIR, LEDGER_DIR
-from . import universe as U, data as D, engine as E, ledger as L
+from . import universe as U, data as D, engine as E, ledger as L, sources as S
 from .calendar import next_trading_days, is_last_trading_day_of_week
 
 def _now_utc(): return dt.datetime.now(dt.timezone.utc)
 
 def market_open_utc(day: pd.Timestamp) -> dt.datetime:
     return dt.datetime(day.year, day.month, day.day, 9, 30, tzinfo=ZoneInfo("America/New_York")).astimezone(dt.timezone.utc)
+
+def load_signals(px, uni, stocks, update=True, log=print):
+    """Extra data sources -> point-in-time feature frames (never raises: missing sources simply mean neutral signals)."""
+    extra, macro, info = {}, None, {"sources": {}}
+    try:
+        meta = S.wiki_meta(log=log) if update else (json.load(open(S._p("wiki_meta.json"))) if os.path.exists(S._p("wiki_meta.json")) else {})
+        F = Ev = None
+        if update: F, Ev = S.sec_update(meta, log=log)
+        elif os.path.exists(S._p("sec_facts.csv.gz")): F, Ev = pd.read_csv(S._p("sec_facts.csv.gz")), pd.read_csv(S._p("sec_events.csv.gz"))
+        extra = S.fundamental_features(F, Ev, px, stocks, log=log)
+        info["sources"]["SEC financial statements"] = int(F.t.nunique()) if F is not None and len(F) else 0
+        info["sources"]["SEC 8-K filings"] = int(len(Ev)) if Ev is not None else 0
+        info["events"] = Ev
+        try:
+            att = S.pageviews(meta, px["adjclose"].index, stocks, log=log) if (update or os.path.exists(S._p("pageviews.csv.gz"))) else None
+            if att is not None: extra["attn"] = att; info["sources"]["Wikipedia page views"] = int(att.iloc[-1].notna().sum())
+        except Exception as e: log(f"[src] page views failed: {e!r}")
+        try:
+            macro = S.macro(px["adjclose"].index, log=log) if (update or os.path.exists(S._p("macro.csv.gz"))) else None
+            if macro is not None: info["sources"]["FRED / CBOE macro series"] = int(macro.shape[1])
+        except Exception as e: log(f"[src] macro failed: {e!r}")
+    except Exception as e:
+        log(f"[src] extra sources failed: {e!r}")
+    return extra, macro, info
+
 
 def run(update=True, seal=True, log=print, offline_universe=False):
     t0 = _now_utc(); status = {"run_utc": t0.isoformat(timespec="seconds"), "steps": {}}
@@ -19,6 +44,12 @@ def run(update=True, seal=True, log=print, offline_universe=False):
     failed = []
     if update:
         _, failed = D.update_prices(syms, CFG.history_years, log=log)
+        try:   # optional: stocks that left the index, from Tiingo when a TIINGO_API_KEY secret is configured
+            have = set(D.load_prices()["adjclose"].columns)
+            missing = [t for t in rem if t not in have]
+            got = S.tiingo_history(missing, CFG.history_years, log=log)
+            if got: D.add_histories(got, log=log)
+        except Exception as e: log(f"[tiingo] skipped: {e!r}")
     try:
         px = D.load_prices()
     except Exception as e:
@@ -39,7 +70,9 @@ def run(update=True, seal=True, log=print, offline_universe=False):
     tick = [t for t in A.columns if t in sectors]
     member = U.membership_frame(uni, A.index, tick)
     log(f"[run] prices ready {A.shape}, {(_now_utc()-t0).seconds}s")
-    R = E.Replay(px, sectors, member)
+    extra, macro, sinfo = load_signals(px, uni, tick, update=update, log=log)
+    log(f"[run] extra sources ready {(_now_utc()-t0).seconds}s: {sinfo['sources']}")
+    R = E.Replay(px, sectors, member, extra=extra, macro=macro)
     rep = R.run(log=log)
     log(f"[run] replay done {(_now_utc()-t0).seconds}s")
     os.makedirs(DATA_DIR, exist_ok=True)
@@ -95,6 +128,12 @@ def run(update=True, seal=True, log=print, offline_universe=False):
     live = live.sort_values("rank")
     entry, *_, exit_ = next_trading_days(last, CFG.horizon_days, None)
     daily_all, daily = R.daily_backtest(rep, days=252, top=10)
+    # ---- independent price cross-check (Nasdaq) on a daily random sample plus all picks
+    xchk = {"agree": None, "note": "not run"}
+    if update:
+        try: xchk = S.crosscheck(px, cur, must=port, log=log)
+        except Exception as e: xchk = {"agree": None, "note": f"failed: {e!r}"}
+    status["steps"]["crosscheck"] = xchk
     daily_all.to_csv(os.path.join(DATA_DIR, "hindsight_daily.csv.gz"), index=False, compression="gzip", float_format="%.5f")
     # ---- seal
     sealed = None; seal_note = ""
@@ -106,6 +145,8 @@ def run(update=True, seal=True, log=print, offline_universe=False):
             seal_note = "late: market already open for the entry day; not sealed"
         elif health < 0.95:
             seal_note = f"blocked: data health {health:.0%} below 95% (KS-5)"
+        elif xchk.get("agree") is not None and xchk["agree"] < 0.9:
+            seal_note = f"blocked: prices disagree with Nasdaq ({xchk['agree']:.0%} agreement)"
         else:
             cols = ["ticker", "name", "sector", "rank", "ens", "bucket", "label", "exp_excess", "p_beat", "in_portfolio", "action", "last_close"] + [f"f_{k}" for k in E.FACTORS]
             out = live.reset_index().rename(columns={"index": "ticker"})[cols].rename(columns={"ens": "score"})
@@ -130,12 +171,30 @@ def run(update=True, seal=True, log=print, offline_universe=False):
         {"id": "Ledger integrity", "ok": bool(not problems), "detail": "all seals verified" if not problems else "; ".join(problems)},
         {"id": "Live skill band", "ok": bool((len(live_ics) < 26) or (np.mean(live_ics[-26:]) >= band26[0])),
          "detail": f"{len(live_ics)} live weeks graded; pause if 26-week average falls below {band26[0]:+.3f}"},
+        {"id": "Price cross-check", "ok": bool(xchk.get("agree") is None or xchk["agree"] >= 0.95),
+         "detail": (f"{xchk['agree']:.1%} of {xchk['points']} recent closes for {xchk['stocks']} stocks match Nasdaq within 0.5%"
+                    if xchk.get("agree") is not None else "Nasdaq cross-check unavailable this run")},
         {"id": "Drawdown vs S&P 500", "ok": bool(live_dd > -0.25), "detail": f"paper portfolio {live_dd:+.1%} from its best level vs the index (pause at -25%)"},
     ]
     status["kill_switches"] = ks; status["evaluation"] = evaluation
     json.dump(status, open(os.path.join(DATA_DIR, "status.json"), "w"), indent=1, default=str)
     from . import dashboard
+    news = {}
+    if update:
+        try: news = S.headlines(cur, log=log)
+        except Exception as e: log(f"[src] headlines failed: {e!r}")
+    filings = S.recent_filings(sinfo.get("events"), set(cur))
+    finfo = {}
+    for k, v in getattr(R, "info", {}).items():
+        if last in v.index: finfo[k] = (v.loc[last] + 0.5)
+    raw = {k: extra[k].loc[last] for k in ("ey", "bm", "revg", "sue", "gpa") if k in extra and last in extra[k].index}
+    sinfo["sources"]["Nasdaq price cross-check"] = xchk.get("stocks") or 0
+    sinfo["sources"]["Yahoo Finance headlines"] = len(news)
+    sinfo["sources"]["Yahoo Finance prices (yfinance)"] = int(A.shape[1])
+    sinfo["sources"]["Wikipedia index membership"] = len(cur) + len(rem)
     dashboard.build(px=px, rep=rep, live=live, evaluation=evaluation, sims=sims, ic=ic, cal=cal, status=status,
-                    names=names, sectors=sectors, entry=entry, exit_=exit_, last=last, uni=uni, daily=daily, daily_all=daily_all)
+                    names=names, sectors=sectors, entry=entry, exit_=exit_, last=last, uni=uni, daily=daily, daily_all=daily_all,
+                    extras={"news": news, "filings": filings, "finfo": finfo, "raw": raw, "sources": sinfo["sources"], "xchk": xchk,
+                            "model_inputs": {"fundamentals": bool(CFG.fundamentals), "macro": bool(CFG.macro)}})
     log(f"[run] done: last data {last.date()}, seal: {seal_note}, graded {len(graded)}, ledger problems {len(problems)}")
     return status

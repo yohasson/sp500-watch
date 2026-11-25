@@ -13,6 +13,12 @@ FACTOR_LABELS = {"rev5": "Bounce-back after a weak week (1-week reversal)", "rev
                  "hi52": "Close to its 52-week high", "lowbeta": "Moves less than the market (low beta)",
                  "secrev5": "Lagged its sector last week"}
 REGIME = ["vix", "mkt20", "mkt5", "disp5"]
+FUND = ["ey", "bm", "gpa", "accr", "revg", "sue", "evt", "attn"]      # SEC financials, SEC 8-K events, Wikipedia attention
+FUND_LABELS = {"ey": "Cheap vs earnings", "bm": "Cheap vs book value", "gpa": "Profitable (gross profit / assets)",
+               "accr": "Earnings backed by cash", "revg": "Revenue growth", "sue": "Recent earnings beat",
+               "evt": "Recent company announcements (8-K)", "attn": "Attention spike (Wikipedia views)"}
+NEUTRAL_LOW = {"attn", "evt"}   # signals where "more" is not obviously better; the models learn the sign
+MACRO = ["t10y2y", "hy"]
 
 def decision_dates(idx: pd.DatetimeIndex):
     """Last trading day of each ISO week present in the data."""
@@ -20,7 +26,7 @@ def decision_dates(idx: pd.DatetimeIndex):
     wk = s.groupby([idx.isocalendar().year.values, idx.isocalendar().week.values]).max()
     return pd.DatetimeIndex(sorted(wk.values))
 
-def build_features(px, sectors, member, bench="SPY"):
+def build_features(px, sectors, member, bench="SPY", extra=None, macro=None):
     A = px["adjclose"]; stocks = [c for c in A.columns if c in member.columns]
     S = A[stocks]; R = S.pct_change(fill_method=None); M = A[bench]; RM = M.pct_change(fill_method=None)
     f = {}
@@ -50,6 +56,11 @@ def build_features(px, sectors, member, bench="SPY"):
     vix = A["^VIX"] if "^VIX" in A.columns else px["close"].get("^VIX", pd.Series(20.0, index=A.index))
     reg = pd.DataFrame({"vix": vix, "mkt20": M / M.shift(21) - 1, "mkt5": M / M.shift(5) - 1,
                         "disp5": r5.where(member.reindex(r5.index).fillna(False)).std(axis=1)})
+    if extra:
+        for k, v in extra.items(): f[k] = v.reindex(index=A.index, columns=stocks)
+    if macro is not None:
+        if "T10Y2Y" in macro: reg["t10y2y"] = macro["T10Y2Y"].reindex(A.index).ffill()
+        if "BAMLH0A0HYM2" in macro: reg["hy"] = macro["BAMLH0A0HYM2"].reindex(A.index).ffill()
     return f, reg, stocks
 
 def forward_excess(px, stocks, dates, bench="SPY", horizon=5, entry="open"):
@@ -73,12 +84,19 @@ def xrank(df):
     return df.rank(axis=1, pct=True) - 0.5
 
 class Replay:
-    def __init__(self, px, sectors, member, cfg=CFG):
+    def __init__(self, px, sectors, member, cfg=CFG, extra=None, macro=None):
         self.cfg = cfg; self.px = px
-        self.f, self.reg, self.stocks = build_features(px, sectors, member, cfg.benchmark)
+        use_f = getattr(cfg, "fundamentals", False) and extra
+        self.f, self.reg, self.stocks = build_features(px, sectors, member, cfg.benchmark,
+                                                       extra=extra, macro=macro if getattr(cfg, "macro", False) else None)
         self.member = member.reindex(px["adjclose"].index).fillna(False)[self.stocks]
-        self.factors = FACTORS + (EXTRA if getattr(cfg, "extra_features", False) else [])
+        self.factors = FACTORS + (EXTRA if getattr(cfg, "extra_features", False) else []) + ([k for k in FUND if k in self.f] if use_f else [])
+        self.regcols = REGIME + [c for c in MACRO if c in self.reg.columns]
         self.F = {k: xrank(v.where(self.member)) for k, v in self.f.items() if k in self.factors}
+        for k in FUND:   # unknown fundamentals = neutral (0) for members, so missing data never removes a stock
+            if k in self.F: self.F[k] = self.F[k].where(~self.member, self.F[k].fillna(0))
+        # info-only ranks of the new signals for display, even when the model does not use them
+        self.info = {k: xrank(v.where(self.member)) for k, v in self.f.items() if k in FUND}
         self.sectors = sectors
         self.dates = decision_dates(px["adjclose"].index)
         self.dates = self.dates[self.dates >= px["adjclose"].index[260]]
@@ -108,7 +126,7 @@ class Replay:
 
     def _panel(self, d):
         X = pd.DataFrame({k: self.F[k].loc[d] for k in self.factors})
-        for c in REGIME: X[c] = self.reg.loc[d, c]
+        for c in self.regcols: X[c] = self.reg.loc[d, c]
         return X[self.member.loc[d]]
 
     def blend(self, d):
@@ -121,14 +139,14 @@ class Replay:
             Xd = self._train_rows(t)
             if Xd is not None: rows.append(Xd)
         if not rows: return None
-        tr = pd.concat(rows); X = tr[self.factors + REGIME].fillna(0); y = tr["y"]
+        tr = pd.concat(rows); X = tr[self.factors + self.regcols].fillna(0); y = tr["y"]
         gb = HistGradientBoostingRegressor(max_iter=200, learning_rate=0.05, max_depth=3, min_samples_leaf=200,
                                            l2_regularization=1.0, random_state=self.cfg.random_seed).fit(X, y)
         rd = Ridge(alpha=10).fit(X, y)
         return gb, rd, len(rows)
 
     def score(self, d, models):
-        X = self.panel(d); Xf = X[self.factors + REGIME].fillna(0)
+        X = self.panel(d); Xf = X[self.factors + self.regcols].fillna(0)
         gb, rd = models[0], models[1]
         g = pd.Series(gb.predict(Xf), index=X.index); r = pd.Series(rd.predict(Xf), index=X.index)
         b = self.blend(d)[X.index]

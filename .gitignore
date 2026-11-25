@@ -1,6 +1,5 @@
 __pycache__/
 data/prices/
 data/replay.csv.gz
-data/hindsight_daily.csv.gz
-data/dashboard_offline.html
 run.log
+data/src/
