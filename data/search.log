@@ -1,0 +1,122 @@
+[universe] 503 current members, 360 removed tickers with dates
+HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: SNI"}}}
+HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: XL"}}}
+$SNI: No data found, symbol may be delisted
+$TSS: No data found, symbol may be delisted
+$COL: No data found, symbol may be delisted
+$XL: No data found, symbol may be delisted
+$TFCF: No data found, symbol may be delisted
+$TWX: No data found, symbol may be delisted
+$CHK: No data found, symbol may be delisted
+$TFCFA: No data found, symbol may be delisted
+$HFC: No data found, symbol may be delisted
+$MON: No data found, symbol may be delisted
+$FL: No data found, symbol may be delisted
+$WLTW: No data found, symbol may be delisted
+$CA: possibly delisted; no price data found  (period=7y)
+$LLL: No data found, symbol may be delisted
+$FBHS: No data found, symbol may be delisted
+$SCG: No data found, symbol may be delisted
+$ADS: No data found, symbol may be delisted
+$ESRX: No data found, symbol may be delisted
+$DWDP: No data found, symbol may be delisted
+$EVHC: No data found, symbol may be delisted
+$CELG: No data found, symbol may be delisted
+$ANDV: No data found, symbol may be delisted
+$DPS: No data found, symbol may be delisted
+$AET: No data found, symbol may be delisted
+$FRC: No data found, symbol may be delisted
+$WYN: No data found, symbol may be delisted
+$BMS: No data found, symbol may be delisted
+$PDCO: No data found, symbol may be delisted
+$SRCL: No data found, symbol may be delisted
+$GPS: No data found, symbol may be delisted
+$GGP: No data found, symbol may be delisted
+$RHT: No data found, symbol may be delisted
+$BCR: No data found, symbol may be delisted
+
+33 Failed downloads:
+['SNI', 'TSS', 'COL', 'XL', 'TFCF', 'TWX', 'CHK', 'TFCFA', 'HFC', 'MON', 'FL', 'WLTW', 'LLL', 'FBHS', 'SCG', 'ADS', 'ESRX', 'DWDP', 'EVHC', 'CELG', 'ANDV', 'DPS', 'AET', 'FRC', 'WYN', 'BMS', 'PDCO', 'SRCL', 'GPS', 'GGP', 'RHT', 'BCR']: No data found, symbol may be delisted
+['CA']: possibly delisted; no price data found  (period=7y)
+[data] yfinance 46/46 -> 13 ok
+[data] yfinance 100/629 -> 100 ok
+[data] yfinance 200/629 -> 200 ok
+[data] yfinance 300/629 -> 300 ok
+[data] yfinance 400/629 -> 400 ok
+[data] yfinance 500/629 -> 500 ok
+$AVB: possibly delisted; no price data found  (period=3mo)
+$HOLX: No data found, symbol may be delisted
+$SEE: possibly delisted; no price data found  (period=3mo)
+$KSU: No data found, symbol may be delisted
+$FLIR: No data found, symbol may be delisted
+$MXIM: No data found, symbol may be delisted
+$VAR: No data found, symbol may be delisted
+$ATVI: No data found, symbol may be delisted
+$PBCT: No data found, symbol may be delisted
+$DISH: No data found, symbol may be delisted
+$ALXN: No data found, symbol may be delisted
+$WBA: No data found, symbol may be delisted
+$DAY: No data found, symbol may be delisted
+$CTLT: No data found, symbol may be delisted
+$MRO: No data found, symbol may be delisted
+$NLSN: No data found, symbol may be delisted
+$K: possibly delisted; no price data found  (period=3mo)
+$ABMD: No data found, symbol may be delisted
+$HES: No data found, symbol may be delisted
+$DISCK: No data found, symbol may be delisted
+$CMA: possibly delisted; no price data found  (period=3mo)
+$EA: possibly delisted; no price data found  (period=3mo)
+$CTXS: No data found, symbol may be delisted
+$XLNX: No data found, symbol may be delisted
+$PXD: No data found, symbol may be delisted
+$CERN: No data found, symbol may be delisted
+$DISCA: No data found, symbol may be delisted
+$CTRA: possibly delisted; no price data found  (period=3mo)
+$TWTR: No data found, symbol may be delisted
+$SIVB: No data found, symbol may be delisted
+$JNPR: No data found, symbol may be delisted
+$DFS: No data found, symbol may be delisted
+$HBI: possibly delisted; no price data found  (period=3mo)
+$IPG: possibly delisted; no price data found  (period=3mo)
+$DRE: No data found, symbol may be delisted
+
+35 Failed downloads:
+['AVB', 'SEE', 'K', 'CMA', 'EA', 'CTRA', 'HBI', 'IPG']: possibly delisted; no price data found  (period=3mo)
+['HOLX', 'KSU', 'FLIR', 'MXIM', 'VAR', 'ATVI', 'PBCT', 'DISH', 'ALXN', 'WBA', 'DAY', 'CTLT', 'MRO', 'NLSN', 'ABMD', 'HES', 'DISCK', 'CTXS', 'XLNX', 'PXD', 'CERN', 'DISCA', 'TWTR', 'SIVB', 'JNPR', 'DFS', 'DRE']: No data found, symbol may be delisted
+[data] yfinance 600/629 -> 565 ok
+$WCG: No data found, symbol may be delisted
+$TIF: No data found, symbol may be delisted
+$ETFC: No data found, symbol may be delisted
+$CXO: No data found, symbol may be delisted
+$RTN: No data found, symbol may be delisted
+$VIAB: No data found, symbol may be delisted
+$NBL: No data found, symbol may be delisted
+$XEC: No data found, symbol may be delisted
+$ARNC: No data found, symbol may be delisted
+$JWN: No data found, symbol may be delisted
+$AGN: No data found, symbol may be delisted
+
+11 Failed downloads:
+['WCG', 'TIF', 'ETFC', 'CXO', 'RTN', 'VIAB', 'NBL', 'XEC', 'ARNC', 'JWN', 'AGN']: No data found, symbol may be delisted
+[data] yfinance 629/629 -> 583 ok
+[data] after yfinance: 596 ok, 79 left for direct download, 33s
+[data] 0/79 symbols, 43s
+[data] fetched 596 symbols ({'yfinance': 596}); failed 79: ['AVB', 'EA', 'CTRA', 'HOLX', 'DAY', 'K', 'IPG', 'WBA', 'HES', 'JNPR', 'DFS', 'CTLT', 'MRO', 'CMA', 'PXD']
+[src] fundamentals computed for 503 companies
+baseline {"group": null, "ov": {}, "dev": {"weeks": 152, "ic": 0.002311542408927222, "t": 0.14482039493696255, "net_ann": -0.0496998946087146, "sharpe": -0.3774116900493739, "turnover": 0.7210526315789473, "invested": 1.0, "hit": 0.4868421052631579}, "hold": {"weeks": 52, "ic": 0.01649849773445476, "t": 0.6958963662240943, "net_ann": -0.05660180897407796, "sharpe": -0.35459550417581676, "turnover": 0.7326923076923078, "invested": 1.0, "hit": 0.4807692307692308}} 8
+sector_target {"group": "target", "ov": {"target": "sector"}, "dev": {"weeks": 152, "ic": -0.004193652439195132, "t": -0.30716968251002624, "net_ann": -0.1111793147356619, "sharpe": -0.8373960935003897, "turnover": 0.7427631578947369, "invested": 1.0, "hit": 0.4407894736842105}, "hold": {"weeks": 52, "ic": 0.00898378440306176, "t": 0.427980982631203, "net_ann": 0.17634332875246694, "sharpe": 0.9707894558973316, "turnover": 0.7365384615384615, "invested": 1.0, "hit": 0.5576923076923077}} 8
+extra_price {"group": "inputs", "ov": {"extra_features": true}, "dev": {"weeks": 152, "ic": -0.007102123035322466, "t": -0.40596743289870807, "net_ann": -0.06023300766606832, "sharpe": -0.43797301598029914, "turnover": 0.7473684210526316, "invested": 1.0, "hit": 0.45394736842105265}, "hold": {"weeks": 52, "ic": -0.0010637519901021404, "t": -0.04462759943745268, "net_ann": -0.03279404439443079, "sharpe": -0.20615283552733144, "turnover": 0.7730769230769231, "invested": 1.0, "hit": 0.4423076923076923}} 10
+fund {"group": "inputs", "ov": {"fundamentals": true}, "dev": {"weeks": 152, "ic": 0.008451091045351859, "t": 0.5619296991473417, "net_ann": -0.07535095308317485, "sharpe": -0.5778453938575939, "turnover": 0.5552631578947369, "invested": 1.0, "hit": 0.48026315789473684}, "hold": {"weeks": 52, "ic": 0.01854506498284958, "t": 0.8196117703690976, "net_ann": -0.061549097634421734, "sharpe": -0.41628945156229763, "turnover": 0.5461538461538461, "invested": 1.0, "hit": 0.46153846153846156}} 10
+macro {"group": "inputs", "ov": {"macro": true}, "dev": {"weeks": 152, "ic": 0.003951656345961811, "t": 0.25184465652391963, "net_ann": -0.04243985903157954, "sharpe": -0.3439152665161606, "turnover": 0.7177631578947369, "invested": 1.0, "hit": 0.506578947368421}, "hold": {"weeks": 52, "ic": 0.014204227954877451, "t": 0.5991350781613958, "net_ann": -0.03402995931087627, "sharpe": -0.1947307336729701, "turnover": 0.6961538461538461, "invested": 1.0, "hit": 0.5192307692307693}} 9
+fund+extra {"group": "inputs", "ov": {"fundamentals": true, "extra_features": true}, "dev": {"weeks": 152, "ic": -0.005854930758647345, "t": -0.35059811528550805, "net_ann": -0.11505296650302099, "sharpe": -0.85930528616086, "turnover": 0.5822368421052632, "invested": 1.0, "hit": 0.46710526315789475}, "hold": {"weeks": 52, "ic": 0.006897072828537309, "t": 0.2928876734438046, "net_ann": 0.07030006406674483, "sharpe": 0.41389650162651853, "turnover": 0.596153846153846, "invested": 1.0, "hit": 0.5576923076923077}} 12
+blend_only {"group": "ensemble", "ov": {"ensemble": "blend"}, "dev": {"weeks": 152, "ic": -0.0010336690395613142, "t": -0.06130094616266064, "net_ann": -0.09728790610459725, "sharpe": -0.7664118929096241, "turnover": 0.5730263157894736, "invested": 1.0, "hit": 0.506578947368421}, "hold": {"weeks": 52, "ic": 0.005200272456205506, "t": 0.2064181139728412, "net_ann": 0.10616011187300223, "sharpe": 0.5730878804360234, "turnover": 0.6134615384615385, "invested": 1.0, "hit": 0.5576923076923077}} 8
+gbm_only {"group": "ensemble", "ov": {"ensemble": "gbm"}, "dev": {"weeks": 152, "ic": -0.01053709699908286, "t": -0.5868184939849034, "net_ann": -0.06687721171031358, "sharpe": -0.36669050923958757, "turnover": 0.6802631578947369, "invested": 1.0, "hit": 0.45394736842105265}, "hold": {"weeks": 52, "ic": 0.03171066520592109, "t": 1.1182736477094881, "net_ann": 0.10823388057363226, "sharpe": 0.5194457085028844, "turnover": 0.7211538461538461, "invested": 1.0, "hit": 0.5384615384615384}} 8
+ridge_only {"group": "ensemble", "ov": {"ensemble": "ridge"}, "dev": {"weeks": 152, "ic": 0.013520766064258326, "t": 0.8287760442127954, "net_ann": -0.031037768064165694, "sharpe": -0.16478088406182562, "turnover": 0.4980263157894737, "invested": 1.0, "hit": 0.48026315789473684}, "hold": {"weeks": 52, "ic": -0.009353487230235356, "t": -0.307691119589039, "net_ann": -0.12542839822139285, "sharpe": -0.4953336743356134, "turnover": 0.34038461538461545, "invested": 1.0, "hit": 0.4230769230769231}} 8
+gbm+ridge {"group": "ensemble", "ov": {"ensemble": "gbm+ridge"}, "dev": {"weeks": 152, "ic": 0.002330175791301212, "t": 0.14008937843551791, "net_ann": -0.07187590037258684, "sharpe": -0.4230793895580785, "turnover": 0.6440789473684211, "invested": 1.0, "hit": 0.48026315789473684}, "hold": {"weeks": 52, "ic": 0.013806957309629135, "t": 0.5902374903262391, "net_ann": 0.03538685377657824, "sharpe": 0.16385469245642587, "turnover": 0.7076923076923076, "invested": 1.0, "hit": 0.5384615384615384}} 8
+top20 {"group": "size", "ov": {"portfolio_n": 20, "max_per_sector": 5}, "dev": {"weeks": 152, "ic": 0.002311542408927222, "t": 0.14482039493696255, "net_ann": -0.04077366683222661, "sharpe": -0.34539237158477226, "turnover": 0.7401315789473685, "invested": 1.0, "hit": 0.506578947368421}, "hold": {"weeks": 52, "ic": 0.01649849773445476, "t": 0.6958963662240943, "net_ann": 0.09152573717459256, "sharpe": 0.5986433206278492, "turnover": 0.7500000000000001, "invested": 1.0, "hit": 0.46153846153846156}} 0
+top30 {"group": "size", "ov": {"portfolio_n": 30, "max_per_sector": 7}, "dev": {"weeks": 152, "ic": 0.002311542408927222, "t": 0.14482039493696255, "net_ann": -0.055639117882847144, "sharpe": -0.5039476537563207, "turnover": 0.755263157894737, "invested": 1.0, "hit": 0.5197368421052632}, "hold": {"weeks": 52, "ic": 0.01649849773445476, "t": 0.6958963662240943, "net_ann": 0.13273987236427143, "sharpe": 0.8559132468505163, "turnover": 0.7737179487179489, "invested": 1.0, "hit": 0.46153846153846156}} 0
+hold_top100 {"group": "holding", "ov": {"portfolio_hold_k": 100}, "dev": {"weeks": 152, "ic": 0.002311542408927222, "t": 0.14482039493696255, "net_ann": -0.021643325296902827, "sharpe": -0.16210450857805245, "turnover": 0.5677631578947369, "invested": 1.0, "hit": 0.5131578947368421}, "hold": {"weeks": 52, "ic": 0.01649849773445476, "t": 0.6958963662240943, "net_ann": 0.07616744984272605, "sharpe": 0.4595552369157747, "turnover": 0.5538461538461539, "invested": 1.0, "hit": 0.5384615384615384}} 0
+hold_top25 {"group": "holding", "ov": {"portfolio_hold_k": 25}, "dev": {"weeks": 152, "ic": 0.002311542408927222, "t": 0.14482039493696255, "net_ann": -0.04305156216462469, "sharpe": -0.32826207237091415, "turnover": 0.8335526315789473, "invested": 1.0, "hit": 0.5}, "hold": {"weeks": 52, "ic": 0.01649849773445476, "t": 0.6958963662240943, "net_ann": -0.05185967666825397, "sharpe": -0.32754493197501405, "turnover": 0.8230769230769232, "invested": 1.0, "hit": 0.4807692307692308}} 0
+gate26 {"group": "gate", "ov": {"_gate": 26}, "dev": {"weeks": 152, "ic": 0.002311542408927222, "t": 0.14482039493696255, "net_ann": -0.040133095495909266, "sharpe": -0.45150002979745385, "turnover": 0.40328947368421053, "invested": 0.5328947368421053, "hit": 0.25}, "hold": {"weeks": 52, "ic": 0.01649849773445476, "t": 0.6958963662240943, "net_ann": 0.026877968122432483, "sharpe": 0.17668439393854998, "turnover": 0.6134615384615384, "invested": 0.7307692307692307, "hit": 0.36538461538461536}} 0
+gate52 {"group": "gate", "ov": {"_gate": 52}, "dev": {"weeks": 152, "ic": 0.002311542408927222, "t": 0.14482039493696255, "net_ann": -0.0142360991996473, "sharpe": -0.1775957871676907, "turnover": 0.3355263157894737, "invested": 0.4276315789473684, "hit": 0.2236842105263158}, "hold": {"weeks": 52, "ic": 0.01649849773445476, "t": 0.6958963662240943, "net_ann": -0.05660180897407796, "sharpe": -0.35459550417581676, "turnover": 0.7326923076923078, "invested": 1.0, "hit": 0.4807692307692308}} 0
+RESULT kept ['macro', 'ridge_only', 'top20', 'hold_top100', 'gate52'] adopt False {"group": "combined", "ov": {"macro": true, "ensemble": "ridge", "portfolio_n": 20, "max_per_sector": 5, "portfolio_hold_k": 100, "_gate": 52}, "dev": {"weeks": 152, "ic": 0.013520222630944717, "t": 0.8287486588310632, "net_ann": -0.045266837921623226, "sharpe": -0.4353250049144726, "turnover": 0.29342105263157897, "invested": 0.6578947368421053, "hit": 0.3157894736842105}, "hold": {"weeks": 52, "ic": -0.009354234997353994, "t": -0.30772013309942087, "net_ann": -0.12836534971368574, "sharpe": -0.7285128380668612, "turnover": 0.30000000000000004, "invested": 0.8846153846153846, "hit": 0.38461538461538464}}

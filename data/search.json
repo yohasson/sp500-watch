@@ -1,0 +1,474 @@
+{
+ "run_utc": "2026-11-25T12:15:34.663281+00:00",
+ "holdout_start": "2025-11-07",
+ "holdout_weeks": 52,
+ "dev_weeks": 152,
+ "trials": 17,
+ "kept": [
+  "macro",
+  "ridge_only",
+  "top20",
+  "hold_top100",
+  "gate52"
+ ],
+ "combined": {
+  "macro": true,
+  "ensemble": "ridge",
+  "portfolio_n": 20,
+  "max_per_sector": 5,
+  "portfolio_hold_k": 100,
+  "_gate": 52
+ },
+ "adopt": false,
+ "results": {
+  "baseline": {
+   "group": null,
+   "ov": {},
+   "dev": {
+    "weeks": 152,
+    "ic": 0.002311542408927222,
+    "t": 0.14482039493696255,
+    "net_ann": -0.0496998946087146,
+    "sharpe": -0.3774116900493739,
+    "turnover": 0.7210526315789473,
+    "invested": 1.0,
+    "hit": 0.4868421052631579
+   },
+   "hold": {
+    "weeks": 52,
+    "ic": 0.01649849773445476,
+    "t": 0.6958963662240943,
+    "net_ann": -0.05660180897407796,
+    "sharpe": -0.35459550417581676,
+    "turnover": 0.7326923076923078,
+    "invested": 1.0,
+    "hit": 0.4807692307692308
+   }
+  },
+  "sector_target": {
+   "group": "target",
+   "ov": {
+    "target": "sector"
+   },
+   "dev": {
+    "weeks": 152,
+    "ic": -0.004193652439195132,
+    "t": -0.30716968251002624,
+    "net_ann": -0.1111793147356619,
+    "sharpe": -0.8373960935003897,
+    "turnover": 0.7427631578947369,
+    "invested": 1.0,
+    "hit": 0.4407894736842105
+   },
+   "hold": {
+    "weeks": 52,
+    "ic": 0.00898378440306176,
+    "t": 0.427980982631203,
+    "net_ann": 0.17634332875246694,
+    "sharpe": 0.9707894558973316,
+    "turnover": 0.7365384615384615,
+    "invested": 1.0,
+    "hit": 0.5576923076923077
+   }
+  },
+  "extra_price": {
+   "group": "inputs",
+   "ov": {
+    "extra_features": true
+   },
+   "dev": {
+    "weeks": 152,
+    "ic": -0.007102123035322466,
+    "t": -0.40596743289870807,
+    "net_ann": -0.06023300766606832,
+    "sharpe": -0.43797301598029914,
+    "turnover": 0.7473684210526316,
+    "invested": 1.0,
+    "hit": 0.45394736842105265
+   },
+   "hold": {
+    "weeks": 52,
+    "ic": -0.0010637519901021404,
+    "t": -0.04462759943745268,
+    "net_ann": -0.03279404439443079,
+    "sharpe": -0.20615283552733144,
+    "turnover": 0.7730769230769231,
+    "invested": 1.0,
+    "hit": 0.4423076923076923
+   }
+  },
+  "fund": {
+   "group": "inputs",
+   "ov": {
+    "fundamentals": true
+   },
+   "dev": {
+    "weeks": 152,
+    "ic": 0.008451091045351859,
+    "t": 0.5619296991473417,
+    "net_ann": -0.07535095308317485,
+    "sharpe": -0.5778453938575939,
+    "turnover": 0.5552631578947369,
+    "invested": 1.0,
+    "hit": 0.48026315789473684
+   },
+   "hold": {
+    "weeks": 52,
+    "ic": 0.01854506498284958,
+    "t": 0.8196117703690976,
+    "net_ann": -0.061549097634421734,
+    "sharpe": -0.41628945156229763,
+    "turnover": 0.5461538461538461,
+    "invested": 1.0,
+    "hit": 0.46153846153846156
+   }
+  },
+  "macro": {
+   "group": "inputs",
+   "ov": {
+    "macro": true
+   },
+   "dev": {
+    "weeks": 152,
+    "ic": 0.003951656345961811,
+    "t": 0.25184465652391963,
+    "net_ann": -0.04243985903157954,
+    "sharpe": -0.3439152665161606,
+    "turnover": 0.7177631578947369,
+    "invested": 1.0,
+    "hit": 0.506578947368421
+   },
+   "hold": {
+    "weeks": 52,
+    "ic": 0.014204227954877451,
+    "t": 0.5991350781613958,
+    "net_ann": -0.03402995931087627,
+    "sharpe": -0.1947307336729701,
+    "turnover": 0.6961538461538461,
+    "invested": 1.0,
+    "hit": 0.5192307692307693
+   }
+  },
+  "fund+extra": {
+   "group": "inputs",
+   "ov": {
+    "fundamentals": true,
+    "extra_features": true
+   },
+   "dev": {
+    "weeks": 152,
+    "ic": -0.005854930758647345,
+    "t": -0.35059811528550805,
+    "net_ann": -0.11505296650302099,
+    "sharpe": -0.85930528616086,
+    "turnover": 0.5822368421052632,
+    "invested": 1.0,
+    "hit": 0.46710526315789475
+   },
+   "hold": {
+    "weeks": 52,
+    "ic": 0.006897072828537309,
+    "t": 0.2928876734438046,
+    "net_ann": 0.07030006406674483,
+    "sharpe": 0.41389650162651853,
+    "turnover": 0.596153846153846,
+    "invested": 1.0,
+    "hit": 0.5576923076923077
+   }
+  },
+  "blend_only": {
+   "group": "ensemble",
+   "ov": {
+    "ensemble": "blend"
+   },
+   "dev": {
+    "weeks": 152,
+    "ic": -0.0010336690395613142,
+    "t": -0.06130094616266064,
+    "net_ann": -0.09728790610459725,
+    "sharpe": -0.7664118929096241,
+    "turnover": 0.5730263157894736,
+    "invested": 1.0,
+    "hit": 0.506578947368421
+   },
+   "hold": {
+    "weeks": 52,
+    "ic": 0.005200272456205506,
+    "t": 0.2064181139728412,
+    "net_ann": 0.10616011187300223,
+    "sharpe": 0.5730878804360234,
+    "turnover": 0.6134615384615385,
+    "invested": 1.0,
+    "hit": 0.5576923076923077
+   }
+  },
+  "gbm_only": {
+   "group": "ensemble",
+   "ov": {
+    "ensemble": "gbm"
+   },
+   "dev": {
+    "weeks": 152,
+    "ic": -0.01053709699908286,
+    "t": -0.5868184939849034,
+    "net_ann": -0.06687721171031358,
+    "sharpe": -0.36669050923958757,
+    "turnover": 0.6802631578947369,
+    "invested": 1.0,
+    "hit": 0.45394736842105265
+   },
+   "hold": {
+    "weeks": 52,
+    "ic": 0.03171066520592109,
+    "t": 1.1182736477094881,
+    "net_ann": 0.10823388057363226,
+    "sharpe": 0.5194457085028844,
+    "turnover": 0.7211538461538461,
+    "invested": 1.0,
+    "hit": 0.5384615384615384
+   }
+  },
+  "ridge_only": {
+   "group": "ensemble",
+   "ov": {
+    "ensemble": "ridge"
+   },
+   "dev": {
+    "weeks": 152,
+    "ic": 0.013520766064258326,
+    "t": 0.8287760442127954,
+    "net_ann": -0.031037768064165694,
+    "sharpe": -0.16478088406182562,
+    "turnover": 0.4980263157894737,
+    "invested": 1.0,
+    "hit": 0.48026315789473684
+   },
+   "hold": {
+    "weeks": 52,
+    "ic": -0.009353487230235356,
+    "t": -0.307691119589039,
+    "net_ann": -0.12542839822139285,
+    "sharpe": -0.4953336743356134,
+    "turnover": 0.34038461538461545,
+    "invested": 1.0,
+    "hit": 0.4230769230769231
+   }
+  },
+  "gbm+ridge": {
+   "group": "ensemble",
+   "ov": {
+    "ensemble": "gbm+ridge"
+   },
+   "dev": {
+    "weeks": 152,
+    "ic": 0.002330175791301212,
+    "t": 0.14008937843551791,
+    "net_ann": -0.07187590037258684,
+    "sharpe": -0.4230793895580785,
+    "turnover": 0.6440789473684211,
+    "invested": 1.0,
+    "hit": 0.48026315789473684
+   },
+   "hold": {
+    "weeks": 52,
+    "ic": 0.013806957309629135,
+    "t": 0.5902374903262391,
+    "net_ann": 0.03538685377657824,
+    "sharpe": 0.16385469245642587,
+    "turnover": 0.7076923076923076,
+    "invested": 1.0,
+    "hit": 0.5384615384615384
+   }
+  },
+  "top20": {
+   "group": "size",
+   "ov": {
+    "portfolio_n": 20,
+    "max_per_sector": 5
+   },
+   "dev": {
+    "weeks": 152,
+    "ic": 0.002311542408927222,
+    "t": 0.14482039493696255,
+    "net_ann": -0.04077366683222661,
+    "sharpe": -0.34539237158477226,
+    "turnover": 0.7401315789473685,
+    "invested": 1.0,
+    "hit": 0.506578947368421
+   },
+   "hold": {
+    "weeks": 52,
+    "ic": 0.01649849773445476,
+    "t": 0.6958963662240943,
+    "net_ann": 0.09152573717459256,
+    "sharpe": 0.5986433206278492,
+    "turnover": 0.7500000000000001,
+    "invested": 1.0,
+    "hit": 0.46153846153846156
+   }
+  },
+  "top30": {
+   "group": "size",
+   "ov": {
+    "portfolio_n": 30,
+    "max_per_sector": 7
+   },
+   "dev": {
+    "weeks": 152,
+    "ic": 0.002311542408927222,
+    "t": 0.14482039493696255,
+    "net_ann": -0.055639117882847144,
+    "sharpe": -0.5039476537563207,
+    "turnover": 0.755263157894737,
+    "invested": 1.0,
+    "hit": 0.5197368421052632
+   },
+   "hold": {
+    "weeks": 52,
+    "ic": 0.01649849773445476,
+    "t": 0.6958963662240943,
+    "net_ann": 0.13273987236427143,
+    "sharpe": 0.8559132468505163,
+    "turnover": 0.7737179487179489,
+    "invested": 1.0,
+    "hit": 0.46153846153846156
+   }
+  },
+  "hold_top100": {
+   "group": "holding",
+   "ov": {
+    "portfolio_hold_k": 100
+   },
+   "dev": {
+    "weeks": 152,
+    "ic": 0.002311542408927222,
+    "t": 0.14482039493696255,
+    "net_ann": -0.021643325296902827,
+    "sharpe": -0.16210450857805245,
+    "turnover": 0.5677631578947369,
+    "invested": 1.0,
+    "hit": 0.5131578947368421
+   },
+   "hold": {
+    "weeks": 52,
+    "ic": 0.01649849773445476,
+    "t": 0.6958963662240943,
+    "net_ann": 0.07616744984272605,
+    "sharpe": 0.4595552369157747,
+    "turnover": 0.5538461538461539,
+    "invested": 1.0,
+    "hit": 0.5384615384615384
+   }
+  },
+  "hold_top25": {
+   "group": "holding",
+   "ov": {
+    "portfolio_hold_k": 25
+   },
+   "dev": {
+    "weeks": 152,
+    "ic": 0.002311542408927222,
+    "t": 0.14482039493696255,
+    "net_ann": -0.04305156216462469,
+    "sharpe": -0.32826207237091415,
+    "turnover": 0.8335526315789473,
+    "invested": 1.0,
+    "hit": 0.5
+   },
+   "hold": {
+    "weeks": 52,
+    "ic": 0.01649849773445476,
+    "t": 0.6958963662240943,
+    "net_ann": -0.05185967666825397,
+    "sharpe": -0.32754493197501405,
+    "turnover": 0.8230769230769232,
+    "invested": 1.0,
+    "hit": 0.4807692307692308
+   }
+  },
+  "gate26": {
+   "group": "gate",
+   "ov": {
+    "_gate": 26
+   },
+   "dev": {
+    "weeks": 152,
+    "ic": 0.002311542408927222,
+    "t": 0.14482039493696255,
+    "net_ann": -0.040133095495909266,
+    "sharpe": -0.45150002979745385,
+    "turnover": 0.40328947368421053,
+    "invested": 0.5328947368421053,
+    "hit": 0.25
+   },
+   "hold": {
+    "weeks": 52,
+    "ic": 0.01649849773445476,
+    "t": 0.6958963662240943,
+    "net_ann": 0.026877968122432483,
+    "sharpe": 0.17668439393854998,
+    "turnover": 0.6134615384615384,
+    "invested": 0.7307692307692307,
+    "hit": 0.36538461538461536
+   }
+  },
+  "gate52": {
+   "group": "gate",
+   "ov": {
+    "_gate": 52
+   },
+   "dev": {
+    "weeks": 152,
+    "ic": 0.002311542408927222,
+    "t": 0.14482039493696255,
+    "net_ann": -0.0142360991996473,
+    "sharpe": -0.1775957871676907,
+    "turnover": 0.3355263157894737,
+    "invested": 0.4276315789473684,
+    "hit": 0.2236842105263158
+   },
+   "hold": {
+    "weeks": 52,
+    "ic": 0.01649849773445476,
+    "t": 0.6958963662240943,
+    "net_ann": -0.05660180897407796,
+    "sharpe": -0.35459550417581676,
+    "turnover": 0.7326923076923078,
+    "invested": 1.0,
+    "hit": 0.4807692307692308
+   }
+  },
+  "combined": {
+   "group": "combined",
+   "ov": {
+    "macro": true,
+    "ensemble": "ridge",
+    "portfolio_n": 20,
+    "max_per_sector": 5,
+    "portfolio_hold_k": 100,
+    "_gate": 52
+   },
+   "dev": {
+    "weeks": 152,
+    "ic": 0.013520222630944717,
+    "t": 0.8287486588310632,
+    "net_ann": -0.045266837921623226,
+    "sharpe": -0.4353250049144726,
+    "turnover": 0.29342105263157897,
+    "invested": 0.6578947368421053,
+    "hit": 0.3157894736842105
+   },
+   "hold": {
+    "weeks": 52,
+    "ic": -0.009354234997353994,
+    "t": -0.30772013309942087,
+    "net_ann": -0.12836534971368574,
+    "sharpe": -0.7285128380668612,
+    "turnover": 0.30000000000000004,
+    "invested": 0.8846153846153846,
+    "hit": 0.38461538461538464
+   }
+  }
+ },
+ "rule": "- Every decision week from the walk-forward replay is split into DEVELOPMENT (all weeks before the final 52)\n  and HOLDOUT (the final 52 weeks). Choices are made on development weeks only.\n- Stage 1: each single change below is compared with the baseline on development weeks.\n- Stage 2: from each group, the change with the best development result after costs is kept if it beats the\n  baseline there; kept changes are combined automatically (no hand-picking).\n- The combined model is adopted only if, on the HOLDOUT year, (a) its result after costs is at least the\n  baseline's, (b) its rank accuracy is at least the baseline's and above zero, and (c) on development weeks its\n  result after costs beats the baseline. The number of variants tried is recorded for the overfitting check.\nAll results are written, including the ones that lose."
+}
