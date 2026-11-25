@@ -1,105 +1,106 @@
 [universe] 503 current members, 360 removed tickers with dates
-$TFCFA: No data found, symbol may be delisted
-HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: WYN"}}}
-$GGP: No data found, symbol may be delisted
 $CA: possibly delisted; no price data found  (period=7y)
-$MON: No data found, symbol may be delisted
-$LLL: No data found, symbol may be delisted
-$WYN: No data found, symbol may be delisted
-$FRC: No data found, symbol may be delisted
-$TWX: No data found, symbol may be delisted
-$AET: No data found, symbol may be delisted
+HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ANDV"}}}
+$TFCFA: No data found, symbol may be delisted
+HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: SNI"}}}
 $FL: No data found, symbol may be delisted
-$WLTW: No data found, symbol may be delisted
-$TSS: No data found, symbol may be delisted
-$DWDP: No data found, symbol may be delisted
-$GPS: No data found, symbol may be delisted
-$BMS: No data found, symbol may be delisted
-$ESRX: No data found, symbol may be delisted
-$PDCO: No data found, symbol may be delisted
-$BCR: No data found, symbol may be delisted
-$RHT: No data found, symbol may be delisted
-$COL: No data found, symbol may be delisted
-$CHK: No data found, symbol may be delisted
-$XL: No data found, symbol may be delisted
-$DPS: No data found, symbol may be delisted
-$SNI: No data found, symbol may be delisted
-$ADS: No data found, symbol may be delisted
-$SCG: No data found, symbol may be delisted
 $ANDV: No data found, symbol may be delisted
-$FBHS: No data found, symbol may be delisted
-$TFCF: No data found, symbol may be delisted
+$SNI: No data found, symbol may be delisted
+$MON: No data found, symbol may be delisted
+$SCG: No data found, symbol may be delisted
+$BMS: No data found, symbol may be delisted
 $CELG: No data found, symbol may be delisted
+$LLL: No data found, symbol may be delisted
+$PDCO: No data found, symbol may be delisted
+$RHT: No data found, symbol may be delisted
+$TFCF: No data found, symbol may be delisted
+$DWDP: No data found, symbol may be delisted
 $SRCL: No data found, symbol may be delisted
-$EVHC: No data found, symbol may be delisted
+$XL: No data found, symbol may be delisted
+$WLTW: No data found, symbol may be delisted
+$COL: No data found, symbol may be delisted
 $HFC: No data found, symbol may be delisted
+$FBHS: No data found, symbol may be delisted
+$TSS: No data found, symbol may be delisted
+$CHK: No data found, symbol may be delisted
+$AET: No data found, symbol may be delisted
+$DPS: No data found, symbol may be delisted
+$EVHC: No data found, symbol may be delisted
+$FRC: No data found, symbol may be delisted
+$ADS: No data found, symbol may be delisted
+$GPS: No data found, symbol may be delisted
+$TWX: No data found, symbol may be delisted
+$WYN: No data found, symbol may be delisted
+$ESRX: No data found, symbol may be delisted
+$BCR: No data found, symbol may be delisted
+$GGP: No data found, symbol may be delisted
 
 33 Failed downloads:
-['TFCFA', 'GGP', 'MON', 'LLL', 'WYN', 'FRC', 'TWX', 'AET', 'FL', 'WLTW', 'TSS', 'DWDP', 'GPS', 'BMS', 'ESRX', 'PDCO', 'BCR', 'RHT', 'COL', 'CHK', 'XL', 'DPS', 'SNI', 'ADS', 'SCG', 'ANDV', 'FBHS', 'TFCF', 'CELG', 'SRCL', 'EVHC', 'HFC']: No data found, symbol may be delisted
 ['CA']: possibly delisted; no price data found  (period=7y)
+['TFCFA', 'FL', 'ANDV', 'SNI', 'MON', 'SCG', 'BMS', 'CELG', 'LLL', 'PDCO', 'RHT', 'TFCF', 'DWDP', 'SRCL', 'XL', 'WLTW', 'COL', 'HFC', 'FBHS', 'TSS', 'CHK', 'AET', 'DPS', 'EVHC', 'FRC', 'ADS', 'GPS', 'TWX', 'WYN', 'ESRX', 'BCR', 'GGP']: No data found, symbol may be delisted
 [data] yfinance 46/46 -> 13 ok
 [data] yfinance 100/629 -> 100 ok
 [data] yfinance 200/629 -> 200 ok
 [data] yfinance 300/629 -> 300 ok
 [data] yfinance 400/629 -> 400 ok
 [data] yfinance 500/629 -> 500 ok
-$DISH: No data found, symbol may be delisted
 $IPG: possibly delisted; no price data found  (period=3mo)
-$CTLT: No data found, symbol may be delisted
-$EA: possibly delisted; no price data found  (period=3mo)
-$AVB: possibly delisted; no price data found  (period=3mo)
-$DISCA: No data found, symbol may be delisted
-$K: possibly delisted; no price data found  (period=3mo)
-$CTXS: No data found, symbol may be delisted
-$JNPR: No data found, symbol may be delisted
-$MRO: No data found, symbol may be delisted
-$SEE: possibly delisted; no price data found  (period=3mo)
-$HOLX: No data found, symbol may be delisted
-$NLSN: No data found, symbol may be delisted
-$DRE: No data found, symbol may be delisted
-$WBA: No data found, symbol may be delisted
-$ALXN: No data found, symbol may be delisted
-$SIVB: No data found, symbol may be delisted
 $ABMD: No data found, symbol may be delisted
-$DAY: No data found, symbol may be delisted
-$MXIM: No data found, symbol may be delisted
-$TWTR: No data found, symbol may be delisted
-$XLNX: No data found, symbol may be delisted
-$CERN: No data found, symbol may be delisted
-$VAR: No data found, symbol may be delisted
-$DISCK: No data found, symbol may be delisted
-$PBCT: No data found, symbol may be delisted
-$FLIR: No data found, symbol may be delisted
 $HBI: possibly delisted; no price data found  (period=3mo)
+$TWTR: No data found, symbol may be delisted
 $HES: No data found, symbol may be delisted
 $KSU: No data found, symbol may be delisted
-$CMA: possibly delisted; no price data found  (period=3mo)
+$DISCA: No data found, symbol may be delisted
+$WBA: No data found, symbol may be delisted
+$VAR: No data found, symbol may be delisted
+$NLSN: No data found, symbol may be delisted
+$CTLT: No data found, symbol may be delisted
+$ALXN: No data found, symbol may be delisted
+$CTXS: No data found, symbol may be delisted
+$CERN: No data found, symbol may be delisted
+$K: possibly delisted; no price data found  (period=3mo)
+$DRE: No data found, symbol may be delisted
+$JNPR: No data found, symbol may be delisted
 $CTRA: possibly delisted; no price data found  (period=3mo)
-$PXD: No data found, symbol may be delisted
-$DFS: No data found, symbol may be delisted
+$SIVB: No data found, symbol may be delisted
+$FLIR: No data found, symbol may be delisted
 $ATVI: No data found, symbol may be delisted
+$PXD: No data found, symbol may be delisted
+$DISCK: No data found, symbol may be delisted
+$EA: possibly delisted; no price data found  (period=3mo)
+$CMA: possibly delisted; no price data found  (period=3mo)
+$DAY: No data found, symbol may be delisted
+$AVB: possibly delisted; no price data found  (period=3mo)
+$PBCT: No data found, symbol may be delisted
+$DFS: No data found, symbol may be delisted
+$XLNX: No data found, symbol may be delisted
+$MRO: No data found, symbol may be delisted
+$HOLX: No data found, symbol may be delisted
+$SEE: possibly delisted; no price data found  (period=3mo)
+$MXIM: No data found, symbol may be delisted
+$DISH: No data found, symbol may be delisted
 
 35 Failed downloads:
-['DISH', 'CTLT', 'DISCA', 'CTXS', 'JNPR', 'MRO', 'HOLX', 'NLSN', 'DRE', 'WBA', 'ALXN', 'SIVB', 'ABMD', 'DAY', 'MXIM', 'TWTR', 'XLNX', 'CERN', 'VAR', 'DISCK', 'PBCT', 'FLIR', 'HES', 'KSU', 'PXD', 'DFS', 'ATVI']: No data found, symbol may be delisted
-['IPG', 'EA', 'AVB', 'K', 'SEE', 'HBI', 'CMA', 'CTRA']: possibly delisted; no price data found  (period=3mo)
+['IPG', 'HBI', 'K', 'CTRA', 'EA', 'CMA', 'AVB', 'SEE']: possibly delisted; no price data found  (period=3mo)
+['ABMD', 'TWTR', 'HES', 'KSU', 'DISCA', 'WBA', 'VAR', 'NLSN', 'CTLT', 'ALXN', 'CTXS', 'CERN', 'DRE', 'JNPR', 'SIVB', 'FLIR', 'ATVI', 'PXD', 'DISCK', 'DAY', 'PBCT', 'DFS', 'XLNX', 'MRO', 'HOLX', 'MXIM', 'DISH']: No data found, symbol may be delisted
 [data] yfinance 600/629 -> 565 ok
 $ETFC: No data found, symbol may be delisted
+$ARNC: No data found, symbol may be delisted
+$VIAB: No data found, symbol may be delisted
+$AGN: No data found, symbol may be delisted
+$NBL: No data found, symbol may be delisted
 $TIF: No data found, symbol may be delisted
 $JWN: No data found, symbol may be delisted
-$VIAB: No data found, symbol may be delisted
+$WCG: No data found, symbol may be delisted
+$XEC: No data found, symbol may be delisted
 $CXO: No data found, symbol may be delisted
 $RTN: No data found, symbol may be delisted
-$NBL: No data found, symbol may be delisted
-$ARNC: No data found, symbol may be delisted
-$XEC: No data found, symbol may be delisted
-$WCG: No data found, symbol may be delisted
-$AGN: No data found, symbol may be delisted
 
 11 Failed downloads:
-['ETFC', 'TIF', 'JWN', 'VIAB', 'CXO', 'RTN', 'NBL', 'ARNC', 'XEC', 'WCG', 'AGN']: No data found, symbol may be delisted
+['ETFC', 'ARNC', 'VIAB', 'AGN', 'NBL', 'TIF', 'JWN', 'WCG', 'XEC', 'CXO', 'RTN']: No data found, symbol may be delisted
 [data] yfinance 629/629 -> 583 ok
 [data] after yfinance: 596 ok, 79 left for direct download, 32s
-[data] 0/79 symbols, 41s
+[data] 0/79 symbols, 42s
 [data] fetched 596 symbols ({'yfinance': 596}); failed 79: ['AVB', 'EA', 'CTRA', 'HOLX', 'DAY', 'K', 'IPG', 'WBA', 'HES', 'JNPR', 'DFS', 'CTLT', 'MRO', 'CMA', 'PXD']
 [src] fundamentals computed for 503 companies
 sources {"SEC financial statements": 503, "SEC 8-K filings": 96773, "Wikipedia page views": 502, "FRED / CBOE macro series": 4}
