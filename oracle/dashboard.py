@@ -36,6 +36,17 @@ def _load_exp():
         return None
 
 
+def _load_search():
+    try:
+        j = json.load(open(os.path.join(DATA_DIR, "search.json")))
+        pick = lambda m: {k: _r(m.get(k), 4) for k in ("ic", "t", "net_ann", "sharpe", "turnover", "invested")}
+        return {"run": j.get("run_utc"), "hs": j.get("holdout_start"), "hw": j.get("holdout_weeks"), "dw": j.get("dev_weeks"),
+                "trials": j.get("trials"), "kept": j.get("kept"), "adopt": j.get("adopt"),
+                "r": {k: {"g": v.get("group"), "dev": pick(v["dev"]), "hold": pick(v["hold"])} for k, v in j.get("results", {}).items()}}
+    except Exception:
+        return None
+
+
 def _since_yesterday(stocks, last, keep=15):
     """Compare today's ranks with the snapshot saved by the most recent earlier trading day (what the page showed then)."""
     p = os.path.join(DATA_DIR, "rank_snap.json")
@@ -174,7 +185,7 @@ def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entr
         "running": running, "changes": changes,
         "sources": extras.get("sources", {}), "xchk": {k: v for k, v in (extras.get("xchk") or {}).items() if k != "mismatches"},
         "model_inputs": extras.get("model_inputs", {}),
-        "exp": _load_exp(),
+        "exp": _load_exp(), "search": _load_search(),
         "daily": [{"d": r["date"].strftime("%Y-%m-%d"), "p": r["picks"], "x": r["exit"].strftime("%Y-%m-%d") if "exit" in r else None,
                    "v": _r(1000 * (1 + r["ret"]), 2) if "ret" in r else None, "b": _r(1000 * (1 + r["bench"]), 2) if "bench" in r else None,
                    "e": r.get("each")} for r in (daily or [])],   # e = top-10 picks in rank order with their returns

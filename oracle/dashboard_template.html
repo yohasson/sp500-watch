@@ -102,6 +102,8 @@ details.card{padding:14px 20px}details.card>summary{cursor:pointer}
 [data-theme=dark] input,[data-theme=dark] select{border-color:#64748b}
 @media (max-width:520px){.asof .lg{display:none}nav{gap:0}nav button{padding:10px 8px;font-size:13px}#health:not(.bad) span:last-child{display:none}
 #tTable td:nth-child(2),#tTable th:nth-child(2),#tTable td:nth-child(3),#tTable th:nth-child(3){display:none}#gear .gl{display:none}nav button{padding:10px 10px;font-size:14px}.g3>.kpi:last-child:nth-child(odd){grid-column:1/-1}.scroll{max-height:none}.hm{display:none}h1{font-size:21px}}
+.vsbox{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.vsbox .big{font-size:1.25rem;font-weight:700}.vsbox .pill{padding:4px 12px;border-radius:999px;font-weight:600;font-size:.85rem}
+.pill.idx{background:color-mix(in srgb,var(--mut) 18%,transparent)}.pill.mdl{background:color-mix(in srgb,var(--acc) 22%,transparent)}
 </style>
 </head>
 <body>
@@ -125,6 +127,11 @@ details.card{padding:14px 20px}details.card>summary{cursor:pointer}
     <div class="verdict" id="verdict"></div>
     <p class="sub" id="subline"></p>
     <p class="note" id="steps" style="margin:10px 0 0"></p>
+  </div>
+  <div class="card" id="vsCard">
+    <h2>Picks or just the index?</h2>
+    <div class="vsbox" id="vsBox"></div>
+    <p class="note" id="vsNote" style="margin-top:10px"></p>
   </div>
   <div class="card hide" id="chgCard">
     <h2 id="chgTitle">Since yesterday</h2>
@@ -203,6 +210,11 @@ details.card{padding:14px 20px}details.card>summary{cursor:pointer}
     <h2>Model league (history replay)</h2>
     <div style="overflow-x:auto"><table id="league"></table></div>
     <p class="note">The ensemble is fixed in advance; the others are shown for comparison only. Picking the best one after the fact would overstate results.</p>
+  </div>
+  <div class="card hide" id="srchCard">
+    <h2>Trying to improve the model: fair test with a held-back year</h2>
+    <div style="overflow-x:auto"><table id="srchTable"></table></div>
+    <p class="note" id="srchNote"></p>
   </div>
   <div class="card hide" id="expCard">
     <h2>New data sources: fair test</h2>
@@ -381,6 +393,19 @@ function renderWeek(){
   ].map(k=>`<div class="kpi"><div class="v">${k[0]}</div><div class="l">${k[1]}</div><div class="h">${k[2]}</div></div>`).join('');
   $('#trustNote').innerHTML=`${state==='over'?'Next list: '+sealMsg(D.seal):bad?'<b class="neg">This list fails its integrity check: treat the list and its results as unverified.</b>':sealed?'This week\'s list was locked before the open (fingerprint <code>'+esc(sealed.sha)+'…</code>).':'Not locked yet: '+sealMsg(D.seal)}`;
 }
+function renderVs(){
+  const e=D.eval||{}, ann=e.ann, t=e.t, ic=(D.ic26||[]), last=ic.length?ic[ic.length-1][1]:null, G=D.gate;
+  const modelWins=ann!=null&&ann>0&&t!=null&&t>=2;
+  const off=G&&G.on===false;
+  const ahead=ann!=null&&ann>0;
+  const pill=modelWins&&!off?'<span class="pill mdl">Picks have the edge</span>':ahead?'<span class="pill idx">Not proven: the index is safer</span>':'<span class="pill idx">The index wins for now</span>';
+  $('#vsBox').innerHTML=`${pill}<div><div class="big ${cls(ann)}">${ann==null?'–':pct(ann,1)} a year</div><div class="note">picks vs the S&amp;P 500, after trading costs, in the honest replay (${e.weeks||'–'} weeks, stocks that left the index included)</div></div>`+
+    (last!=null?`<div><div class="big ${cls(last)}">${last>0?'Positive':'Negative'}</div><div class="note">recent form: rank accuracy over the last 26 weeks (${last.toFixed(3)})</div></div>`:'');
+  $('#vsNote').textContent=off?`The model's recent form is below zero, so its own rule says: hold a plain S&P 500 fund this week and watch the list only.`:
+    modelWins?`The picks have beaten the index after costs with solid evidence. Still keep each pick small: one week is noisy.`:
+    ahead?`The picks came out ahead in the replay, but by an amount that could easily be luck (strength of evidence ${t==null?'–':t.toFixed(1)}; about 2 is needed). For real money, a plain S&P 500 index fund (for example SPY or VOO) is the safer choice until the live record proves the picks.`:
+    `For real money, a plain S&P 500 index fund (for example SPY or VOO) has done better than following these picks. Use the list to learn and to track the model's live record; trading on it is not supported by the evidence yet.`;
+}
 function renderChanges(){
   const C=D.changes; if(!C)return; $('#chgCard').classList.remove('hide');
   $('#chgTitle').textContent=`Since ${fmtD(C.prev)}`;
@@ -505,6 +530,17 @@ function moreHTML(t,h){
   return (facts.length?`<div class="grid g4">${facts.map(f=>`<div class="kpi"><div class="v" style="font-size:18px">${esc(f[1])}</div><div class="l">${esc(f[0])}</div></div>`).join('')}</div>`:'')+
     (bars?`<p class="note" style="margin:12px 0 4px">Percentile vs other S&amp;P 500 stocks (100 = most)${used?'':'. Shown for context; the model does not use these yet'}:</p>${bars}`:'')+fil+news+
     '<p class="note" style="margin-top:10px">Financials from SEC filings, counted from the day they were filed. Headlines from Yahoo Finance; not used by the model.</p>';
+}
+function renderSearch(){
+  const X=D.search; if(!X||!X.r)return; $('#srchCard').classList.remove('hide');
+  const lab={baseline:'Current model',sector_target:'Rank within sector',extra_price:'+ extra price signals',fund:'+ SEC financials, filings, attention',macro:'+ rates and credit spread','fund+extra':'+ financials and extra price signals',
+    blend_only:'Simple factor blend only',gbm_only:'Tree model only',ridge_only:'Linear model only','gbm+ridge':'Tree + linear (no blend)',top20:'Hold 20 stocks',top30:'Hold 30 stocks',
+    hold_top100:'Keep holdings while in top 100',hold_top25:'Keep holdings while in top 25',gate26:'Only trade when last 26 weeks were accurate',gate52:'Only trade when last 52 weeks were accurate',combined:'Best changes combined'};
+  const f=v=>v==null?'–':pct(v,1);
+  $('#srchTable').innerHTML='<tr><th>Change tried</th><th class="num">Earlier years, per year</th><th class="num">Held-back year, per year</th><th class="num">Held-back accuracy</th></tr>'+
+    Object.entries(X.r).map(([k,v])=>`<tr${k==='combined'||k==='baseline'?' style="font-weight:600"':''}><td>${esc(lab[k]||k)}${(X.kept||[]).includes(k)?' <span class="tag buy">kept</span>':''}</td><td class="num ${cls(v.dev.net_ann)}">${f(v.dev.net_ann)}</td><td class="num ${cls(v.hold.net_ann)}">${f(v.hold.net_ann)}</td><td class="num">${v.hold.ic==null?'–':v.hold.ic.toFixed(3)}</td></tr>`).join('');
+  $('#srchNote').textContent=`Results are per year versus the S&P 500, after trading costs. Rule fixed before testing: each change was judged only on the earlier ${X.dw} weeks; the best change from each group was combined automatically and then checked once on the final ${X.hw} weeks (from ${fmtD(X.hs)} ${String(X.hs).slice(0,4)}), which played no part in choosing. ${X.trials} versions were tried in total. `+
+    (X.adopt?'The combined model passed and is now in use.':(X.kept&&X.kept.length?'The combined model did not pass on the held-back year, so the current model stays.':'No change beat the current model on the earlier years, so nothing was combined.'));
 }
 function renderExp(){
   const X=D.exp; if(!X||!X.v)return; $('#expCard').classList.remove('hide');
@@ -632,7 +668,7 @@ function wire(){
   $('#foot').innerHTML=`Research tool, not financial advice. Prices: Yahoo Finance (free, unofficial), cross-checked against Nasdaq. Financials: SEC EDGAR. Last update ${esc(new Date(D.generated).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'}))}.`;
   if(D.health&&D.health.removed_with_data!=null){const x=D.xchk||{};$('#survLine').textContent=`Main prices come from Yahoo Finance (free, unofficial)${x.agree!=null?`; each run checks a sample against Nasdaq's own data (${pct(x.agree,1,false)} matched last time)`:''}. ${D.health.removed_with_data} stocks that left the index are in the history; the rest have no free price source, which can flatter past results (size estimated in Record). Adding a free Tiingo key fills most of them.`}
   const qw=new URLSearchParams(location.search).get('w'); if(qw){const add=qw.split(',').map(x=>decodeURIComponent(x).toUpperCase()).filter(t=>BY[t]&&!inWL(t)); if(add.length){WL=[...WL,...add];saveWL();setTimeout(()=>toast(`Added ${add.length} stock${add.length>1?'s':''} to your watchlist`),300)} history.replaceState(null,'',location.pathname+location.hash)}
-  tabs(); wire(); [renderExp,renderSources,renderChanges,renderWL,renderWeek,renderRunning,renderTest,renderRecord,renderHind,renderAll,calc].forEach(safe);
+  tabs(); wire(); [renderSearch,renderExp,renderSources,renderChanges,renderWL,renderWeek,renderVs,renderRunning,renderTest,renderRecord,renderHind,renderAll,calc].forEach(safe);
   const hh=location.hash.slice(1), TABS=['week','test','record','explore','how'], startTab=TABS.includes(hh)?hh:SET.tab;
   if(startTab&&startTab!=='week'){const b=document.querySelector(`nav button[data-tab="${startTab}"]`);if(b)b.click()}
   if(hh&&!TABS.includes(hh)){history.replaceState(null,'',location.pathname+location.search);openStock(decodeURIComponent(hh).toUpperCase())}
