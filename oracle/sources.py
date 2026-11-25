@@ -425,19 +425,32 @@ def recent_filings(Ev, tickers, days=30):
 
 # ----------------------------------------------------------------------------- optional: Tiingo for stocks that left the index
 def tiingo_history(symbols, years, log=print):
+    """Free Tiingo plan: about 50 requests/hour, so fetch at most ORACLE_TIINGO_MAX per run; filled histories
+    stay in the price cache, and tickers Tiingo does not know are remembered so later runs skip them."""
     key = os.environ.get("TIINGO_API_KEY")
     if not key or not symbols: return {}
-    start = (pd.Timestamp.today() - pd.Timedelta(days=365 * years)).strftime("%Y-%m-%d"); got = {}
-    for s in symbols:
+    skipf = _p("tiingo_skip.json")
+    try: skip = set(json.load(open(skipf)))
+    except Exception: skip = set()
+    todo = [s for s in symbols if s not in skip][:int(os.environ.get("ORACLE_TIINGO_MAX", "45"))]
+    start = (pd.Timestamp.today() - pd.Timedelta(days=365 * years)).strftime("%Y-%m-%d"); got = {}; codes = {}
+    for s in todo:
         try:
-            r = requests.get(f"https://api.tiingo.com/tiingo/daily/{s.lower()}/prices", params={"startDate": start, "token": key}, timeout=30)
+            r = requests.get(f"https://api.tiingo.com/tiingo/daily/{s.lower().replace('.', '-')}/prices",
+                             params={"startDate": start, "token": key}, timeout=30)
+            codes[r.status_code] = codes.get(r.status_code, 0) + 1
+            if r.status_code == 404: skip.add(s); continue
+            if r.status_code in (401, 403, 429): log(f"[tiingo] stopped at {s}: HTTP {r.status_code}"); break
             if r.status_code != 200: continue
             df = pd.DataFrame(r.json())
-            if not len(df): continue
+            if not len(df): skip.add(s); continue
             df.index = pd.to_datetime(df["date"]).dt.tz_localize(None).dt.normalize()
             got[s] = pd.DataFrame({"open": df["open"], "close": df["close"], "adjclose": df["adjClose"]})
-            time.sleep(0.3)
+            time.sleep(0.5)
         except Exception as e:
             log(f"[tiingo] {s}: {e!r}")
-    log(f"[tiingo] history for {len(got)}/{len(symbols)} stocks that left the index")
+    try:
+        os.makedirs(SRC, exist_ok=True); json.dump(sorted(skip), open(skipf, "w"))
+    except Exception: pass
+    log(f"[tiingo] history for {len(got)}/{len(todo)} tried ({len(symbols)} still missing, {len(skip)} unknown to Tiingo); HTTP {codes}")
     return got
