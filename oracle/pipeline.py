@@ -23,6 +23,11 @@ def run(update=True, seal=True, log=print, offline_universe=False):
     A = px["adjclose"]; last = A.index.max()
     have_cur = [t for t in cur if t in A.columns and not pd.isna(A[t].iloc[-1])]
     health = len(have_cur) / max(len(cur), 1)
+    log(f"[run] data health {health:.0%} ({len(have_cur)}/{len(cur)}), last date {last.date()}, {(_now_utc()-t0).seconds}s")
+    if health < 0.6 or CFG.benchmark not in A.columns:
+        status["steps"]["data"] = {"health": health, "failed": failed[:30], "note": "too little data; site not rebuilt"}
+        os.makedirs(DATA_DIR, exist_ok=True); json.dump(status, open(os.path.join(DATA_DIR, "status.json"), "w"), indent=1, default=str)
+        log("[run] stopping early: not enough fresh prices (the next run continues the download)"); return status
     status["steps"]["data"] = {"last_date": str(last.date()), "symbols": int(A.shape[1]), "current_members_with_data": len(have_cur),
                                "current_members": len(cur), "removed_with_data": int(sum(t in A.columns for t in rem)), "health": health,
                                "failed": failed[:30]}
@@ -57,6 +62,12 @@ def run(update=True, seal=True, log=print, offline_universe=False):
                   "max_drawdown_chosen": dd, "deflated_sharpe_prob": E.deflated_sharpe(ch.net.values, trials, float(np.var(srs))), "trials": trials,
                   "calibration": {b: {k: (None if pd.isna(v) else float(v)) for k, v in row.items()} for b, row in cal.iterrows()},
                   "cost_oneway": cost}
+    league = {}
+    for col, label in [("ens", "Ensemble (used)"), ("gbm", "Boosted trees"), ("ridge", "Linear model"), ("blend", "Simple signal blend")]:
+        i2 = E.ic_series(rep, col=col); s2 = E.simulate(rep, CFG.portfolio_n, CFG.portfolio_hold_k, cost, col=col, sectors=sectors, cap=CFG.max_per_sector)
+        league[label] = {"ic": float(i2.mean()), "t": float(i2.mean() / i2.std() * np.sqrt(len(i2))), "net_ann": float((1 + s2.net.mean()) ** 52 - 1),
+                         "last52": float(i2.iloc[-52:].mean())}
+    evaluation["league"] = league
     # ---- live scores
     live, ntrain = R.live(last)
     live = live.copy(); live["pct"] = live["ens"].rank(pct=True, ascending=False)

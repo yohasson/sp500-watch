@@ -25,7 +25,7 @@ class YahooProvider:
             host = self.hosts[attempt % 2]
             url = f"{host}/v8/finance/chart/{ysym}?range={rng}&interval=1d&events=div%7Csplit&includeAdjustedClose=true"
             try:
-                r = self.s.get(url, timeout=20)
+                r = self.s.get(url, timeout=12)
                 if r.status_code == 429:
                     time.sleep(1 + 2 * attempt); continue
                 if r.status_code == 404: return None
@@ -47,7 +47,7 @@ class StooqProvider:
     def history(self, sym, years=10, rng=None):
         s = sym.lower().replace("-", ".")
         s = "^spx" if s == "^gspc" else (s if s.startswith("^") else s + ".us")
-        r = requests.get(f"https://stooq.com/q/d/l/?s={s}&i=d", headers=UA, timeout=20)
+        r = requests.get(f"https://stooq.com/q/d/l/?s={s}&i=d", headers=UA, timeout=8)
         if not r.text.startswith("Date"): return None
         df = pd.read_csv(io.StringIO(r.text), parse_dates=["Date"]).set_index("Date")
         df = df[df.index >= pd.Timestamp.today() - pd.Timedelta(days=365 * years)]
@@ -66,14 +66,16 @@ def _save_cache(frames):
     for f, df in frames.items():
         df.sort_index().round(4).to_csv(os.path.join(PRICE_DIR, f"{f}.csv.gz"), compression="gzip")
 
-def update_prices(symbols, years=10, providers=None, workers=8, log=print):
+def update_prices(symbols, years=10, providers=None, workers=12, log=print, budget_s=None):
     """Fill/refresh the cache. Full history for new symbols, recent months for cached ones."""
     providers = providers or [YahooProvider(), StooqProvider()]
     cache = _load_cache()
     have = set(cache["close"].columns) if "close" in cache else set()
     last_date = cache["close"].index.max() if "close" in cache else None
     stale_days = (pd.Timestamp.today().normalize() - last_date).days if last_date is not None else 9999
+    deadline = time.time() + (budget_s or float(os.environ.get("ORACLE_DATA_BUDGET", 1200)))
     def job(sym):
+        if time.time() > deadline: return sym, None, None
         full = sym not in have
         rng = None if full else ("3mo" if stale_days < 80 else "1y")
         for p in providers:
