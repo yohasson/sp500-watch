@@ -32,6 +32,6 @@ jobs:
         run: |
           git config user.name "sp500-oracle-bot"; git config user.email "sp500-oracle-bot@users.noreply.github.com"
           tail -c 20000 /tmp/exp.log > data/experiments.log 2>/dev/null || true
-          git add data/experiments.json data/experiments.log 2>/dev/null || git add data/experiments.log
+          git add -f data/experiments.log; if [ -f data/experiments.json ]; then git add -f data/experiments.json; fi
           git commit -m "Experiments $(date -u +%FT%TZ)" || true
-          for i in 1 2 3; do git pull --rebase -X ours origin main && git push origin HEAD:main && break; sleep 5; done
+          for i in 1 2 3; do git pull --rebase --autostash -X ours origin main && git push origin HEAD:main && break; sleep 5; done

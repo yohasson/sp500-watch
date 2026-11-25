@@ -45,7 +45,7 @@ jobs:
           git config user.email "sp500-oracle-bot@users.noreply.github.com"
           git add -A ledger site data
           git commit -m "Oracle run $(date -u +%FT%TZ)" || echo "no change"
-          for i in 1 2 3; do git pull --rebase -X ours origin main && git push origin HEAD:main && break; sleep 5; done
+          for i in 1 2 3; do git pull --rebase --autostash -X ours origin main && git push origin HEAD:main && break; sleep 5; done
       - name: Publish the site to gh-pages
         run: |
           rm -rf /tmp/site && cp -r site /tmp/site
@@ -66,4 +66,4 @@ jobs:
           mkdir -p data && (tail -c 20000 /tmp/run.log > data/last_run.log 2>/dev/null || echo "no log" > data/last_run.log)
           echo "status=${{ job.status }} run=${{ github.run_id }} utc=$(date -u +%FT%TZ)" >> data/last_run.log
           git add data/last_run.log && git commit -m "Run log $(date -u +%FT%TZ)" || true
-          for i in 1 2 3; do git pull --rebase -X ours origin main && git push origin HEAD:main && break; sleep 5; done
+          for i in 1 2 3; do git pull --rebase --autostash -X ours origin main && git push origin HEAD:main && break; sleep 5; done

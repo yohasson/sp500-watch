@@ -13,6 +13,9 @@ VARIANTS = {
     "gbm_only": {"ensemble": "gbm"},
     "gbm+ridge": {"ensemble": "gbm+ridge"},
     "extra+gbm+ridge": {"extra_features": True, "ensemble": "gbm+ridge"},
+    "ridge_only": {"ensemble": "ridge"},
+    "blend_only": {"ensemble": "blend"},
+    "gbm+blend": {"ensemble": "gbm+blend"},
 }
 
 def main():
