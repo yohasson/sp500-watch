@@ -1,0 +1,504 @@
+ticker,company,sector,rank,bucket,label_v2_1,score,hist_mean_excess_5d,hist_share_beat_SPY,price_at_freeze,in_portfolio_top10
+TXN,Texas Instruments,Information Technology,1,Top 2%,Strong Buy,0.9344,0.0027,0.503,258.44,True
+CNC,Centene Corporation,Health Care,2,Top 2%,Strong Buy,0.9291,0.0027,0.503,64.35,True
+ADI,Analog Devices,Information Technology,3,Top 2%,Strong Buy,0.9105,0.0027,0.503,312.95,True
+AMD,Advanced Micro Devices,Information Technology,4,Top 2%,Strong Buy,0.9013,0.0027,0.503,413.27,True
+SNDK,Sandisk,Information Technology,5,Top 2%,Strong Buy,0.8973,0.0027,0.503,77.95,True
+CRWD,CrowdStrike,Information Technology,6,Top 2%,Strong Buy,0.8953,0.0027,0.503,210.86,True
+HPE,Hewlett Packard Enterprise,Information Technology,7,Top 2%,Strong Buy,0.8721,0.0027,0.503,40.19,True
+WST,West Pharmaceutical Services,Health Care,8,Top 2%,Strong Buy,0.8608,0.0027,0.503,388.75,True
+EBAY,eBay Inc.,Consumer Discretionary,9,Top 2%,Strong Buy,0.8522,0.0027,0.503,113.77,True
+WSM,"Williams-Sonoma, Inc.",Consumer Discretionary,10,Top 2%,Strong Buy,0.8502,0.0027,0.503,213.87,True
+FLEX,Flex Ltd.,Information Technology,11,2-10%,Hold,0.8429,0.001,0.503,66.44,False
+FDX,FedEx,Industrials,12,2-10%,Hold,0.8396,0.001,0.503,308.29,False
+ELV,Elevance Health,Health Care,13,2-10%,Hold,0.8343,0.001,0.503,391.17,False
+JBL,Jabil,Information Technology,14,2-10%,Hold,0.8337,0.001,0.503,226.69,False
+NUE,Nucor,Materials,15,2-10%,Hold,0.8304,0.001,0.503,248.01,False
+P,Everpure,Information Technology,16,2-10%,Hold,0.827,0.001,0.503,92.2,False
+ON,ON Semiconductor,Information Technology,17,2-10%,Hold,0.8257,0.001,0.503,61.49,False
+UNH,UnitedHealth Group,Health Care,18,2-10%,Hold,0.8164,0.001,0.503,341.88,False
+NXPI,NXP Semiconductors,Information Technology,19,2-10%,Hold,0.8125,0.001,0.503,239.4,False
+MCHP,Microchip Technology,Information Technology,20,2-10%,Hold,0.8072,0.001,0.503,56.36,False
+ECHO,EchoStar,Communication Services,21,2-10%,Hold,0.8058,0.001,0.503,85.6,False
+ANET,Arista Networks,Information Technology,22,2-10%,Hold,0.8019,0.001,0.503,168.56,False
+ABNB,Airbnb,Consumer Discretionary,23,2-10%,Hold,0.7999,0.001,0.503,173.39,False
+HUM,Humana,Health Care,24,2-10%,Hold,0.7992,0.001,0.503,402.72,False
+CIEN,Ciena,Information Technology,25,2-10%,Hold,0.7879,0.001,0.503,239.27,False
+AME,Ametek,Industrials,26,2-10%,Hold,0.782,0.001,0.503,227.48,False
+MNST,Monster Beverage,Consumer Staples,27,2-10%,Hold,0.7813,0.001,0.503,42.17,False
+EQIX,Equinix,Real Estate,28,2-10%,Hold,0.7787,0.001,0.503,982.77,False
+NTRS,Northern Trust,Financials,29,2-10%,Hold,0.7787,0.001,0.503,165.94,False
+PANW,Palo Alto Networks,Information Technology,30,2-10%,Hold,0.7753,0.001,0.503,352.99,False
+FDXF,FedEx Freight,Industrials,31,2-10%,Hold,0.77,0.001,0.503,114.94,False
+OKTA,"Okta, Inc.",Information Technology,32,2-10%,Hold,0.7634,0.001,0.503,198.12,False
+MS,Morgan Stanley,Financials,33,2-10%,Hold,0.7555,0.001,0.503,168.79,False
+SBAC,SBA Communications,Real Estate,34,2-10%,Hold,0.7535,0.001,0.503,172.57,False
+HAS,Hasbro,Consumer Discretionary,35,2-10%,Hold,0.7515,0.001,0.503,112.24,False
+NTAP,NetApp,Information Technology,36,2-10%,Hold,0.7508,0.001,0.503,163.0,False
+TDY,Teledyne Technologies,Information Technology,37,2-10%,Hold,0.7488,0.001,0.503,622.25,False
+IEX,IDEX Corporation,Industrials,38,2-10%,Hold,0.7482,0.001,0.503,225.77,False
+GEV,GE Vernova,Industrials,39,2-10%,Hold,0.7475,0.001,0.503,720.65,False
+CVS,CVS Health,Health Care,40,2-10%,Hold,0.7462,0.001,0.503,80.69,False
+STT,State Street Corporation,Financials,41,2-10%,Hold,0.7435,0.001,0.503,160.85,False
+CSCO,Cisco,Information Technology,42,2-10%,Hold,0.7389,0.001,0.503,93.99,False
+AVGO,Broadcom,Information Technology,43,2-10%,Hold,0.7382,0.001,0.503,301.08,False
+STLD,Steel Dynamics,Materials,44,2-10%,Hold,0.7356,0.001,0.503,215.23,False
+KEYS,Keysight Technologies,Information Technology,45,2-10%,Hold,0.7349,0.001,0.503,272.22,False
+FCX,Freeport-McMoRan,Materials,46,2-10%,Hold,0.7349,0.001,0.503,47.73,False
+AMZN,Amazon,Consumer Discretionary,47,2-10%,Hold,0.7336,0.001,0.503,252.29,False
+VEEV,Veeva Systems,Health Care,48,2-10%,Hold,0.7329,0.001,0.503,273.62,False
+PM,Philip Morris International,Consumer Staples,49,2-10%,Hold,0.7323,0.001,0.503,183.95,False
+C,Citigroup,Financials,50,2-10%,Hold,0.7316,0.001,0.503,113.85,False
+CBOE,Cboe Global Markets,Financials,51,10-20%,Hold,0.7276,-0.0001,0.496,362.52,False
+GS,Goldman Sachs,Financials,52,10-20%,Hold,0.727,-0.0001,0.496,806.02,False
+IRM,Iron Mountain,Real Estate,53,10-20%,Hold,0.7243,-0.0001,0.496,106.04,False
+DE,Deere & Company,Industrials,54,10-20%,Hold,0.7243,-0.0001,0.496,613.76,False
+BEN,Franklin Resources,Financials,55,10-20%,Hold,0.7237,-0.0001,0.496,33.39,False
+ODFL,Old Dominion,Industrials,56,10-20%,Hold,0.7237,-0.0001,0.496,169.57,False
+GNRC,Generac,Industrials,57,10-20%,Hold,0.721,-0.0001,0.496,198.36,False
+WDC,Western Digital,Information Technology,58,10-20%,Hold,0.719,-0.0001,0.496,273.95,False
+BNY,BNY Mellon,Financials,59,10-20%,Hold,0.7184,-0.0001,0.496,145.22,False
+VTRS,Viatris,Health Care,60,10-20%,Hold,0.7184,-0.0001,0.496,19.85,False
+VLO,Valero,Energy,61,10-20%,Hold,0.715,-0.0001,0.496,324.67,False
+CSX,CSX Corporation,Industrials,62,10-20%,Hold,0.7131,-0.0001,0.496,50.08,False
+TER,Teradyne,Information Technology,63,10-20%,Hold,0.7124,-0.0001,0.496,213.22,False
+STX,Seagate Technology,Information Technology,64,10-20%,Hold,0.7104,-0.0001,0.496,482.48,False
+DLR,Digital Realty,Real Estate,65,10-20%,Hold,0.7097,-0.0001,0.496,165.32,False
+ZBRA,Zebra Technologies,Information Technology,66,10-20%,Hold,0.7084,-0.0001,0.496,314.97,False
+EMR,Emerson Electric,Industrials,67,10-20%,Hold,0.7078,-0.0001,0.496,156.98,False
+MPC,Marathon Petroleum,Energy,68,10-20%,Hold,0.7071,-0.0001,0.496,355.16,False
+MU,Micron Technology,Information Technology,69,10-20%,Hold,0.7064,-0.0001,0.496,629.79,False
+HPQ,HP Inc.,Information Technology,70,10-20%,Hold,0.7038,-0.0001,0.496,27.94,False
+TWLO,Twilio,Information Technology,71,10-20%,Hold,0.7031,-0.0001,0.496,180.61,False
+LITE,Lumentum,Information Technology,72,10-20%,Hold,0.6985,-0.0001,0.496,487.12,False
+MPWR,Monolithic Power Systems,Information Technology,73,10-20%,Hold,0.6985,-0.0001,0.496,1190.16,False
+CRL,Charles River Laboratories,Health Care,74,10-20%,Hold,0.6978,-0.0001,0.496,336.13,False
+DELL,Dell Technologies,Information Technology,75,10-20%,Hold,0.6925,-0.0001,0.496,295.28,False
+CPAY,Corpay,Financials,76,10-20%,Hold,0.6918,-0.0001,0.496,447.91,False
+DDOG,Datadog,Information Technology,77,10-20%,Hold,0.6899,-0.0001,0.496,165.38,False
+FFIV,"F5, Inc.",Information Technology,78,10-20%,Hold,0.6892,-0.0001,0.496,316.87,False
+MSFT,Microsoft,Information Technology,79,10-20%,Hold,0.6879,-0.0001,0.496,496.13,False
+INTC,Intel,Information Technology,80,10-20%,Hold,0.6872,-0.0001,0.496,54.8,False
+URI,United Rentals,Industrials,81,10-20%,Hold,0.6839,-0.0001,0.496,1029.68,False
+CASY,Casey's,Consumer Staples,82,10-20%,Hold,0.6832,-0.0001,0.496,687.02,False
+Q,Qnity Electronics,Information Technology,83,10-20%,Hold,0.6832,-0.0001,0.496,109.4,False
+MRVL,Marvell Technology,Information Technology,84,10-20%,Hold,0.6826,-0.0001,0.496,131.57,False
+FTNT,Fortinet,Information Technology,85,10-20%,Hold,0.6812,-0.0001,0.496,132.5,False
+RVTY,Revvity,Health Care,86,10-20%,Hold,0.6812,-0.0001,0.496,153.17,False
+BE,Bloom,Energy,87,10-20%,Hold,0.6806,-0.0001,0.496,156.41,False
+JBHT,J.B. Hunt,Industrials,88,10-20%,Hold,0.6799,-0.0001,0.496,223.47,False
+EXPE,Expedia Group,Consumer Discretionary,89,10-20%,Hold,0.6793,-0.0001,0.496,239.26,False
+AMAT,Applied,Materials,90,10-20%,Hold,0.6779,-0.0001,0.496,323.76,False
+PFG,Principal Financial Group,Financials,91,10-20%,Hold,0.675,-0.0001,0.496,108.7,False
+MET,MetLife,Financials,92,10-20%,Hold,0.6746,-0.0001,0.496,99.21,False
+ETN,Eaton Corporation,Industrials,93,10-20%,Hold,0.6746,-0.0001,0.496,319.27,False
+ILMN,"Illumina, Inc.",Health Care,94,10-20%,Hold,0.6726,-0.0001,0.496,204.52,False
+COIN,Coinbase,Financials,95,10-20%,Hold,0.672,-0.0001,0.496,102.34,False
+VRT,Vertiv,Industrials,96,10-20%,Hold,0.6693,-0.0001,0.496,173.82,False
+LRCX,Lam Research,Information Technology,97,10-20%,Hold,0.668,-0.0001,0.496,196.16,False
+ADM,Archer Daniels Midland,Consumer Staples,98,10-20%,Hold,0.6673,-0.0001,0.496,64.9,False
+SLB,Schlumberger,Energy,99,10-20%,Hold,0.6673,-0.0001,0.496,46.99,False
+KLAC,KLA Corporation,Information Technology,100,10-20%,Hold,0.6667,-0.0001,0.496,133.65,False
+GLW,Corning Inc.,Information Technology,101,20-50%,Hold,0.666,-0.0003,0.489,101.87,False
+DOW,Dow Inc.,Materials,102,20-50%,Hold,0.6647,-0.0003,0.489,28.95,False
+EXPD,Expeditors International,Industrials,103,20-50%,Hold,0.6634,-0.0003,0.489,197.81,False
+HAL,Halliburton,Energy,104,20-50%,Hold,0.6634,-0.0003,0.489,30.9,False
+IBKR,Interactive Brokers,Financials,105,20-50%,Hold,0.6634,-0.0003,0.489,74.71,False
+NDSN,Nordson Corporation,Industrials,106,20-50%,Hold,0.6634,-0.0003,0.489,320.15,False
+KEY,KeyCorp,Financials,107,20-50%,Hold,0.6627,-0.0003,0.489,19.97,False
+LYB,LyondellBasell,Materials,108,20-50%,Hold,0.6627,-0.0003,0.489,55.62,False
+PWR,Quanta Services,Industrials,109,20-50%,Hold,0.6627,-0.0003,0.489,589.64,False
+CMI,Cummins,Industrials,110,20-50%,Hold,0.662,-0.0003,0.489,414.83,False
+GWW,W. W. Grainger,Industrials,111,20-50%,Hold,0.6614,-0.0003,0.489,1398.02,False
+PNC,PNC Financial Services,Financials,112,20-50%,Hold,0.66,-0.0003,0.489,218.62,False
+COHR,Coherent Corp.,Information Technology,113,20-50%,Hold,0.6541,-0.0003,0.489,196.24,False
+SNPS,Synopsys,Information Technology,114,20-50%,Hold,0.6508,-0.0003,0.489,414.82,False
+SWKS,Skyworks Solutions,Information Technology,115,20-50%,Hold,0.6508,-0.0003,0.489,80.95,False
+FIX,Comfort Systems USA,Industrials,116,20-50%,Hold,0.6481,-0.0003,0.489,1096.56,False
+SYF,Synchrony Financial,Financials,117,20-50%,Hold,0.6481,-0.0003,0.489,67.91,False
+GRMN,Garmin,Consumer Discretionary,118,20-50%,Hold,0.6468,-0.0003,0.489,282.02,False
+VYLR,Vylor,Consumer Staples,119,20-50%,Hold,0.6468,-0.0003,0.489,68.57,False
+MSCI,MSCI,Financials,120,20-50%,Hold,0.6455,-0.0003,0.489,633.92,False
+GM,General Motors,Consumer Discretionary,121,20-50%,Hold,0.6435,-0.0003,0.489,82.32,False
+PTC,PTC Inc.,Information Technology,122,20-50%,Hold,0.6435,-0.0003,0.489,196.0,False
+NEM,Newmont,Materials,123,20-50%,Hold,0.6428,-0.0003,0.489,99.69,False
+ALB,Albemarle Corporation,Materials,124,20-50%,Hold,0.6421,-0.0003,0.489,80.63,False
+SWK,Stanley Black & Decker,Industrials,125,20-50%,Hold,0.6421,-0.0003,0.489,109.25,False
+OXY,Occidental Petroleum,Energy,126,20-50%,Hold,0.6402,-0.0003,0.489,53.38,False
+UNP,Union Pacific Corporation,Industrials,127,20-50%,Hold,0.6402,-0.0003,0.489,290.83,False
+IFF,International Flavors & Fragrances,Materials,128,20-50%,Hold,0.6395,-0.0003,0.489,85.32,False
+ULTA,Ulta Beauty,Consumer Discretionary,129,20-50%,Hold,0.6388,-0.0003,0.489,641.0,False
+GPN,Global Payments,Financials,130,20-50%,Hold,0.6382,-0.0003,0.489,94.28,False
+WAB,Wabtec,Industrials,131,20-50%,Hold,0.6365,-0.0003,0.489,280.3,False
+IVZ,Invesco,Financials,132,20-50%,Hold,0.6349,-0.0003,0.489,27.79,False
+AMT,American Tower,Real Estate,133,20-50%,Hold,0.6329,-0.0003,0.489,182.83,False
+APA,APA Corporation,Energy,134,20-50%,Hold,0.6329,-0.0003,0.489,44.91,False
+COF,Capital One,Financials,135,20-50%,Hold,0.6329,-0.0003,0.489,181.36,False
+XOM,ExxonMobil,Energy,136,20-50%,Hold,0.6289,-0.0003,0.489,158.23,False
+EME,Emcor,Industrials,137,20-50%,Hold,0.6276,-0.0003,0.489,631.98,False
+HST,Host Hotels & Resorts,Real Estate,138,20-50%,Hold,0.6276,-0.0003,0.489,24.86,False
+MAR,Marriott International,Consumer Discretionary,139,20-50%,Hold,0.6276,-0.0003,0.489,416.23,False
+PSX,Phillips 66,Energy,140,20-50%,Hold,0.6256,-0.0003,0.489,236.95,False
+ROK,Rockwell Automation,Industrials,141,20-50%,Hold,0.6256,-0.0003,0.489,381.83,False
+FITB,Fifth Third Bancorp,Financials,142,20-50%,Hold,0.6229,-0.0003,0.489,51.12,False
+SMCI,Supermicro,Information Technology,143,20-50%,Hold,0.6229,-0.0003,0.489,22.62,False
+AAPL,Apple Inc.,Information Technology,144,20-50%,Hold,0.6216,-0.0003,0.489,354.07,False
+DAL,Delta Air Lines,Industrials,145,20-50%,Hold,0.619,-0.0003,0.489,84.5,False
+EOG,EOG Resources,Energy,146,20-50%,Hold,0.619,-0.0003,0.489,146.59,False
+NVDA,Nvidia,Information Technology,147,20-50%,Hold,0.6183,-0.0003,0.489,155.38,False
+CDNS,Cadence Design Systems,Information Technology,148,20-50%,Hold,0.6176,-0.0003,0.489,296.6,False
+LYV,Live Nation Entertainment,Communication Services,149,20-50%,Hold,0.6163,-0.0003,0.489,183.63,False
+WAT,Waters Corporation,Health Care,150,20-50%,Hold,0.6156,-0.0003,0.489,462.17,False
+APH,Amphenol,Information Technology,151,20-50%,Hold,0.6143,-0.0003,0.489,73.47,False
+FTV,Fortive,Industrials,152,20-50%,Hold,0.6143,-0.0003,0.489,65.77,False
+CAT,Caterpillar Inc.,Industrials,153,20-50%,Hold,0.6137,-0.0003,0.489,540.63,False
+COP,ConocoPhillips,Energy,154,20-50%,Hold,0.613,-0.0003,0.489,134.64,False
+DD,DuPont,Industrials,155,20-50%,Hold,0.609,-0.0003,0.489,150.71,False
+IQV,IQVIA,Health Care,156,20-50%,Hold,0.6077,-0.0003,0.489,252.01,False
+DVN,Devon,Energy,157,20-50%,Hold,0.607,-0.0003,0.489,41.33,False
+USB,U.S. Bancorp,Financials,158,20-50%,Hold,0.607,-0.0003,0.489,58.07,False
+CCI,Crown Castle,Real Estate,159,20-50%,Hold,0.6057,-0.0003,0.489,82.71,False
+GL,Globe Life,Financials,160,20-50%,Hold,0.6037,-0.0003,0.489,155.14,False
+TROW,T. Rowe Price,Financials,161,20-50%,Hold,0.6024,-0.0003,0.489,103.09,False
+XYZ,"Block, Inc.",Financials,162,20-50%,Hold,0.6011,-0.0003,0.489,74.15,False
+CVNA,Carvana,Consumer Discretionary,163,20-50%,Hold,0.5951,-0.0003,0.489,65.96,False
+FDS,FactSet,Financials,164,20-50%,Hold,0.5944,-0.0003,0.489,320.72,False
+BLK,BlackRock,Financials,165,20-50%,Hold,0.5931,-0.0003,0.489,1146.03,False
+HLT,Hilton Worldwide,Consumer Discretionary,166,20-50%,Hold,0.5924,-0.0003,0.489,364.32,False
+BKR,Baker Hughes,Energy,167,20-50%,Hold,0.5924,-0.0003,0.489,45.89,False
+JPM,JPMorgan Chase,Financials,168,20-50%,Hold,0.5924,-0.0003,0.489,317.1,False
+BKNG,Booking Holdings,Consumer Discretionary,169,20-50%,Hold,0.5838,-0.0003,0.489,146.64,False
+DVA,DaVita,Health Care,170,20-50%,Hold,0.5838,-0.0003,0.489,164.17,False
+PSA,Public Storage,Real Estate,171,20-50%,Hold,0.5818,-0.0003,0.489,331.92,False
+CI,Cigna,Health Care,172,20-50%,Hold,0.5812,-0.0003,0.489,275.0,False
+DXCM,Dexcom,Health Care,173,20-50%,Hold,0.5812,-0.0003,0.489,84.64,False
+TDG,TransDigm Group,Industrials,174,20-50%,Hold,0.5785,-0.0003,0.489,1129.32,False
+HBAN,Huntington Bancshares,Financials,175,20-50%,Hold,0.5779,-0.0003,0.489,14.78,False
+NDAQ,"Nasdaq, Inc.",Financials,176,20-50%,Hold,0.5752,-0.0003,0.489,106.42,False
+LMT,Lockheed Martin,Industrials,177,20-50%,Hold,0.5746,-0.0003,0.489,586.63,False
+EL,Estée Lauder Companies (The),Consumer Staples,178,20-50%,Hold,0.5739,-0.0003,0.489,108.13,False
+TPL,Texas Pacific Land Corporation,Energy,179,20-50%,Hold,0.5712,-0.0003,0.489,251.4,False
+HWM,Howmet Aerospace,Industrials,180,20-50%,Hold,0.5706,-0.0003,0.489,210.84,False
+J,Jacobs Solutions,Industrials,181,20-50%,Hold,0.5706,-0.0003,0.489,151.98,False
+META,Meta Platforms,Communication Services,182,20-50%,Hold,0.5699,-0.0003,0.489,589.82,False
+JCI,Johnson Controls,Industrials,183,20-50%,Hold,0.5693,-0.0003,0.489,137.04,False
+PLTR,Palantir Technologies,Information Technology,184,20-50%,Hold,0.5653,-0.0003,0.489,161.18,False
+SKYD,Skydance,Communication Services,185,20-50%,Hold,0.5639,-0.0003,0.489,6.5,False
+CFG,Citizens Financial Group,Financials,186,20-50%,Hold,0.562,-0.0003,0.489,61.17,False
+FIS,Fidelity National Information Services,Financials,187,20-50%,Hold,0.5606,-0.0003,0.489,27.13,False
+MTB,M&T Bank,Financials,188,20-50%,Hold,0.5606,-0.0003,0.489,214.33,False
+RF,Regions Financial Corporation,Financials,189,20-50%,Hold,0.56,-0.0003,0.489,27.51,False
+NSC,Norfolk Southern,Industrials,190,20-50%,Hold,0.5593,-0.0003,0.489,318.24,False
+QCOM,Qualcomm,Information Technology,191,20-50%,Hold,0.5593,-0.0003,0.489,164.96,False
+CL,Colgate-Palmolive,Consumer Staples,192,20-50%,Hold,0.5586,-0.0003,0.489,99.24,False
+BALL,Ball Corporation,Materials,193,20-50%,Hold,0.558,-0.0003,0.489,65.29,False
+HOOD,Robinhood Markets,Financials,194,20-50%,Hold,0.558,-0.0003,0.489,65.65,False
+CVX,Chevron Corporation,Energy,195,20-50%,Hold,0.5573,-0.0003,0.489,208.73,False
+NOW,ServiceNow,Information Technology,196,20-50%,Hold,0.5573,-0.0003,0.489,91.74,False
+NWSA,News Corp (Class A),Communication Services,197,20-50%,Hold,0.5573,-0.0003,0.489,26.0,False
+GEN,Gen Digital,Information Technology,198,20-50%,Hold,0.5567,-0.0003,0.489,29.95,False
+CCL,Carnival Corporation,Consumer Discretionary,199,20-50%,Hold,0.5547,-0.0003,0.489,28.4,False
+STZ,Constellation Brands,Consumer Staples,200,20-50%,Hold,0.5533,-0.0003,0.489,137.33,False
+MAS,Masco,Industrials,201,20-50%,Hold,0.5533,-0.0003,0.489,85.1,False
+BBY,Best Buy,Consumer Discretionary,202,20-50%,Hold,0.5527,-0.0003,0.489,99.62,False
+PKG,Packaging Corporation of America,Materials,203,20-50%,Hold,0.5494,-0.0003,0.489,240.99,False
+UBER,Uber,Industrials,204,20-50%,Hold,0.5487,-0.0003,0.489,64.7,False
+GOOG,Alphabet Inc. (Class C),Communication Services,205,20-50%,Hold,0.5484,-0.0003,0.489,276.58,False
+SBUX,Starbucks,Consumer Discretionary,206,20-50%,Hold,0.548,-0.0003,0.489,106.38,False
+NWS,News Corp (Class B),Communication Services,207,20-50%,Hold,0.548,-0.0003,0.489,28.74,False
+FAST,Fastenal,Industrials,208,20-50%,Hold,0.5477,-0.0003,0.489,52.27,False
+CEG,Constellation,Energy,209,20-50%,Hold,0.5474,-0.0003,0.489,244.84,False
+TSLA,"Tesla, Inc.",Consumer Discretionary,210,20-50%,Hold,0.5474,-0.0003,0.489,384.68,False
+FANG,Diamondback,Energy,211,20-50%,Hold,0.5467,-0.0003,0.489,176.1,False
+BA,Boeing,Industrials,212,20-50%,Hold,0.5461,-0.0003,0.489,163.59,False
+TT,Trane Technologies,Industrials,213,20-50%,Hold,0.5461,-0.0003,0.489,404.49,False
+VST,Vistra Corp.,Utilities,214,20-50%,Hold,0.5461,-0.0003,0.489,120.72,False
+PNW,Pinnacle West Capital,Utilities,215,20-50%,Hold,0.5454,-0.0003,0.489,102.15,False
+IBM,IBM,Information Technology,216,20-50%,Hold,0.5427,-0.0003,0.489,235.62,False
+ROST,Ross Stores,Consumer Discretionary,217,20-50%,Hold,0.5421,-0.0003,0.489,226.18,False
+RDDT,Reddit,Communication Services,218,20-50%,Hold,0.5414,-0.0003,0.489,90.34,False
+GOOGL,Alphabet Inc. (Class A),Communication Services,219,20-50%,Hold,0.5411,-0.0003,0.489,279.05,False
+AXON,Axon Enterprise,Industrials,220,20-50%,Hold,0.5401,-0.0003,0.489,319.32,False
+ORCL,Oracle Corporation,Information Technology,221,20-50%,Hold,0.5401,-0.0003,0.489,109.5,False
+PPG,PPG Industries,Materials,222,20-50%,Hold,0.5355,-0.0003,0.489,121.42,False
+LHX,L3Harris,Industrials,223,20-50%,Hold,0.5335,-0.0003,0.489,258.08,False
+TEL,TE Connectivity,Information Technology,224,20-50%,Hold,0.5335,-0.0003,0.489,208.71,False
+RTX,RTX Corporation,Industrials,225,20-50%,Hold,0.5328,-0.0003,0.489,195.33,False
+MO,Altria,Consumer Staples,226,20-50%,Hold,0.5308,-0.0003,0.489,74.82,False
+CARR,Carrier Global,Industrials,227,20-50%,Hold,0.5295,-0.0003,0.489,52.72,False
+IT,Gartner,Information Technology,228,20-50%,Hold,0.5295,-0.0003,0.489,180.08,False
+FSLR,First Solar,Information Technology,229,20-50%,Hold,0.5295,-0.0003,0.489,148.0,False
+GE,GE Aerospace,Industrials,230,20-50%,Hold,0.5295,-0.0003,0.489,318.03,False
+UAL,United Airlines Holdings,Industrials,231,20-50%,Hold,0.5288,-0.0003,0.489,107.8,False
+CF,CF Industries,Materials,232,20-50%,Hold,0.5282,-0.0003,0.489,116.74,False
+PH,Parker Hannifin,Industrials,233,20-50%,Hold,0.5268,-0.0003,0.489,906.24,False
+APD,Air Products,Materials,234,20-50%,Hold,0.5268,-0.0003,0.489,308.58,False
+LIN,Linde plc,Materials,235,20-50%,Hold,0.5249,-0.0003,0.489,516.83,False
+MRNA,Moderna,Health Care,236,20-50%,Hold,0.5222,-0.0003,0.489,227.38,False
+AES,AES Corporation,Utilities,237,20-50%,Hold,0.5215,-0.0003,0.489,15.02,False
+FRT,Federal Realty Investment Trust,Real Estate,238,20-50%,Hold,0.5202,-0.0003,0.489,112.55,False
+PFE,Pfizer,Health Care,239,20-50%,Hold,0.5202,-0.0003,0.489,28.46,False
+SW,Smurfit Westrock,Materials,240,20-50%,Hold,0.5195,-0.0003,0.489,39.95,False
+IP,International Paper,Materials,241,20-50%,Hold,0.5195,-0.0003,0.489,30.62,False
+LUV,Southwest Airlines,Industrials,242,20-50%,Hold,0.5189,-0.0003,0.489,45.79,False
+LLY,Lilly (Eli),Health Care,243,20-50%,Hold,0.5176,-0.0003,0.489,1407.59,False
+PRU,Prudential Financial,Financials,244,20-50%,Hold,0.5169,-0.0003,0.489,119.14,False
+SNA,Snap-on,Industrials,245,20-50%,Hold,0.5156,-0.0003,0.489,357.62,False
+CHD,Church & Dwight,Consumer Staples,246,20-50%,Hold,0.5149,-0.0003,0.489,112.32,False
+OKE,Oneok,Energy,247,20-50%,Hold,0.5123,-0.0003,0.489,84.79,False
+TXT,Textron,Industrials,248,20-50%,Hold,0.5123,-0.0003,0.489,81.26,False
+EG,Everest Group,Financials,249,20-50%,Hold,0.5103,-0.0003,0.489,427.86,False
+VRSN,Verisign,Information Technology,250,20-50%,Hold,0.5083,-0.0003,0.489,317.25,False
+WDAY,"Workday, Inc.",Information Technology,251,20-50%,Hold,0.508,-0.0003,0.489,179.23,False
+F,Ford Motor Company,Consumer Discretionary,252,50-80%,Hold,0.5066,-0.0007,0.475,11.95,False
+NCLH,Norwegian Cruise Line Holdings,Consumer Discretionary,253,50-80%,Hold,0.5063,-0.0007,0.475,17.1,False
+TECH,Bio-Techne,Health Care,254,50-80%,Hold,0.5056,-0.0007,0.475,72.81,False
+V,Visa Inc.,Financials,255,50-80%,Hold,0.5043,-0.0007,0.475,416.78,False
+DECK,Deckers Brands,Consumer Discretionary,256,50-80%,Hold,0.504,-0.0007,0.475,84.29,False
+WMB,Williams Companies,Energy,257,50-80%,Hold,0.501,-0.0007,0.475,66.0,False
+AIG,American International Group,Financials,258,50-80%,Hold,0.5003,-0.0007,0.475,81.24,False
+REG,Regency Centers,Real Estate,259,50-80%,Hold,0.4997,-0.0007,0.475,74.94,False
+TFC,Truist Financial,Financials,260,50-80%,Hold,0.4997,-0.0007,0.475,47.48,False
+ALGN,Align Technology,Health Care,261,50-80%,Hold,0.499,-0.0007,0.475,164.91,False
+CME,CME Group,Financials,262,50-80%,Hold,0.4983,-0.0007,0.475,309.25,False
+SJM,J.M. Smucker Company (The),Consumer Staples,263,50-80%,Hold,0.4983,-0.0007,0.475,130.85,False
+DASH,DoorDash,Consumer Discretionary,264,50-80%,Hold,0.4977,-0.0007,0.475,160.13,False
+HONA,Honeywell Aerospace,Industrials,265,50-80%,Hold,0.4964,-0.0007,0.475,154.77,False
+CRM,Salesforce,Information Technology,266,50-80%,Hold,0.4964,-0.0007,0.475,193.26,False
+GDDY,GoDaddy,Information Technology,267,50-80%,Hold,0.496,-0.0007,0.475,102.28,False
+AIZ,Assurant,Financials,268,50-80%,Hold,0.495,-0.0007,0.475,322.64,False
+BAX,Baxter International,Health Care,269,50-80%,Hold,0.495,-0.0007,0.475,26.98,False
+ICE,Intercontinental Exchange,Financials,270,50-80%,Hold,0.495,-0.0007,0.475,174.89,False
+BAC,Bank of America,Financials,271,50-80%,Hold,0.494,-0.0007,0.475,48.56,False
+TRGP,Targa Resources,Energy,272,50-80%,Hold,0.4937,-0.0007,0.475,283.17,False
+DOV,Dover Corporation,Industrials,273,50-80%,Hold,0.4917,-0.0007,0.475,204.36,False
+EXR,Extra Space Storage,Real Estate,274,50-80%,Hold,0.4891,-0.0007,0.475,158.88,False
+AFL,Aflac,Financials,275,50-80%,Hold,0.4864,-0.0007,0.475,125.78,False
+AXP,American Express,Financials,276,50-80%,Hold,0.4858,-0.0007,0.475,308.63,False
+MTD,Mettler Toledo,Health Care,277,50-80%,Hold,0.4805,-0.0007,0.475,1704.0,False
+AMP,Ameriprise Financial,Financials,278,50-80%,Hold,0.4798,-0.0007,0.475,497.8,False
+MA,Mastercard,Financials,279,50-80%,Hold,0.4798,-0.0007,0.475,647.44,False
+RL,Ralph Lauren Corporation,Consumer Discretionary,280,50-80%,Hold,0.4798,-0.0007,0.475,397.39,False
+INTU,Intuit,Information Technology,281,50-80%,Hold,0.4785,-0.0007,0.475,279.42,False
+GD,General Dynamics,Industrials,282,50-80%,Hold,0.4765,-0.0007,0.475,351.55,False
+HUBB,Hubbell Incorporated,Industrials,283,50-80%,Hold,0.4755,-0.0007,0.475,422.1,False
+AKAM,Akamai Technologies,Information Technology,284,50-80%,Hold,0.4732,-0.0007,0.475,89.32,False
+APO,Apollo Global Management,Financials,285,50-80%,Hold,0.4718,-0.0007,0.475,119.84,False
+BG,Bunge Global,Consumer Staples,286,50-80%,Hold,0.4712,-0.0007,0.475,84.06,False
+RJF,Raymond James Financial,Financials,287,50-80%,Hold,0.4708,-0.0007,0.475,160.6,False
+ADBE,Adobe Inc.,Information Technology,288,50-80%,Hold,0.4705,-0.0007,0.475,232.08,False
+HII,Huntington Ingalls Industries,Industrials,289,50-80%,Hold,0.4698,-0.0007,0.475,292.81,False
+KO,Coca-Cola Company (The),Consumer Staples,290,50-80%,Hold,0.4692,-0.0007,0.475,97.62,False
+MRK,Merck & Co.,Health Care,291,50-80%,Hold,0.4679,-0.0007,0.475,141.57,False
+SPG,Simon Property Group,Real Estate,292,50-80%,Hold,0.4679,-0.0007,0.475,229.83,False
+CTAS,Cintas,Industrials,293,50-80%,Hold,0.4672,-0.0007,0.475,225.76,False
+DIS,Walt Disney Company (The),Communication Services,294,50-80%,Hold,0.4632,-0.0007,0.475,122.51,False
+HON,Honeywell Technologies,Industrials,295,50-80%,Hold,0.4632,-0.0007,0.475,224.82,False
+TMO,Thermo Fisher Scientific,Health Care,296,50-80%,Hold,0.4619,-0.0007,0.475,695.62,False
+TRV,Travelers Companies (The),Financials,297,50-80%,Hold,0.4619,-0.0007,0.475,400.87,False
+LII,Lennox International,Industrials,298,50-80%,Hold,0.4612,-0.0007,0.475,341.92,False
+RCL,Royal Caribbean Group,Consumer Discretionary,299,50-80%,Hold,0.4612,-0.0007,0.475,318.27,False
+KKR,KKR & Co.,Financials,300,50-80%,Hold,0.4606,-0.0007,0.475,93.09,False
+UPS,United Parcel Service,Industrials,301,50-80%,Hold,0.4586,-0.0007,0.475,110.83,False
+MCO,Moody's Corporation,Financials,302,50-80%,Hold,0.4563,-0.0007,0.475,485.4,False
+PLD,Prologis,Real Estate,303,50-80%,Hold,0.4513,-0.0007,0.475,127.32,False
+JNJ,Johnson & Johnson,Health Care,304,50-80%,Hold,0.4513,-0.0007,0.475,276.46,False
+NKE,"Nike, Inc.",Consumer Discretionary,305,50-80%,Hold,0.4506,-0.0007,0.475,35.75,False
+FOXA,Fox Corporation (Class A),Communication Services,306,50-80%,Hold,0.4473,-0.0007,0.475,65.22,False
+ETR,Entergy,Utilities,307,50-80%,Hold,0.4467,-0.0007,0.475,105.95,False
+DG,Dollar General,Consumer Staples,308,50-80%,Hold,0.4427,-0.0007,0.475,138.65,False
+BMY,Bristol Myers Squibb,Health Care,309,50-80%,Hold,0.4423,-0.0007,0.475,62.02,False
+AMGN,Amgen,Health Care,310,50-80%,Hold,0.442,-0.0007,0.475,473.94,False
+FERG,Ferguson Enterprises,Industrials,311,50-80%,Hold,0.442,-0.0007,0.475,252.24,False
+FICO,Fair Isaac,Information Technology,312,50-80%,Hold,0.4374,-0.0007,0.475,703.33,False
+KDP,Keurig Dr Pepper,Consumer Staples,313,50-80%,Hold,0.4347,-0.0007,0.475,35.8,False
+MDLZ,Mondelez International,Consumer Staples,314,50-80%,Hold,0.4334,-0.0007,0.475,67.01,False
+ITW,Illinois Tool Works,Industrials,315,50-80%,Hold,0.4307,-0.0007,0.475,283.75,False
+HSIC,Henry Schein,Health Care,316,50-80%,Hold,0.4301,-0.0007,0.475,87.51,False
+SPGI,S&P Global,Financials,317,50-80%,Hold,0.4274,-0.0007,0.475,455.17,False
+CDW,CDW Corporation,Information Technology,318,50-80%,Hold,0.4254,-0.0007,0.475,164.16,False
+MSI,Motorola Solutions,Information Technology,319,50-80%,Hold,0.4254,-0.0007,0.475,530.08,False
+FOX,Fox Corporation (Class B),Communication Services,320,50-80%,Hold,0.4248,-0.0007,0.475,58.48,False
+TTWO,Take-Two Interactive,Communication Services,321,50-80%,Hold,0.4248,-0.0007,0.475,220.41,False
+ARES,Ares Management,Financials,322,50-80%,Hold,0.4241,-0.0007,0.475,132.23,False
+ACN,Accenture,Information Technology,323,50-80%,Hold,0.4221,-0.0007,0.475,232.32,False
+ED,Consolidated Edison,Utilities,324,50-80%,Hold,0.4208,-0.0007,0.475,119.55,False
+AMCR,Amcor,Materials,325,50-80%,Hold,0.4201,-0.0007,0.475,44.7,False
+TRMB,Trimble Inc.,Information Technology,326,50-80%,Hold,0.4188,-0.0007,0.475,54.61,False
+CPT,Camden Property Trust,Real Estate,327,50-80%,Hold,0.4182,-0.0007,0.475,97.84,False
+BRK-B,Berkshire Hathaway,Financials,328,50-80%,Hold,0.4175,-0.0007,0.475,577.21,False
+KIM,Kimco Realty,Real Estate,329,50-80%,Hold,0.4155,-0.0007,0.475,25.79,False
+COST,Costco,Consumer Staples,330,50-80%,Hold,0.4122,-0.0007,0.475,1091.71,False
+TPR,"Tapestry, Inc.",Consumer Discretionary,331,50-80%,Hold,0.4102,-0.0007,0.475,128.92,False
+NRG,NRG,Energy,332,50-80%,Hold,0.4095,-0.0007,0.475,90.9,False
+CB,Chubb Limited,Financials,333,50-80%,Hold,0.4082,-0.0007,0.475,375.37,False
+LH,Labcorp,Health Care,334,50-80%,Hold,0.4076,-0.0007,0.475,376.11,False
+LDOS,Leidos,Industrials,335,50-80%,Hold,0.4056,-0.0007,0.475,128.37,False
+OMC,Omnicom Group,Communication Services,336,50-80%,Hold,0.4049,-0.0007,0.475,89.23,False
+BX,Blackstone Inc.,Financials,337,50-80%,Hold,0.4039,-0.0007,0.475,119.35,False
+EVRG,Evergy,Utilities,338,50-80%,Hold,0.4016,-0.0007,0.475,87.21,False
+ESS,Essex Property Trust,Real Estate,339,50-80%,Hold,0.4009,-0.0007,0.475,275.58,False
+ALL,Allstate,Financials,340,50-80%,Hold,0.4009,-0.0007,0.475,270.39,False
+ADP,Automatic Data Processing,Industrials,341,50-80%,Hold,0.3989,-0.0007,0.475,310.79,False
+ECL,Ecolab,Materials,342,50-80%,Hold,0.3956,-0.0007,0.475,307.14,False
+PCAR,Paccar,Industrials,343,50-80%,Hold,0.3956,-0.0007,0.475,105.34,False
+PG,Procter & Gamble,Consumer Staples,344,50-80%,Hold,0.395,-0.0007,0.475,172.47,False
+NOC,Northrop Grumman,Industrials,345,50-80%,Hold,0.3926,-0.0007,0.475,550.84,False
+KMI,Kinder Morgan,Energy,346,50-80%,Hold,0.3923,-0.0007,0.475,31.08,False
+APP,AppLovin,Communication Services,347,50-80%,Hold,0.3903,-0.0007,0.475,381.11,False
+BDX,Becton Dickinson,Health Care,348,50-80%,Hold,0.3883,-0.0007,0.475,220.0,False
+UDR,"UDR, Inc.",Real Estate,349,50-80%,Hold,0.3877,-0.0007,0.475,36.17,False
+TSN,Tyson Foods,Consumer Staples,350,50-80%,Hold,0.387,-0.0007,0.475,63.42,False
+L,Loews Corporation,Financials,351,50-80%,Hold,0.3863,-0.0007,0.475,110.74,False
+ISRG,Intuitive Surgical,Health Care,352,50-80%,Hold,0.3854,-0.0007,0.475,434.46,False
+WFC,Wells Fargo,Financials,353,50-80%,Hold,0.385,-0.0007,0.475,81.19,False
+NFLX,Netflix,Communication Services,354,50-80%,Hold,0.3844,-0.0007,0.475,58.87,False
+VRTX,Vertex Pharmaceuticals,Health Care,355,50-80%,Hold,0.3824,-0.0007,0.475,563.92,False
+VZ,Verizon,Communication Services,356,50-80%,Hold,0.3817,-0.0007,0.475,47.16,False
+DGX,Quest Diagnostics,Health Care,357,50-80%,Hold,0.381,-0.0007,0.475,265.61,False
+VICI,Vici Properties,Real Estate,358,50-80%,Hold,0.3784,-0.0007,0.475,24.77,False
+VLTO,Veralto,Industrials,359,50-80%,Hold,0.3784,-0.0007,0.475,119.04,False
+A,Agilent Technologies,Health Care,360,50-80%,Hold,0.3777,-0.0007,0.475,183.52,False
+AVY,Avery Dennison,Materials,361,50-80%,Hold,0.3764,-0.0007,0.475,187.65,False
+EIX,Edison International,Utilities,362,50-80%,Hold,0.3757,-0.0007,0.475,62.22,False
+WEC,WEC,Energy,363,50-80%,Hold,0.3751,-0.0007,0.475,118.12,False
+GPC,Genuine Parts Company,Consumer Discretionary,364,50-80%,Hold,0.3744,-0.0007,0.475,121.27,False
+VTR,Ventas,Real Estate,365,50-80%,Hold,0.3738,-0.0007,0.475,87.17,False
+ACGL,Arch Capital Group,Financials,366,50-80%,Hold,0.3718,-0.0007,0.475,109.69,False
+AEP,American Electric Power,Utilities,367,50-80%,Hold,0.3711,-0.0007,0.475,127.3,False
+DUK,Duke,Energy,368,50-80%,Hold,0.3711,-0.0007,0.475,130.96,False
+PGR,Progressive Corporation,Financials,369,50-80%,Hold,0.3704,-0.0007,0.475,235.68,False
+DLTR,Dollar Tree,Consumer Staples,370,50-80%,Hold,0.3685,-0.0007,0.475,154.65,False
+D,Dominion,Energy,371,50-80%,Hold,0.3678,-0.0007,0.475,67.29,False
+WELL,Welltower,Real Estate,372,50-80%,Hold,0.3678,-0.0007,0.475,245.14,False
+LNT,Alliant,Energy,373,50-80%,Hold,0.3658,-0.0007,0.475,72.58,False
+LULU,Lululemon Athletica,Consumer Discretionary,374,50-80%,Hold,0.3651,-0.0007,0.475,106.05,False
+NI,NiSource,Utilities,375,50-80%,Hold,0.3648,-0.0007,0.475,45.13,False
+GILD,Gilead Sciences,Health Care,376,50-80%,Hold,0.3638,-0.0007,0.475,178.29,False
+MCK,McKesson,Health Care,377,50-80%,Hold,0.3618,-0.0007,0.475,1078.09,False
+SO,Southern Company,Utilities,378,50-80%,Hold,0.3605,-0.0007,0.475,94.11,False
+DHR,Danaher Corporation,Health Care,379,50-80%,Hold,0.3598,-0.0007,0.475,229.09,False
+PEP,PepsiCo,Consumer Staples,380,50-80%,Hold,0.3585,-0.0007,0.475,142.68,False
+BIIB,Biogen,Health Care,381,50-80%,Hold,0.3572,-0.0007,0.475,269.11,False
+HCA,HCA Healthcare,Health Care,382,50-80%,Hold,0.3559,-0.0007,0.475,481.77,False
+MDT,Medtronic,Health Care,383,50-80%,Hold,0.3545,-0.0007,0.475,96.13,False
+AEE,Ameren,Utilities,384,50-80%,Hold,0.3526,-0.0007,0.475,113.38,False
+MLM,Martin Marietta,Materials,385,50-80%,Hold,0.3512,-0.0007,0.475,526.17,False
+BXP,"BXP, Inc.",Real Estate,386,50-80%,Hold,0.3492,-0.0007,0.475,62.68,False
+DTE,DTE,Energy,387,50-80%,Hold,0.3492,-0.0007,0.475,137.7,False
+SHW,Sherwin-Williams,Materials,388,50-80%,Hold,0.3492,-0.0007,0.475,352.56,False
+BF-B,Brown–Forman,Consumer Staples,389,50-80%,Hold,0.3479,-0.0007,0.475,29.89,False
+EXC,Exelon,Utilities,390,50-80%,Hold,0.3479,-0.0007,0.475,46.23,False
+DRI,Darden Restaurants,Consumer Discretionary,391,50-80%,Hold,0.3459,-0.0007,0.475,240.2,False
+MAA,Mid-America Apartment Communities,Real Estate,392,50-80%,Hold,0.3459,-0.0007,0.475,115.84,False
+FISV,Fiserv,Financials,393,50-80%,Hold,0.3446,-0.0007,0.475,58.62,False
+CRH,CRH plc,Materials,394,50-80%,Hold,0.3426,-0.0007,0.475,93.66,False
+IR,Ingersoll Rand,Industrials,395,50-80%,Hold,0.3426,-0.0007,0.475,82.93,False
+AWK,American Water Works,Utilities,396,50-80%,Hold,0.3413,-0.0007,0.475,150.4,False
+KHC,Kraft Heinz,Consumer Staples,397,50-80%,Hold,0.3353,-0.0007,0.475,25.57,False
+ORLY,O'Reilly Automotive,Consumer Discretionary,398,50-80%,Hold,0.3347,-0.0007,0.475,95.43,False
+AJG,Arthur J. Gallagher & Co.,Financials,399,50-80%,Hold,0.334,-0.0007,0.475,286.82,False
+CINF,Cincinnati Financial,Financials,400,50-80%,Hold,0.334,-0.0007,0.475,190.31,False
+VMC,Vulcan,Materials,401,50-80%,Hold,0.333,-0.0007,0.475,284.62,False
+EFX,Equifax,Industrials,402,80-90%,Hold,0.3294,-0.0011,0.469,182.67,False
+FE,FirstEnergy,Utilities,403,80-90%,Hold,0.3294,-0.0011,0.469,47.36,False
+HIG,Hartford (The),Financials,404,80-90%,Hold,0.328,-0.0011,0.469,138.16,False
+APTV,Aptiv,Consumer Discretionary,405,80-90%,Hold,0.3274,-0.0011,0.469,37.43,False
+XEL,Xcel,Energy,406,80-90%,Hold,0.3274,-0.0011,0.469,80.82,False
+WRB,W. R. Berkley Corporation,Financials,407,80-90%,Hold,0.326,-0.0011,0.469,78.72,False
+MRSH,Marsh McLennan,Financials,408,80-90%,Hold,0.3254,-0.0011,0.469,213.16,False
+RSG,Republic Services,Industrials,409,80-90%,Hold,0.3254,-0.0011,0.469,252.15,False
+CHRW,C.H. Robinson,Industrials,410,80-90%,Hold,0.3241,-0.0011,0.469,140.53,False
+CTSH,Cognizant,Information Technology,411,80-90%,Hold,0.3227,-0.0011,0.469,60.98,False
+BR,Broadridge Financial Solutions,Industrials,412,80-90%,Hold,0.3201,-0.0011,0.469,184.74,False
+HRL,Hormel Foods,Consumer Staples,413,80-90%,Hold,0.3181,-0.0011,0.469,23.27,False
+INCY,Incyte,Health Care,414,80-90%,Hold,0.3181,-0.0011,0.469,123.61,False
+PYPL,PayPal,Financials,415,80-90%,Hold,0.3168,-0.0011,0.469,56.17,False
+OTIS,Otis Worldwide,Industrials,416,80-90%,Hold,0.3154,-0.0011,0.469,78.3,False
+VMRK,Vivmark Residential,Real Estate,417,80-90%,Hold,0.3151,-0.0011,0.469,64.64,False
+CNP,CenterPoint,Energy,418,80-90%,Hold,0.3148,-0.0011,0.469,40.26,False
+EW,Edwards Lifesciences,Health Care,419,80-90%,Hold,0.3135,-0.0011,0.469,106.12,False
+KMB,Kimberly-Clark,Consumer Staples,420,80-90%,Hold,0.3135,-0.0011,0.469,108.7,False
+ADSK,Autodesk,Information Technology,421,80-90%,Hold,0.3128,-0.0011,0.469,255.7,False
+CAH,Cardinal Health,Health Care,422,80-90%,Hold,0.3101,-0.0011,0.469,279.65,False
+TGT,Target Corporation,Consumer Staples,423,80-90%,Hold,0.3095,-0.0011,0.469,176.06,False
+WY,Weyerhaeuser,Real Estate,424,80-90%,Hold,0.3088,-0.0011,0.469,20.21,False
+CMCSA,Comcast,Communication Services,425,80-90%,Hold,0.3075,-0.0011,0.469,25.38,False
+GEHC,GE HealthCare,Health Care,426,80-90%,Hold,0.3075,-0.0011,0.469,82.52,False
+INVH,Invitation Homes,Real Estate,427,80-90%,Hold,0.3075,-0.0011,0.469,27.24,False
+YUM,Yum! Brands,Consumer Discretionary,428,80-90%,Hold,0.3068,-0.0011,0.469,166.33,False
+PPL,PPL Corporation,Utilities,429,80-90%,Hold,0.3038,-0.0011,0.469,35.16,False
+ALLE,Allegion,Industrials,430,80-90%,Hold,0.3035,-0.0011,0.469,189.96,False
+CMS,CMS,Energy,431,80-90%,Hold,0.3035,-0.0011,0.469,71.01,False
+NEE,NextEra,Energy,432,80-90%,Hold,0.3015,-0.0011,0.469,84.58,False
+WM,Waste Management,Industrials,433,80-90%,Hold,0.2995,-0.0011,0.469,244.71,False
+STE,Steris,Health Care,434,80-90%,Hold,0.2989,-0.0011,0.469,259.48,False
+PEG,Public Service Enterprise Group,Utilities,435,80-90%,Hold,0.2942,-0.0011,0.469,74.93,False
+O,Realty Income,Real Estate,436,80-90%,Hold,0.2936,-0.0011,0.469,59.55,False
+TJX,TJX Companies,Consumer Discretionary,437,80-90%,Hold,0.2936,-0.0011,0.469,143.86,False
+ATO,Atmos,Energy,438,80-90%,Hold,0.2913,-0.0011,0.469,171.73,False
+SYY,Sysco,Consumer Staples,439,80-90%,Hold,0.2909,-0.0011,0.469,80.22,False
+ABBV,AbbVie,Health Care,440,80-90%,Hold,0.2903,-0.0011,0.469,300.28,False
+CBRE,CBRE Group,Real Estate,441,80-90%,Hold,0.2903,-0.0011,0.469,133.48,False
+EQT,EQT Corporation,Energy,442,80-90%,Hold,0.2856,-0.0011,0.469,49.37,False
+TKO,TKO Group Holdings,Communication Services,443,80-90%,Hold,0.285,-0.0011,0.469,189.45,False
+ES,Eversource,Energy,444,80-90%,Hold,0.2816,-0.0011,0.469,72.66,False
+ROP,Roper Technologies,Information Technology,445,80-90%,Hold,0.2797,-0.0011,0.469,476.48,False
+PAYX,Paychex,Industrials,446,80-90%,Hold,0.277,-0.0011,0.469,115.08,False
+CLX,Clorox,Consumer Staples,447,80-90%,Hold,0.2757,-0.0011,0.469,106.82,False
+DHI,D. R. Horton,Consumer Discretionary,448,80-90%,Hold,0.271,-0.0011,0.469,152.17,False
+ROL,"Rollins, Inc.",Industrials,449,80-90%,Hold,0.2704,-0.0011,0.469,38.07,False
+EXE,Expand,Energy,450,80-90%,Hold,0.2684,-0.0011,0.469,82.05,False
+HD,Home Depot (The),Consumer Discretionary,451,80-90%,Hold,0.2684,-0.0011,0.469,353.69,False
+REGN,Regeneron Pharmaceuticals,Health Care,452,80-90%,Hold,0.2671,-0.0011,0.469,987.09,False
+ARE,Alexandria,Real Estate,453,90-98%,Sell / avoid,0.2657,-0.0005,0.469,42.0,False
+COR,Cencora,Health Care,454,90-98%,Sell / avoid,0.2651,-0.0005,0.469,349.68,False
+SCHW,Charles Schwab Corporation,Financials,455,90-98%,Sell / avoid,0.2624,-0.0005,0.469,93.91,False
+WMT,Walmart,Consumer Staples,456,90-98%,Sell / avoid,0.2611,-0.0005,0.469,132.31,False
+CMG,Chipotle Mexican Grill,Consumer Discretionary,457,90-98%,Sell / avoid,0.2545,-0.0005,0.469,37.05,False
+DOC,Healthpeak Properties,Real Estate,458,90-98%,Sell / avoid,0.2545,-0.0005,0.469,20.37,False
+MMM,3M,Industrials,459,90-98%,Sell / avoid,0.2545,-0.0005,0.469,187.14,False
+NVR,"NVR, Inc.",Consumer Discretionary,460,90-98%,Sell / avoid,0.2538,-0.0005,0.469,5868.8,False
+XYL,Xylem Inc.,Industrials,461,90-98%,Sell / avoid,0.2512,-0.0005,0.469,95.18,False
+LEN,Lennar,Consumer Discretionary,462,90-98%,Sell / avoid,0.2505,-0.0005,0.469,85.0,False
+SOLV,Solventum,Health Care,463,90-98%,Sell / avoid,0.2485,-0.0005,0.469,88.16,False
+HSY,Hershey Company (The),Consumer Staples,464,90-98%,Sell / avoid,0.2435,-0.0005,0.469,176.56,False
+VRSK,Verisk Analytics,Industrials,465,90-98%,Sell / avoid,0.2406,-0.0005,0.469,203.97,False
+AZO,AutoZone,Consumer Discretionary,466,90-98%,Sell / avoid,0.2392,-0.0005,0.469,3355.69,False
+WTW,Willis Towers Watson,Financials,467,90-98%,Sell / avoid,0.2386,-0.0005,0.469,346.76,False
+LOW,Lowe's,Consumer Discretionary,468,90-98%,Sell / avoid,0.2372,-0.0005,0.469,231.04,False
+MOS,Mosaic Company (The),Materials,469,90-98%,Sell / avoid,0.2372,-0.0005,0.469,19.68,False
+WYNN,Wynn Resorts,Consumer Discretionary,470,90-98%,Sell / avoid,0.2366,-0.0005,0.469,84.11,False
+CHTR,Charter Communications,Communication Services,471,90-98%,Sell / avoid,0.2366,-0.0005,0.469,135.87,False
+CPRT,Copart,Industrials,472,90-98%,Sell / avoid,0.2319,-0.0005,0.469,32.35,False
+ERIE,Erie Indemnity,Financials,473,90-98%,Sell / avoid,0.2293,-0.0005,0.469,276.04,False
+PHM,PulteGroup,Consumer Discretionary,474,90-98%,Sell / avoid,0.2286,-0.0005,0.469,130.23,False
+GIS,General Mills,Consumer Staples,475,90-98%,Sell / avoid,0.228,-0.0005,0.469,35.59,False
+SRE,Sempra,Utilities,476,90-98%,Sell / avoid,0.2266,-0.0005,0.469,78.76,False
+AON,Aon plc,Financials,477,90-98%,Sell / avoid,0.224,-0.0005,0.469,342.86,False
+KR,Kroger,Consumer Staples,478,90-98%,Sell / avoid,0.2207,-0.0005,0.469,70.12,False
+TYL,Tyler Technologies,Information Technology,479,90-98%,Sell / avoid,0.22,-0.0005,0.469,412.49,False
+LVS,Las Vegas Sands,Consumer Discretionary,480,90-98%,Sell / avoid,0.2187,-0.0005,0.469,39.61,False
+DPZ,Domino's,Consumer Discretionary,481,90-98%,Sell / avoid,0.2134,-0.0005,0.469,356.52,False
+TMUS,T-Mobile US,Communication Services,482,90-98%,Sell / avoid,0.2101,-0.0005,0.469,167.3,False
+JKHY,Jack Henry & Associates,Financials,483,90-98%,Sell / avoid,0.2087,-0.0005,0.469,177.34,False
+BSX,Boston Scientific,Health Care,484,90-98%,Sell / avoid,0.2001,-0.0005,0.469,44.14,False
+RMD,ResMed,Health Care,485,90-98%,Sell / avoid,0.1988,-0.0005,0.469,243.44,False
+COO,Cooper Companies (The),Health Care,486,90-98%,Sell / avoid,0.1975,-0.0005,0.469,61.32,False
+UHS,Universal Health Services,Health Care,487,90-98%,Sell / avoid,0.1935,-0.0005,0.469,183.2,False
+AOS,A. O. Smith,Industrials,488,90-98%,Sell / avoid,0.1889,-0.0005,0.469,65.95,False
+MCD,McDonald's,Consumer Discretionary,489,90-98%,Sell / avoid,0.1875,-0.0005,0.469,280.7,False
+ABT,Abbott Laboratories,Health Care,490,90-98%,Sell / avoid,0.1849,-0.0005,0.469,105.39,False
+MKC,McCormick & Company,Consumer Staples,491,90-98%,Sell / avoid,0.1776,-0.0005,0.469,49.03,False
+ZTS,Zoetis,Health Care,492,90-98%,Sell / avoid,0.1683,-0.0005,0.469,81.47,False
+PNR,Pentair,Industrials,493,Bottom 2%,Sell / avoid,0.163,-0.0,0.472,71.27,False
+IDXX,Idexx Laboratories,Health Care,494,Bottom 2%,Sell / avoid,0.1584,-0.0,0.472,712.08,False
+T,AT&T,Communication Services,495,Bottom 2%,Sell / avoid,0.1574,-0.0,0.472,22.88,False
+MGM,MGM Resorts,Consumer Discretionary,496,Bottom 2%,Sell / avoid,0.1557,-0.0,0.472,34.32,False
+CSGP,CoStar Group,Real Estate,497,Bottom 2%,Sell / avoid,0.1345,-0.0,0.472,32.64,False
+PODD,Insulet Corporation,Health Care,498,Bottom 2%,Sell / avoid,0.1299,-0.0,0.472,140.63,False
+TSCO,Tractor Supply,Consumer Discretionary,499,Bottom 2%,Sell / avoid,0.1127,-0.0,0.472,39.45,False
+PCG,PG&E Corporation,Utilities,500,Bottom 2%,Sell / avoid,0.11,-0.0,0.472,14.22,False
+BRO,Brown & Brown,Financials,501,Bottom 2%,Sell / avoid,0.0881,-0.0,0.472,76.01,False
+SYK,Stryker Corporation,Health Care,502,Bottom 2%,Sell / avoid,0.0861,-0.0,0.472,324.08,False
+ZBH,Zimmer Biomet,Health Care,503,Bottom 2%,Sell / avoid,0.0782,-0.0,0.472,108.99,False
