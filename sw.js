@@ -1,5 +1,5 @@
 /* S&P 500 Oracle service worker: offline shell; data always fetched fresh when online. */
-var SHELL='oracle-shell-v1';
+var SHELL='oracle-shell-v2';
 self.addEventListener('install',function(e){e.waitUntil(caches.open(SHELL).then(function(c){return c.addAll(['./','./index.html','./icon.svg']);}).catch(function(){}));self.skipWaiting();});
 self.addEventListener('activate',function(e){e.waitUntil(self.clients.claim());});
 self.addEventListener('fetch',function(e){var u=new URL(e.request.url);if(e.request.method!=='GET'||u.origin!==self.location.origin)return;
