@@ -81,6 +81,9 @@ details{border-top:1px solid var(--line);padding:10px 0}details summary{cursor:p
 .big{font-size:28px;font-weight:800;letter-spacing:-.02em}
 .foot{color:var(--mut);font-size:12px;text-align:center;margin-top:24px}
 .hide{display:none}
+.star{all:unset;cursor:pointer;font-size:18px;line-height:1;color:var(--mut);padding:2px 6px;border-radius:8px}.star.on{color:#d97706}.star:focus-visible{outline:2px solid var(--acc)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:999px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:40}.toast.on{opacity:.95}
+.chgrow{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:4px 0}.chgrow b{min-width:120px;color:var(--ink);font-weight:600}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
 .chip{background:var(--chip);border-radius:999px;padding:3px 10px;font-size:13px;cursor:pointer}
 .status li{margin:4px 0}
@@ -105,7 +108,7 @@ details.card{padding:14px 20px}details.card>summary{cursor:pointer}
 <div class="wrap">
 <header>
   <div class="brand"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#2563eb"/><path d="M6 22l6-7 5 4 9-10" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>S&amp;P 500 Oracle</div>
-  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="asof" id="asof"></span><span class="pill" id="health"><span class="dot"></span><span>…</span></span><button class="iconbtn" id="gear" aria-label="Settings" title="Settings">⚙︎<span class="gl"> Settings</span></button></div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="asof" id="asof"></span><span class="pill" id="health"><span class="dot"></span><span>…</span></span><button class="iconbtn" id="shareBtn" aria-label="Share" title="Share">⤴<span class="gl"> Share</span></button><button class="iconbtn" id="gear" aria-label="Settings" title="Settings">⚙︎<span class="gl"> Settings</span></button></div>
 </header>
 <div class="banner" id="banner">Paper trading only · research tool, not financial advice</div>
 <nav role="tablist">
@@ -122,6 +125,15 @@ details.card{padding:14px 20px}details.card>summary{cursor:pointer}
     <div class="verdict" id="verdict"></div>
     <p class="sub" id="subline"></p>
     <p class="note" id="steps" style="margin:10px 0 0"></p>
+  </div>
+  <div class="card hide" id="chgCard">
+    <h2 id="chgTitle">Since yesterday</h2>
+    <div id="chg" class="note"></div>
+  </div>
+  <div class="card hide" id="wlCard">
+    <h2>Your watchlist</h2>
+    <div style="overflow-x:auto"><table id="wl"></table></div>
+    <p class="note" id="wlNote">Saved on this device only. Tap ☆ on any stock to add it.</p>
   </div>
   <div class="card hide" id="runCard">
     <h2 id="runTitle">How the sealed picks are doing</h2>
@@ -192,6 +204,11 @@ details.card{padding:14px 20px}details.card>summary{cursor:pointer}
     <div style="overflow-x:auto"><table id="league"></table></div>
     <p class="note">The ensemble is fixed in advance; the others are shown for comparison only. Picking the best one after the fact would overstate results.</p>
   </div>
+  <div class="card hide" id="expCard">
+    <h2>New data sources: fair test</h2>
+    <div style="overflow-x:auto"><table id="expTable"></table></div>
+    <p class="note" id="expNote"></p>
+  </div>
   <div class="card">
     <h2>What each rank group delivered (history replay)</h2>
     <div id="calChart"></div>
@@ -204,7 +221,7 @@ details.card{padding:14px 20px}details.card>summary{cursor:pointer}
     <div class="tools">
       <input type="search" id="q" placeholder="Search ticker or company" aria-label="Search">
       <select id="sector" aria-label="Sector"></select>
-      <div class="seg" id="lab" role="group" aria-label="Filter"><button aria-pressed="true" data-v="">All</button><button aria-pressed="false" data-v="pick">Picks</button><button aria-pressed="false" data-v="bottom">Bottom 10%</button></div>
+      <div class="seg" id="lab" role="group" aria-label="Filter"><button aria-pressed="true" data-v="">All</button><button aria-pressed="false" data-v="pick">Picks</button><button aria-pressed="false" data-v="watch">★ Watchlist</button><button aria-pressed="false" data-v="bottom">Bottom 10%</button></div>
     </div>
     <div style="overflow-x:auto"><table id="all"></table></div>
     <p class="note" id="allNote"></p>
@@ -215,7 +232,7 @@ details.card{padding:14px 20px}details.card>summary{cursor:pointer}
   <div class="card">
     <h2>What the Oracle does</h2>
     <div class="steps" style="grid-template-columns:repeat(2,1fr)">
-      <div class="step"><b>1 · Scores every stock</b>When the previous list ends, at that day's close, it ranks all S&amp;P 500 stocks on 8 well-studied price signals using three models (two machine-learning models and a simple blend).</div>
+      <div class="step"><b>1 · Scores every stock</b>When the previous list ends, at that day's close, it ranks all S&amp;P 500 stocks on well-studied signals from several data sources (listed below) using three models (two machine-learning models and a simple blend).</div>
       <div class="step"><b>2 · Picks 10</b>It suggests the top 10. A stock already held is kept while it stays in the top 50, which cuts trading costs.</div>
       <div class="step"><b>3 · Locks the forecast</b>Before the market opens, the full list is fingerprinted (SHA-256) and committed to the public Git history, so any later edit would be detectable.</div>
       <div class="step"><b>4 · Grades itself</b>After 5 trading days it scores the forecast against what really happened, and keeps a public track record.</div>
@@ -228,9 +245,14 @@ details.card{padding:14px 20px}details.card>summary{cursor:pointer}
     <button class="iconbtn" onclick="openSettings()">Change broker settings</button>
   </div>
   <div class="card">
+    <h2>Data sources</h2>
+    <div style="overflow-x:auto"><table id="srcTable"></table></div>
+    <p class="note" id="srcNote"></p>
+  </div>
+  <div class="card">
     <h2>Honest limits</h2>
     <ul class="note" style="padding-left:18px;margin:0">
-      <li>Uses prices only. No earnings dates, news or company fundamentals yet, so earnings surprises can swamp the signal.</li>
+      <li id="inputsLine">Model inputs: price signals. Company financials, filings, attention and macro data are collected and shown, and are tested before they are allowed into the model.</li>
       <li>The edge is small and not yet statistically proven. Long losing streaks are normal.</li>
       <li id="survLine">Prices come from a free, unofficial source. Stocks that left the index are only partly covered, which can flatter history.</li>
       <li>Research output, not financial advice. Paper-trade first.</li>
@@ -260,8 +282,13 @@ details.card{padding:14px 20px}details.card>summary{cursor:pointer}
     <div class="set"><label for="pctfee">Fee as % of trade</label><input id="pctfee" type="number" min="0" step="0.01" style="width:120px"></div>
     <p class="note">Used by the cost check in About.</p>
   </div>
+  <div class="card"><h2>Watchlist</h2>
+    <p class="note" id="wlSetNote"></p>
+    <button class="iconbtn" id="wlShare">Copy a link to my watchlist</button> <button class="iconbtn" id="wlClear">Clear watchlist</button>
+  </div>
   <button class="iconbtn" id="setReset">Reset to defaults</button>
 </div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="drawer" id="drawer"><div class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="dTitle"></div></div>
 
 <script>
@@ -272,6 +299,16 @@ const cls=x=>x==null?'':(x>0?'pos':x<0?'neg':'');
 const fmtD=s=>{if(!s)return'–';const d=new Date(s+'T12:00:00Z');return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'})};
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let D, BY={}, BAD=false;
+let WL=[]; try{WL=JSON.parse(localStorage.getItem('oracleWatch')||'[]').filter(t=>typeof t==='string')}catch(e){}
+function saveWL(){try{localStorage.setItem('oracleWatch',JSON.stringify(WL))}catch(e){}}
+const inWL=t=>WL.includes(t);
+function toggleWL(t){WL=inWL(t)?WL.filter(x=>x!==t):[...WL,t];saveWL();toast(inWL(t)?`${t} added to your watchlist`:`${t} removed from your watchlist`);safe(renderWL);safe(renderAll);document.querySelectorAll(`.star[data-star="${t}"]`).forEach(b=>{b.classList.toggle('on',inWL(t));b.textContent=inWL(t)?'★':'☆';b.setAttribute('aria-pressed',inWL(t))})}
+const starBtn=t=>`<button class="star${inWL(t)?' on':''}" data-star="${esc(t)}" aria-pressed="${inWL(t)}" aria-label="Watchlist ${esc(t)}" title="Add to or remove from your watchlist">${inWL(t)?'★':'☆'}</button>`;
+let toastT=null; function toast(m){const x=$('#toast');x.textContent=m;x.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>x.classList.remove('on'),2200)}
+async function share(title,text,url){try{if(navigator.share){await navigator.share({title,text,url});return}}catch(e){if(e&&e.name==='AbortError')return}
+  try{await navigator.clipboard.writeText(text?text+'\n'+url:url);toast('Link copied')}catch(e){prompt('Copy this link:',url)}}
+const baseURL=()=>location.origin+location.pathname;
+const rkMove=(s)=>s.prk==null?'':(s.prk-s.rk>0?`<span class="pos">▲${s.prk-s.rk}</span>`:s.prk-s.rk<0?`<span class="neg">▼${s.rk-s.prk}</span>`:'<span class="mut">–</span>');
 const CW=(sel='.wrap')=>{const x=document.querySelector(sel);return Math.max(320,Math.min(640,((x&&x.clientWidth)||680)-48))};
 const avgStock=()=>{const W=[.02,.08,.10,.30,.30,.10,.08,.02];return (D.cal||[]).reduce((a,c,i)=>a+(c.m||0)*(W[i]??0),0)};
 const sealMsg=s=>/^blocked/.test(s||'')?'locking was blocked because too few prices updated; it retries before the open.':/^late/.test(s||'')?'the update ran after the market opened, so this list will not be locked or graded.':'it is locked automatically at the close when the current list ends, before the next open.';
@@ -343,6 +380,27 @@ function renderWeek(){
     [pct(e.dd,0),'worst losing stretch vs the index','losing streaks are normal']
   ].map(k=>`<div class="kpi"><div class="v">${k[0]}</div><div class="l">${k[1]}</div><div class="h">${k[2]}</div></div>`).join('');
   $('#trustNote').innerHTML=`${state==='over'?'Next list: '+sealMsg(D.seal):bad?'<b class="neg">This list fails its integrity check: treat the list and its results as unverified.</b>':sealed?'This week\'s list was locked before the open (fingerprint <code>'+esc(sealed.sha)+'…</code>).':'Not locked yet: '+sealMsg(D.seal)}`;
+}
+function renderChanges(){
+  const C=D.changes; if(!C)return; $('#chgCard').classList.remove('hide');
+  $('#chgTitle').textContent=`Since ${fmtD(C.prev)}`;
+  const chip=t=>`<span class="chip" role="button" tabindex="0" data-t="${esc(t)}">${esc(t)}${BY[t]&&BY[t].r1d!=null?` <span class="${cls(BY[t].r1d)}">${pct(BY[t].r1d,1)}</span>`:''}</span>`;
+  const mv=(a)=>a.map(([t,m])=>`<span class="chip" role="button" tabindex="0" data-t="${esc(t)}">${esc(t)} <span class="${m>0?'pos':'neg'}">${m>0?'▲':'▼'}${Math.abs(m)}</span></span>`).join(' ');
+  const P=D.portfolio.map(t=>BY[t]).filter(Boolean), pm=P.filter(s=>s.r1d!=null), avg=pm.length?pm.reduce((a,s)=>a+s.r1d,0)/pm.length:null;
+  const spy=D.regime&&D.regime.spy_1d;
+  $('#chg').innerHTML=[avg!=null?`<div class="chgrow"><b>The picks, last day</b><span class="${cls(avg)}">${pct(avg,2)}</span>${spy!=null?` <span>vs S&amp;P 500 <span class="${cls(spy)}">${pct(spy,2)}</span></span>`:''}</div>`:'',
+    `<div class="chgrow"><b>New in the top 10</b>${C.in10.length?C.in10.map(chip).join(' '):'<span>none</span>'}</div>`,
+    C.out10.length?`<div class="chgrow"><b>Left the top 10</b>${C.out10.map(chip).join(' ')}</div>`:'',
+    C.up.length?`<div class="chgrow"><b>Biggest rank climbs</b>${mv(C.up)}</div>`:'',
+    C.down.length?`<div class="chgrow"><b>Biggest rank drops</b>${mv(C.down)}</div>`:'',
+    `<p class="note" style="margin:6px 0 0">Ranks are re-computed after every close. The locked list does not change until its window ends.</p>`].join('');
+}
+function renderWL(){
+  const L=WL.filter(t=>BY[t]); $('#wlCard').classList.toggle('hide',!L.length);
+  $('#wlSetNote').textContent=L.length?`${L.length} stock${L.length>1?'s':''}: ${L.join(', ')}. Saved on this device only.`:'Empty. Tap ☆ on any stock to add it.';
+  if(!L.length)return;
+  $('#wl').innerHTML='<tr><th>Stock</th><th class="num">Rank</th><th class="num">vs yesterday</th><th class="num">Last day</th><th class="num hm">Last week</th><th></th></tr>'+
+    L.map(t=>BY[t]).sort((a,b)=>a.rk-b.rk).map(s=>`<tr class="row" tabindex="0" role="button" data-t="${esc(s.t)}"><td><b>${esc(s.t)}</b> <span class="mut hm">${esc(s.n)}</span></td><td class="num">${s.rk}${s.port?' <span class="tag">pick</span>':''}</td><td class="num">${rkMove(s)}</td><td class="num ${cls(s.r1d)}">${pct(s.r1d,1)}</td><td class="num hm ${cls(s.r1w)}">${pct(s.r1w,1)}</td><td>${starBtn(s.t)}</td></tr>`).join('');
 }
 function renderRunning(){
   const R=D.running; if(!R)return; $('#runCard').classList.remove('hide');
@@ -433,11 +491,44 @@ function renderHind(){
   $('#hindChart').innerHTML=line(sm,{fmt:v=>v.toFixed(2)});
   $('#hindNote').textContent=`Rank accuracy per day, smoothed over 20 days. Above the dashed line, higher-ranked stocks tended to do better that week. On ${pct(H.pos,0,false)} of days it was positive.`;
 }
+const FL={ey:'Cheap vs earnings',bm:'Cheap vs book value',gpa:'Profitable (gross profit / assets)',accr:'Earnings backed by cash',revg:'Revenue growth',sue:'Recent earnings beat',evt:'Company announcements, last 7 days',attn:'Attention spike (Wikipedia views)'};
+function moreHTML(t,h){
+  const fi=h.fi||{}, raw=h.raw||{}, used=D.model_inputs&&D.model_inputs.fundamentals;
+  const facts=[raw.ey!=null&&raw.ey>0?['Price / earnings',(1/raw.ey).toFixed(1)]:raw.ey!=null?['Price / earnings','loss-making']:null,
+    raw.revg!=null?['Revenue growth (12 months)',pct(raw.revg,0)]:null, raw.sue!=null?['Last earnings vs a year before',raw.sue>1?'well above':raw.sue>0?'above':raw.sue>-1?'below':'well below']:null,
+    raw.gpa!=null?['Gross profit / assets',pct(raw.gpa,0,false)]:null].filter(Boolean);
+  const bars=Object.entries(fi).filter(([k])=>FL[k]&&k!=='evt').sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="fac"><span>${FL[k]}</span><div class="bar"><i style="width:${Math.round(v*100)}%"></i></div><span class="num">${Math.round(v*100)}</span></div>`).join('');
+  const fil=(h.filings||[]).length?`<p class="note" style="margin:10px 0 4px"><b>Official announcements (8-K), last 30 days:</b> ${h.filings.map(fmtD).join(' · ')} · <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=${encodeURIComponent(t)}&amp;type=8-K" target="_blank" rel="noopener noreferrer">open on SEC.gov</a></p>`:'';
+  const news=(h.news||[]).length?`<p class="note" style="margin:10px 0 4px"><b>Latest headlines</b></p><ul class="note" style="padding-left:18px;margin:0">${h.news.map(n=>`<li><a href="${esc(n.link)}" target="_blank" rel="noopener noreferrer">${esc(n.title)}</a>${n.date?` <span class="mut">· ${fmtD(n.date.slice(0,10))}</span>`:''}</li>`).join('')}</ul>`:'';
+  if(!facts.length&&!bars&&!fil&&!news)return '<p class="note">No company data available for this stock.</p>';
+  return (facts.length?`<div class="grid g4">${facts.map(f=>`<div class="kpi"><div class="v" style="font-size:18px">${esc(f[1])}</div><div class="l">${esc(f[0])}</div></div>`).join('')}</div>`:'')+
+    (bars?`<p class="note" style="margin:12px 0 4px">Percentile vs other S&amp;P 500 stocks (100 = most)${used?'':'. Shown for context; the model does not use these yet'}:</p>${bars}`:'')+fil+news+
+    '<p class="note" style="margin-top:10px">Financials from SEC filings, counted from the day they were filed. Headlines from Yahoo Finance; not used by the model.</p>';
+}
+function renderExp(){
+  const X=D.exp; if(!X||!X.v)return; $('#expCard').classList.remove('hide');
+  const lab={'baseline':'Price signals only (in use)','fund':'+ SEC financials, filings, attention','macro':'+ rates and credit spread','fund+macro':'+ both','no_leavers (bias check)':'Without stocks that left the index'};
+  $('#expTable').innerHTML='<tr><th>Model inputs</th><th class="num">Rank accuracy</th><th class="num">t-stat</th><th class="num">Last 2 years</th><th class="num">Per year after costs</th><th>Passed?</th></tr>'+
+    Object.entries(X.v).map(([k,v])=>`<tr><td>${esc(lab[k]||k)}</td><td class="num">${v.ic==null?'–':v.ic.toFixed(3)}</td><td class="num">${v.t==null?'–':v.t.toFixed(1)}</td><td class="num">${v.ic_last2y==null?'–':v.ic_last2y.toFixed(3)}</td><td class="num">${pct(v.net_ann,1)}</td><td>${X.adopt&&k in X.adopt?(X.adopt[k]?'<span class="tag buy">Yes</span>':'No'):''}</td></tr>`).join('');
+  const s=X.surv; const bias=s&&s.net_ann_with!=null&&s.net_ann_without!=null?s.net_ann_without-s.net_ann_with:null;
+  $('#expNote').textContent=`Rule fixed before testing: a new source is adopted only if the t-stat rises by at least 0.5 and neither the last-2-year accuracy nor the yearly result gets worse.`+
+    (s&&bias!=null?` Survivorship check: ${s.leavers_with_data} of ${s.leavers_total} stocks that left the index have prices. Without them the yearly result would read ${pct(Math.abs(bias),1,false)} ${bias>=0?'higher':'lower'}${s.leavers_with_data?`; the ${s.leavers_total-s.leavers_with_data} still missing probably make past results look about ${pct(Math.abs(bias)*(s.leavers_total-s.leavers_with_data)/s.leavers_with_data,1,false)} a year ${bias>=0?'better':'worse'} than they were`:''}.`:'');
+}
+function renderSources(){
+  const S=D.sources||{}; const rows=Object.entries(S);
+  if(!rows.length){$('#srcTable').innerHTML='<tr><td class="note">Shown after the next full run.</td></tr>';return}
+  const role={'Yahoo Finance prices (yfinance)':'Daily prices (main source)','Nasdaq price cross-check':'Independent check of recent closes','SEC financial statements':'Point-in-time company financials','SEC 8-K filings':'Company announcements (events)','Wikipedia page views':'Investor attention','FRED / CBOE macro series':'Rates, credit spread, VIX','Yahoo Finance headlines':'Latest news (display only)','Wikipedia index membership':'Who was in the index, and when'};
+  $('#srcTable').innerHTML='<tr><th>Source</th><th>Used for</th><th class="num">Coverage</th></tr>'+rows.map(([k,v])=>`<tr><td>${esc(k)}</td><td class="mut">${esc(role[k]||'')}</td><td class="num">${typeof v==='number'?v.toLocaleString('en-US'):esc(String(v))}</td></tr>`).join('');
+  const x=D.xchk||{};
+  $('#srcNote').textContent=(x.agree!=null?`Price check: ${pct(x.agree,1,false)} of ${x.points} recent closes match Nasdaq's own data within 0.5%. `:'')+(D.model_inputs&&D.model_inputs.fundamentals?'The model uses the company, filing and attention signals.':D.exp&&D.exp.adopt?'The model uses price signals only: the other sources did not pass the fair test (see Record).':'The model uses price signals only until the other sources pass a fair test (see Record).');
+  if(D.model_inputs&&D.model_inputs.fundamentals)$('#inputsLine').textContent='Model inputs: price signals plus SEC company financials, 8-K filings and Wikipedia attention (all counted from the day they became public).';
+}
 async function stockHind(t){
-  const el=$('#sHind'),px=$('#sPx'); if(!el)return;
+  const el=$('#sHind'),px=$('#sPx'),mo=$('#sMore'); if(!el)return;
   try{const r=await fetch('stocks/'+encodeURIComponent(t)+'.json',{cache:'no-cache'}); if(!r.ok)throw 0; const h=await r.json(); if(!el.isConnected)return;
     if(px){const ser=(h.px||[]).map((v,i)=>[D.weeks[i],v==null?null:v-1]);
       px.innerHTML=ser.filter(x=>x[1]!=null).length>1?line2b(ser,D.spyw.map((v,i)=>[D.weeks[i],v-1]),{label:'Price of '+t+' versus the S&P 500'})+`<div class="legend"><span><i style="background:var(--acc)"></i>${esc(t)}</span><span><i style="background:var(--mut)"></i>S&amp;P 500 (SPY)</span></div>`:'<p class="note">No price history.</p>'}
+    if(mo)mo.innerHTML=moreHTML(t,h);
     if(!h.d.length){el.innerHTML='<p class="note">No daily record for this stock yet.</p>';return}
     const n=h.d.length, done=h.a.map((a,i)=>[a,h.p[i],h.r[i]]).filter(x=>x[0]!=null);
     const hit=done.filter(x=>Math.sign(x[0])===Math.sign(x[1])).length/(done.length||1);
@@ -449,7 +540,7 @@ async function stockHind(t){
       line2b(h.d.map((d,i)=>[d,h.p[i]]),h.d.map((d,i)=>[d,h.a[i]]))+
       '<div class="legend"><span><i style="background:var(--acc)"></i>Projected that day (blind)</span><span><i style="background:var(--mut)"></i>What happened the next week</span></div>'+
       line(h.d.map((d,i)=>[d,1-(h.r[i]-1)/D.stocks.length]),{h:90,fmt:v=>Math.round(v*100)+'',zero:false,min:0,max:1,label:'Daily model rank of '+t})+'<p class="note">Daily model rank (100 = top). Projections are tiny next to real moves: one week of price noise is far larger than the edge.</p>';
-  }catch(e){el.innerHTML='<p class="note">Daily history not available yet.</p>';if(px&&px.textContent.includes('Loading'))px.innerHTML='<p class="note">No price history.</p>'}
+  }catch(e){el.innerHTML='<p class="note">Daily history not available yet.</p>';if(px&&px.textContent.includes('Loading'))px.innerHTML='<p class="note">No price history.</p>';if(mo&&mo.textContent.includes('Loading'))mo.innerHTML='<p class="note">Not available yet.</p>'}
 }
 function line2b(a,b,{w=CW(),h=170,label='Projected versus actual'}={}){
   const ys=a.concat(b).map(p=>p[1]).filter(v=>v!=null); if(ys.length<2)return '';
@@ -460,12 +551,12 @@ function line2b(a,b,{w=CW(),h=170,label='Projected versus actual'}={}){
 let sortKey='rk',sortDir=1,labF='';
 function renderAll(){
   const q=$('#q').value.trim().toLowerCase(), sec=$('#sector').value;
-  let rows=D.stocks.filter(s=>(!q||s.t.toLowerCase().includes(q)||s.n.toLowerCase().includes(q))&&(!sec||s.s===sec)&&(!labF||(labF==='pick'?s.port:labF==='bottom'?s.rk>D.stocks.length*0.9:s.l===labF)));
+  let rows=D.stocks.filter(s=>(!q||s.t.toLowerCase().includes(q)||s.n.toLowerCase().includes(q))&&(!sec||s.s===sec)&&(!labF||(labF==='pick'?s.port:labF==='watch'?inWL(s.t):labF==='bottom'?s.rk>D.stocks.length*0.9:s.l===labF)));
   rows.sort((a,b)=>{const x=a[sortKey]??-1e9,y=b[sortKey]??-1e9;return (x>y?1:x<y?-1:0)*sortDir});
   const th=(k,t,c='')=>`<th class="${c}" data-k="${k}"${sortKey===k?` aria-sort="${sortDir>0?'ascending':'descending'}"`:''}><button type="button">${t}${sortKey===k?(sortDir>0?' ↑':' ↓'):''}</button></th>`;
-  $('#all').innerHTML='<tr>'+th('rk','Rank','num')+th('t','Stock')+th('s','Sector')+th('sc','Model score','hm')+th('r1w','Last week','num')+'<th></th></tr>'+
-   rows.slice(0,200).map(s=>`<tr class="row" tabindex="0" role="button" data-t="${esc(s.t)}"><td class="num">${s.rk}</td><td><b>${esc(s.t)}</b> <span class="mut">${esc(s.n)}</span></td><td class="mut">${esc(s.s)}</td><td class="hm"><div class="bar" title="Percentile ${Math.round((1-(s.rk-1)/D.stocks.length)*100)}"><i style="width:${Math.round((1-(s.rk-1)/D.stocks.length)*100)}%"></i></div></td><td class="num ${cls(s.r1w)}">${pct(s.r1w,1)}</td><td>${tagFor(s)}</td></tr>`).join('');
-  if(!rows.length)$('#all').innerHTML='<tr><td class="note">No stocks match.</td></tr>';
+  $('#all').innerHTML='<tr>'+th('rk','Rank','num')+th('t','Stock')+th('s','Sector')+th('sc','Model score','hm')+th('r1w','Last week','num')+'<th></th><th><span class="sr" aria-label="Watchlist">★</span></th></tr>'+
+   rows.slice(0,200).map(s=>`<tr class="row" tabindex="0" role="button" data-t="${esc(s.t)}"><td class="num">${s.rk}</td><td><b>${esc(s.t)}</b> <span class="mut">${esc(s.n)}</span></td><td class="mut">${esc(s.s)}</td><td class="hm"><div class="bar" title="Percentile ${Math.round((1-(s.rk-1)/D.stocks.length)*100)}"><i style="width:${Math.round((1-(s.rk-1)/D.stocks.length)*100)}%"></i></div></td><td class="num ${cls(s.r1w)}">${pct(s.r1w,1)}</td><td>${tagFor(s)}</td><td>${starBtn(s.t)}</td></tr>`).join('');
+  if(!rows.length)$('#all').innerHTML=`<tr><td class="note">${labF==='watch'?'Your watchlist is empty. Tap ☆ on any stock to add it.':'No stocks match.'}</td></tr>`;
   $('#allNote').textContent=rows.length>200?`Showing 200 of ${rows.length}. Refine the search to see more.`:`${rows.length} stocks`;
 }
 function openStock(t){
@@ -475,13 +566,14 @@ function openStock(t){
   const cal=D.cal.find(c=>c.b===s.b)||{};
   $('#panel').innerHTML=`<button class="x" aria-label="Close" id="dx">×</button>
   <div class="note">${esc(s.s)}</div><h1 id="dTitle" style="margin-top:2px">${esc(s.t)} <span class="mut" style="font-weight:500;font-size:18px">${esc(s.n)}</span></h1>
-  <div style="display:flex;gap:8px;align-items:center;margin:6px 0 14px">${tagFor(s)}<span class="note">Rank ${s.rk} of ${D.stocks.length} · last close $${s.c??'–'}</span></div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0 14px">${tagFor(s)}<span class="note">Rank ${s.rk} of ${D.stocks.length}${s.prk!=null?' ('+rkMove(s)+' since yesterday)':''} · last close $${s.c??'–'}${s.r1d!=null?` (<span class="${cls(s.r1d)}">${pct(s.r1d,1)}</span>)`:''}</span>${starBtn(s.t)}<button class="iconbtn" id="dShare">⤴ Share</button></div>
   <div class="card"><h2>Model view</h2><p style="margin:0 0 8px">Rank group <b>${esc(s.b)}</b>. In past weeks this group averaged <b class="${cls(cal.m)}">${pct(cal.m,2)}</b> versus the S&amp;P 500 the following week, beating it ${pct(cal.p,0,false)} of the time.${cal.m!=null?` The average S&amp;P 500 stock did ${pct(avgStock(),2)}, so this group's extra edge was <b class="${cls(cal.m-avgStock())}">${pct(cal.m-avgStock(),2)}</b>.`:''}</p>
    <div class="grid g3">${['gbm','ridge','blend'].map((k,i)=>`<div class="kpi"><div class="v">${s.m[k]==null?'–':Math.round(s.m[k]*100)}</div><div class="l">${['Boosted trees','Linear model','Signal blend'][i]} (percentile)</div></div>`).join('')}</div></div>
   <div class="card"><h2>Signals (percentile vs other stocks)</h2>${facs.map(([k,v])=>`<div class="fac"><span>${fl[k]}</span><div class="bar"><i style="width:${Math.round(v*100)}%"></i></div><span class="num">${Math.round(v*100)}</span></div>`).join('')}</div>
   <div class="card"><h2>Price over the past year</h2><div id="sPx"><p class="note">Loading…</p></div></div>
+  <div class="card"><h2>Company financials and news</h2><div id="sMore"><p class="note">Loading…</p></div></div>
   <div class="card"><h2>Blind daily record, past year</h2><div id="sHind"><p class="note">Loading…</p></div></div>`;
-  $('#drawer').classList.add('on'); setInert(true); stockHind(s.t); $('#dx').focus(); $('#dx').onclick=closeStock; if(history.state&&history.state.stock)history.replaceState({stock:t},'','#'+encodeURIComponent(t));else history.pushState({stock:t},'','#'+encodeURIComponent(t));
+  $('#drawer').classList.add('on'); setInert(true); stockHind(s.t); $('#dx').focus(); $('#dx').onclick=closeStock; $('#dShare').onclick=()=>share(`${s.t} on S&P 500 Oracle`,`${s.t} (${s.n}): model rank ${s.rk} of ${D.stocks.length} for ${fmtD(D.entry)} – ${fmtD(D.exit)}. Research tool, unproven, not advice.`,baseURL()+'#'+encodeURIComponent(s.t)); if(history.state&&history.state.stock)history.replaceState({stock:t},'','#'+encodeURIComponent(t));else history.pushState({stock:t},'','#'+encodeURIComponent(t));
 }
 let stockReturn=null;
 function closeStock(fromPop){if(!$('#drawer').classList.contains('on'))return;$('#drawer').classList.remove('on');setInert(false);
@@ -502,7 +594,8 @@ function tabs(){
   bs.forEach((x,i)=>x.tabIndex=i?-1:0);
 }
 function wire(){
-  document.addEventListener('click',ev=>{const t=ev.target.closest('[data-t]'); if(t&&!ev.target.closest('#panel'))openStock(t.dataset.t);
+  document.addEventListener('click',ev=>{const st=ev.target.closest('[data-star]'); if(st){ev.stopPropagation();toggleWL(st.dataset.star);return}
+    const t=ev.target.closest('[data-t]'); if(t&&!ev.target.closest('#panel'))openStock(t.dataset.t);
     const th=ev.target.closest('th[data-k]'); if(th){const k=th.dataset.k; sortDir=sortKey===k?-sortDir:(k==='rk'||k==='t'||k==='s'?1:-1); sortKey=k; renderAll(); const nb=document.querySelector(`th[data-k="${k}"] button`); if(nb)nb.focus()}
     if(ev.target.id==='drawer')closeStock()});
   document.addEventListener('keydown',ev=>{if(ev.key==='Escape'){if($('#setDlg').classList.contains('on'))closeSettings();else closeStock()} if(ev.key===' '&&ev.target.getAttribute&&ev.target.getAttribute('role')==='button'&&ev.target.dataset.t){ev.preventDefault();openStock(ev.target.dataset.t)} if(ev.key==='Enter'&&ev.target.dataset&&ev.target.dataset.t)openStock(ev.target.dataset.t); if((ev.key==='Enter'||ev.key===' ')&&ev.target.dataset&&ev.target.dataset.day){ev.preventDefault();const d=ev.target.dataset.day;tSel=tSel===d?null:d;renderTest();const r=document.querySelector(`tr[data-day="${d}"]`);if(r)r.focus()}});
@@ -511,6 +604,9 @@ function wire(){
   $('#lab').onclick=ev=>{const b=ev.target.closest('button');if(!b)return;labF=b.dataset.v;$('#lab').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));renderAll()};
   let tmo=null; ['sTheme','sTab','sN'].forEach(id=>{$('#'+id).onchange=readSettings});
   ['sAmt','acct','fee','pctfee'].forEach(id=>{$('#'+id).oninput=()=>{clearTimeout(tmo);tmo=setTimeout(()=>readSettings(false),500)};$('#'+id).onchange=()=>{clearTimeout(tmo);readSettings(true)}});
+  $('#shareBtn').onclick=()=>{const P=D.portfolio||[];share('S&P 500 Oracle',`S&P 500 Oracle paper list for ${fmtD(D.entry)} – ${fmtD(D.exit)}: ${P.join(', ')}. Unproven research tool, paper trading only.`,baseURL())};
+  $('#wlShare').onclick=()=>{if(!WL.length){toast('Your watchlist is empty');return}share('My S&P 500 Oracle watchlist','',baseURL()+'?w='+WL.map(encodeURIComponent).join(','))};
+  $('#wlClear').onclick=()=>{if(!WL.length)return;if(confirm('Clear your watchlist?')){WL=[];saveWL();safe(renderWL);safe(renderAll);toast('Watchlist cleared')}};
   $('#gear').onclick=openSettings; $('#setX').onclick=closeSettings; $('#setDlg').addEventListener('click',ev=>{if(ev.target.id==='setDlg')closeSettings()});
   $('#setReset').onclick=()=>{const r=setReturn;SET=Object.assign({},DEF);saveSet();applyTheme();openSettings();setReturn=r;safe(renderTest);safe(calc)};
   $('#tView').onclick=ev=>{const b=ev.target.closest('button');if(!b)return;tView=b.dataset.v;$('#tView').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));renderTest()};
@@ -533,8 +629,9 @@ function wire(){
   $('#ks').innerHTML=D.ks.map(k=>`<li>${k.ok?'✅':'⚠️'} <b>${esc(k.id)}</b> – ${esc(k.detail)}</li>`).join('')+`<li>Last run ${esc(new Date(D.generated).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'}))} · ${D.health.current_members_with_data}/${D.health.current_members} stocks updated · model ${esc(D.cfg.model)}</li>`;
 
   $('#foot').innerHTML=`Research tool, not financial advice. Prices: Yahoo Finance (unofficial, free), may be delayed or incomplete. Last update ${esc(new Date(D.generated).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'}))}.`;
-  if(D.health&&D.health.removed_with_data!=null)$('#survLine').textContent=D.health.removed_with_data===0?'Prices come from a free, unofficial source. Stocks that left the index are not included at all, so past results look better than they were.':`Prices come from a free, unofficial source. ${D.health.removed_with_data} stocks that left the index are included in the history; others are missing, which can make past results look better than they were.`;
-  tabs(); wire(); [renderWeek,renderRunning,renderTest,renderRecord,renderHind,renderAll,calc].forEach(safe);
+  if(D.health&&D.health.removed_with_data!=null){const x=D.xchk||{};$('#survLine').textContent=`Main prices come from Yahoo Finance (free, unofficial)${x.agree!=null?`; each run checks a sample against Nasdaq's own data (${pct(x.agree,1,false)} matched last time)`:''}. ${D.health.removed_with_data} stocks that left the index are in the history; the rest have no free price source, which can flatter past results (size estimated in Record). Adding a free Tiingo key fills most of them.`}
+  const qw=new URLSearchParams(location.search).get('w'); if(qw){const add=qw.split(',').map(x=>decodeURIComponent(x).toUpperCase()).filter(t=>BY[t]&&!inWL(t)); if(add.length){WL=[...WL,...add];saveWL();setTimeout(()=>toast(`Added ${add.length} stock${add.length>1?'s':''} to your watchlist`),300)} history.replaceState(null,'',location.pathname+location.hash)}
+  tabs(); wire(); [renderExp,renderSources,renderChanges,renderWL,renderWeek,renderRunning,renderTest,renderRecord,renderHind,renderAll,calc].forEach(safe);
   const hh=location.hash.slice(1), TABS=['week','test','record','explore','how'], startTab=TABS.includes(hh)?hh:SET.tab;
   if(startTab&&startTab!=='week'){const b=document.querySelector(`nav button[data-tab="${startTab}"]`);if(b)b.click()}
   if(hh&&!TABS.includes(hh)){history.replaceState(null,'',location.pathname+location.search);openStock(decodeURIComponent(hh).toUpperCase())}
