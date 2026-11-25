@@ -1,88 +1,80 @@
 [universe] 503 current members, 360 removed tickers with dates
-[data] yfinance 100/635 -> 100 ok
-[data] yfinance 200/635 -> 200 ok
-[data] yfinance 300/635 -> 300 ok
-[data] yfinance 400/635 -> 400 ok
-[data] yfinance 500/635 -> 500 ok
+$CXO: No data found, symbol may be delisted
+$FRC: No data found, symbol may be delisted
+$JWN: No data found, symbol may be delisted
+$ATVI: No data found, symbol may be delisted
+$HOLX: No data found, symbol may be delisted
 $DISCK: No data found, symbol may be delisted
 $CTRA: possibly delisted; no price data found  (period=7y)
-$WLTW: No data found, symbol may be delisted
-$ALXN: No data found, symbol may be delisted
-$DFS: No data found, symbol may be delisted
-$DISH: No data found, symbol may be delisted
-$MXIM: No data found, symbol may be delisted
-$SIVB: No data found, symbol may be delisted
-$PXD: No data found, symbol may be delisted
-$WBA: No data found, symbol may be delisted
-$HES: No data found, symbol may be delisted
-$GPS: No data found, symbol may be delisted
-$CMA: possibly delisted; no price data found  (period=7y)
-$FBHS: No data found, symbol may be delisted
-$CTXS: No data found, symbol may be delisted
 $KSU: No data found, symbol may be delisted
-$MRO: No data found, symbol may be delisted
-$PBCT: No data found, symbol may be delisted
-$HOLX: No data found, symbol may be delisted
-$HBI: possibly delisted; no price data found  (period=7y)
-$ATVI: No data found, symbol may be delisted
-$ABMD: No data found, symbol may be delisted
-$XLNX: No data found, symbol may be delisted
-$CTLT: No data found, symbol may be delisted
 $DRE: No data found, symbol may be delisted
-$SEE: possibly delisted; no price data found  (period=7y)
-$DISCA: No data found, symbol may be delisted
-$DAY: No data found, symbol may be delisted
-$K: possibly delisted; no price data found  (period=7y)
-$TWTR: No data found, symbol may be delisted
-$CERN: No data found, symbol may be delisted
-$FRC: No data found, symbol may be delisted
-$IPG: possibly delisted; no price data found  (period=7y)
-$NLSN: No data found, symbol may be delisted
-$JNPR: No data found, symbol may be delisted
-
-35 Failed downloads:
-['DISCK', 'WLTW', 'ALXN', 'DFS', 'DISH', 'MXIM', 'SIVB', 'PXD', 'WBA', 'HES', 'GPS', 'FBHS', 'CTXS', 'KSU', 'MRO', 'PBCT', 'HOLX', 'ATVI', 'ABMD', 'XLNX', 'CTLT', 'DRE', 'DISCA', 'DAY', 'TWTR', 'CERN', 'FRC', 'NLSN', 'JNPR']: No data found, symbol may be delisted
-['CTRA', 'CMA', 'HBI', 'SEE', 'K', 'IPG']: possibly delisted; no price data found  (period=7y)
-[data] yfinance 600/635 -> 565 ok
-$VAR: No data found, symbol may be delisted
-$NBL: No data found, symbol may be delisted
-$CXO: No data found, symbol may be delisted
 $XEC: No data found, symbol may be delisted
-$TIF: No data found, symbol may be delisted
-$RTN: No data found, symbol may be delisted
-$VIAB: No data found, symbol may be delisted
-$FLIR: No data found, symbol may be delisted
-$WCG: No data found, symbol may be delisted
-$ARNC: No data found, symbol may be delisted
-$JWN: No data found, symbol may be delisted
+$HES: No data found, symbol may be delisted
+$CERN: No data found, symbol may be delisted
+$TWTR: No data found, symbol may be delisted
 $ADS: No data found, symbol may be delisted
-$AGN: No data found, symbol may be delisted
+$DISH: No data found, symbol may be delisted
+$ARNC: No data found, symbol may be delisted
+$VAR: No data found, symbol may be delisted
+$WBA: No data found, symbol may be delisted
+$CTLT: No data found, symbol may be delisted
+$FLIR: No data found, symbol may be delisted
+$CMA: possibly delisted; no price data found  (period=7y)
+$HBI: possibly delisted; no price data found  (period=7y)
+$NBL: No data found, symbol may be delisted
+$IPG: possibly delisted; no price data found  (period=7y)
+$WCG: No data found, symbol may be delisted
 $ETFC: No data found, symbol may be delisted
+$PXD: No data found, symbol may be delisted
+$GPS: No data found, symbol may be delisted
+$DISCA: No data found, symbol may be delisted
+$ALXN: No data found, symbol may be delisted
+$RTN: No data found, symbol may be delisted
 $HFC: No data found, symbol may be delisted
+$FBHS: No data found, symbol may be delisted
+$MRO: No data found, symbol may be delisted
+$MXIM: No data found, symbol may be delisted
+$CTXS: No data found, symbol may be delisted
+$DAY: No data found, symbol may be delisted
+$SIVB: No data found, symbol may be delisted
+$DFS: No data found, symbol may be delisted
+$SEE: possibly delisted; no price data found  (period=7y)
+$TIF: No data found, symbol may be delisted
+$JNPR: No data found, symbol may be delisted
+$XLNX: No data found, symbol may be delisted
+$NLSN: No data found, symbol may be delisted
+$K: possibly delisted; no price data found  (period=7y)
+$VIAB: No data found, symbol may be delisted
+$AGN: No data found, symbol may be delisted
+$ABMD: No data found, symbol may be delisted
+$WLTW: No data found, symbol may be delisted
+$PBCT: No data found, symbol may be delisted
 
-15 Failed downloads:
-['VAR', 'NBL', 'CXO', 'XEC', 'TIF', 'RTN', 'VIAB', 'FLIR', 'WCG', 'ARNC', 'JWN', 'ADS', 'AGN', 'ETFC', 'HFC']: No data found, symbol may be delisted
-[data] yfinance 635/635 -> 585 ok
-[data] after yfinance: 585 ok, 50 left for direct download, 37s
-[data] 0/50 symbols, 47s
-[data] fetched 585 symbols ({'yfinance': 585}); failed 50: ['CTRA', 'HOLX', 'DAY', 'K', 'IPG', 'WBA', 'HES', 'JNPR', 'DFS', 'CTLT', 'MRO', 'CMA', 'PXD', 'SEE', 'ATVI']
-[run] data health 100% (502/503), last date 2026-11-24, 90s
-[run] prices ready (1761, 585), 90s
-[src] wiki meta for 503 members
-[sec] 0/503 companies, 2s
-[sec] 100/503 companies, 33s
-[sec] 200/503 companies, 68s
-[sec] 300/503 companies, 131s
-[sec] 400/503 companies, 144s
-[sec] 500/503 companies, 174s
-[sec] facts for 503/503 companies (829,145 values), 96,773 8-K filings, 180s
+50 Failed downloads:
+['CXO', 'FRC', 'JWN', 'ATVI', 'HOLX', 'DISCK', 'KSU', 'DRE', 'XEC', 'HES', 'CERN', 'TWTR', 'ADS', 'DISH', 'ARNC', 'VAR', 'WBA', 'CTLT', 'FLIR', 'NBL', 'WCG', 'ETFC', 'PXD', 'GPS', 'DISCA', 'ALXN', 'RTN', 'HFC', 'FBHS', 'MRO', 'MXIM', 'CTXS', 'DAY', 'SIVB', 'DFS', 'TIF', 'JNPR', 'XLNX', 'NLSN', 'VIAB', 'AGN', 'ABMD', 'WLTW', 'PBCT']: No data found, symbol may be delisted
+['CTRA', 'CMA', 'HBI', 'IPG', 'SEE', 'K']: possibly delisted; no price data found  (period=7y)
+[data] yfinance 100/585 -> 100 ok
+[data] yfinance 200/585 -> 200 ok
+[data] yfinance 300/585 -> 300 ok
+[data] yfinance 400/585 -> 400 ok
+[data] yfinance 500/585 -> 500 ok
+$AVB: possibly delisted; no price data found  (period=3mo)
+$EA: possibly delisted; no price data found  (period=3mo)
+
+2 Failed downloads:
+['AVB', 'EA']: possibly delisted; no price data found  (period=3mo)
+[data] yfinance 585/585 -> 583 ok
+[data] after yfinance: 583 ok, 52 left for direct download, 37s
+[data] 0/52 symbols, 47s
+[data] fetched 583 symbols ({'yfinance': 583}); failed 52: ['AVB', 'EA', 'CTRA', 'HOLX', 'DAY', 'K', 'IPG', 'WBA', 'HES', 'JNPR', 'DFS', 'CTLT', 'MRO', 'CMA', 'PXD']
+[run] data health 100% (502/503), last date 2026-11-24, 93s
+[run] prices ready (1761, 585), 93s
 [src] fundamentals computed for 503 companies
-[src] page views for 106 companies
-[src] macro series: ['T10Y2Y', 'BAMLH0A0HYM2', 'VIXCLS', 'VIX_CBOE']
-[run] extra sources ready 375s: {'SEC financial statements': 503, 'SEC 8-K filings': 96773, 'Wikipedia page views': 106, 'FRED / CBOE macro series': 4}
+[src] page views for 502 companies
+[run] extra sources ready 299s: {'SEC financial statements': 503, 'SEC 8-K filings': 96773, 'Wikipedia page views': 502, 'FRED / CBOE macro series': 4}
 [replay] 208 decision weeks 2022-12-09..2026-11-24
-[run] replay done 386s
+[run] replay done 312s
 [check] Nasdaq cross-check: 87/87 stocks, 783 closes, agreement 1.0
 [src] headlines for 503/503 stocks
 [run] done: last data 2026-11-24, seal: already sealed for this decision date, graded 0, ledger problems 0
-status=success run=45569886289 utc=2026-11-25T07:47:47Z
+status=success run=45571062248 utc=2026-11-25T07:55:32Z
