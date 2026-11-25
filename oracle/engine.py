@@ -70,11 +70,24 @@ class Replay:
         self.fwd, self.exit = forward_excess(px, self.stocks, self.dates, cfg.benchmark, cfg.horizon_days, "open")
         self.fwd = self.fwd.where(self.member.reindex(self.fwd.index))
         self.fwd_cc, _ = forward_excess(px, self.stocks, self.dates, cfg.benchmark, cfg.horizon_days, "close")
+        self._pc, self._tc = {}, {}
 
     def panel(self, d):
-        X = pd.DataFrame({k: self.F[k].loc[d] for k in FACTORS})
-        for c in REGIME: X[c] = self.reg.loc[d, c]
-        return X[self.member.loc[d]]
+        if d not in self._pc:
+            X = pd.DataFrame({k: self.F[k].loc[d] for k in FACTORS})
+            for c in REGIME: X[c] = self.reg.loc[d, c]
+            self._pc[d] = X[self.member.loc[d]]
+        return self._pc[d]
+
+    def _train_rows(self, t):
+        if t not in self._tc:
+            X = self.panel(t); y = self.fwd.loc[t].reindex(X.index).rank(pct=True) - 0.5
+            m = X[FACTORS].notna().all(1) & y.notna()
+            Xd = None
+            if m.sum() >= 50:
+                Xd = X[m].copy(); Xd["y"] = y[m]
+            self._tc[t] = Xd
+        return self._tc[t]
 
     def blend(self, d):
         return sum(self.F[k].loc[d].fillna(0) for k in self.cfg.factor_blend) / len(self.cfg.factor_blend)
@@ -83,10 +96,8 @@ class Replay:
         rows = []
         for t in self.dates:
             if t not in self.exit.index or self.exit[t] > d: continue      # purge: label must be known at d
-            X = self.panel(t); y = self.fwd.loc[t].reindex(X.index).rank(pct=True) - 0.5
-            m = X[FACTORS].notna().all(1) & y.notna()
-            if m.sum() < 50: continue
-            Xd = X[m].copy(); Xd["y"] = y[m]; rows.append(Xd)
+            Xd = self._train_rows(t)
+            if Xd is not None: rows.append(Xd)
         if not rows: return None
         tr = pd.concat(rows); X = tr[FACTORS + REGIME].fillna(0); y = tr["y"]
         gb = HistGradientBoostingRegressor(max_iter=200, learning_rate=0.05, max_depth=3, min_samples_leaf=200,
@@ -104,14 +115,14 @@ class Replay:
 
     def run(self, log=print):
         """Walk-forward over all decision dates; models retrained every N weeks on purged history."""
-        out = []; models = None; last_train = None
+        out = []; models = None
         start = self.cfg.min_train_weeks
         for i, d in enumerate(self.dates):
             if i < start: continue
             if models is None or (i - start) % self.cfg.retrain_every_weeks == 0:
                 m = self._train(d)
                 if m is None: continue
-                models = m; last_train = d
+                models = m
             sc = self.score(d, models); sc["date"] = d; sc["fwd"] = self.fwd.loc[d].reindex(sc.index) if d in self.fwd.index else np.nan
             sc["fwd_cc"] = self.fwd_cc.loc[d].reindex(sc.index) if d in self.fwd_cc.index else np.nan
             out.append(sc.reset_index().rename(columns={"index": "ticker"}))
