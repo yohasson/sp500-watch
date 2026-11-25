@@ -80,7 +80,7 @@ def build(px, rep, live, evaluation, sims, ic, cal, status, names, sectors, entr
     sells = live[live.action == "SELL"].index.tolist()
     plan_entry, plan_exit, plan_port = entry, exit_, port.index.tolist()
     # between weekly seals, the plan shown is the sealed one (not today's re-ranking)
-    if sysf and pd.Timestamp(sysf[-1]["exit_date"]) >= A.index.max() and sysf[-1]["decision_date"] != str(last.date()):
+    if sysf and pd.Timestamp(sysf[-1]["exit_date"]) >= A.index.max():
         fr = sysf[-1]
         try:
             fc = pd.read_csv(os.path.join(os.path.dirname(L.LEDGER), fr["file"])).set_index("ticker")

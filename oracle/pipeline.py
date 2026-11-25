@@ -81,8 +81,9 @@ def run(update=True, seal=True, log=print, offline_universe=False):
     prev_port = []
     fcs = L.forecasts()
     sys_fcs = [r for r in fcs if r.get("convention") == "next_open"]
-    if sys_fcs:
-        pf = pd.read_csv(os.path.join(LEDGER_DIR, sys_fcs[-1]["file"]))
+    prev_fcs = [r for r in sys_fcs if r["decision_date"] < str(last.date())]
+    if prev_fcs:
+        pf = pd.read_csv(os.path.join(LEDGER_DIR, prev_fcs[-1]["file"]))
         prev_port = pf[pf.in_portfolio.astype(bool)].ticker.tolist()
     rk = live["rank"]
     port = E.pick_portfolio(rk, prev_port, CFG.portfolio_n, CFG.portfolio_hold_k, sectors, CFG.max_per_sector)

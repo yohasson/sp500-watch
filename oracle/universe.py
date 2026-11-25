@@ -10,6 +10,8 @@ import pandas as pd, requests
 from .config import DATA_DIR
 
 URL = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
+URL2 = "https://en.wikipedia.org/wiki/Historical_components_of_the_S%26P_500"
+URL3 = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies_(changes)"
 CACHE = os.path.join(DATA_DIR, "universe.json")
 UA = {"User-Agent": "Mozilla/5.0 (sp500-oracle research; contact via GitHub)"}
 
@@ -31,7 +33,16 @@ def fetch_universe() -> dict:
                       "start": None if pd.isna(added) else added.strftime("%Y-%m-%d"), "end": None}
     removed = {}
     try:
-        ch = next(t for t in tables if any("removed" in flat(c).lower() for c in t.columns))
+        cands = [t for t in tables if any("removed" in flat(c).lower() for c in t.columns)]
+        if not cands:   # the change log moved to a separate article
+            for u in (URL2, URL3):
+                try:
+                    more = pd.read_html(io.StringIO(requests.get(u, headers=UA, timeout=30).text))
+                    cands = [t for t in more if any("removed" in flat(c).lower() for c in t.columns)]
+                    if cands: break
+                except Exception as e:
+                    print(f"[universe] {u}: {e!r}")
+        ch = max(cands, key=len) if cands else next(iter(()))
         ch.columns = [flat(c) for c in ch.columns]
         dcol = next(c for c in ch.columns if "date" in c.lower())
         rcol = [c for c in ch.columns if "removed" in c.lower() and ("ticker" in c.lower() or "symbol" in c.lower())]
@@ -47,7 +58,8 @@ def fetch_universe() -> dict:
                 removed[t] = {"name": str(r[ncol[0]]) if ncol else t, "sector": "Unknown", "sub_industry": "",
                               "start": None, "end": d.strftime("%Y-%m-%d")}
     except StopIteration:
-        print("[universe] change table not found; removed stocks skipped. Tables seen: " + " | ".join(str([flat(c) for c in t.columns][:6]) for t in tables[:4]))
+        print("[universe] change table not found on any page; removed stocks skipped. Tables seen: " + " | ".join(str([flat(c) for c in t.columns][:6]) for t in tables[:4]))
+    print(f"[universe] {len(members)} current members, {len(removed)} removed tickers with dates")
     uni = {"fetched_utc": dt.datetime.utcnow().isoformat(timespec="seconds"), "source": URL,
            "members": members, "removed": removed}
     os.makedirs(DATA_DIR, exist_ok=True)
