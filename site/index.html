@@ -6,6 +6,7 @@
 <title>S&amp;P 500 Oracle</title>
 <meta name="theme-color" content="#0f172a">
 <meta name="robots" content="noindex,nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'; manifest-src 'self'">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <style>
@@ -91,7 +92,13 @@ tr.sel td{background:var(--chip)}
 .banner.bad{background:rgba(185,28,28,.1);color:var(--neg)}
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]) .banner,:root:not([data-theme=light]) .verdict span{color:var(--warn)}:root:not([data-theme=light]) .tag.keep{color:var(--acc)}}
 [data-theme=dark] .banner{color:var(--warn)}[data-theme=dark] .tag.keep{color:var(--acc)}
-@media (max-width:520px){.asof{display:none}#gear .gl{display:none}nav button{padding:10px 10px;font-size:14px}.g3>.kpi:last-child:nth-child(odd){grid-column:1/-1}.scroll{max-height:none}.hm{display:none}h1{font-size:21px}}
+details>summary{list-style:none}details>summary::-webkit-details-marker{display:none}
+details>summary::after{content:' ▾';color:var(--mut);font-size:12px}details[open]>summary::after{content:' ▴'}
+details.card{padding:14px 20px}details.card>summary{cursor:pointer}
+.pick:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+[data-theme=dark] input,[data-theme=dark] select{border-color:#64748b}
+@media (max-width:520px){.asof .lg{display:none}nav{gap:0}nav button{padding:10px 8px;font-size:13px}#health:not(.bad) span:last-child{display:none}
+#tTable td:nth-child(2),#tTable th:nth-child(2),#tTable td:nth-child(3),#tTable th:nth-child(3){display:none}#gear .gl{display:none}nav button{padding:10px 10px;font-size:14px}.g3>.kpi:last-child:nth-child(odd){grid-column:1/-1}.scroll{max-height:none}.hm{display:none}h1{font-size:21px}}
 </style>
 </head>
 <body>
@@ -104,9 +111,9 @@ tr.sel td{background:var(--chip)}
 <nav role="tablist">
   <button role="tab" aria-selected="true" data-tab="week">This week</button>
   <button role="tab" aria-selected="false" data-tab="test">$1,000 test</button>
-  <button role="tab" aria-selected="false" data-tab="record">Track record</button>
-  <button role="tab" aria-selected="false" data-tab="explore">All stocks</button>
-  <button role="tab" aria-selected="false" data-tab="how">How it works</button>
+  <button role="tab" aria-selected="false" data-tab="record">Record</button>
+  <button role="tab" aria-selected="false" data-tab="explore">Stocks</button>
+  <button role="tab" aria-selected="false" data-tab="how">About</button>
 </nav>
 
 <section id="week">
@@ -114,8 +121,7 @@ tr.sel td{background:var(--chip)}
     <h1 id="headline"></h1>
     <div class="verdict" id="verdict"></div>
     <p class="sub" id="subline"></p>
-    <div class="steps" id="steps"></div>
-    <div class="note" id="mood" style="margin-top:10px"></div>
+    <p class="note" id="steps" style="margin:10px 0 0"></p>
   </div>
   <div class="card hide" id="runCard">
     <h2 id="runTitle">How the sealed picks are doing</h2>
@@ -125,13 +131,13 @@ tr.sel td{background:var(--chip)}
   <div class="card">
     <h2 id="picksTitle">The 10 picks</h2>
     <div class="picks" id="picks"></div>
-    <div id="sells" class="note" style="margin-top:12px"></div>
+    <details style="margin-top:12px;padding-bottom:0"><summary class="note" id="whySum">Sectors and exits</summary><div id="sells" class="note" style="margin-top:8px"></div></details>
   </div>
-  <div class="card">
-    <h2>How much to trust this week's list</h2>
-    <div class="grid g3" id="trust"></div>
+  <details class="card" id="trustCard">
+    <summary><h2 style="display:inline">How much to trust this list</h2></summary>
+    <div class="grid g3" id="trust" style="margin-top:12px"></div>
     <p class="note" style="margin-top:12px" id="trustNote"></p>
-  </div>
+  </details>
 </section>
 
 <section id="test" class="hide">
@@ -147,12 +153,12 @@ tr.sel td{background:var(--chip)}
     <div id="tChart"></div>
     <div class="legend" id="tLegend"></div>
   </div>
-  <div class="card">
-    <h2>Every day</h2>
+  <details class="card" id="tDays">
+    <summary><h2 style="display:inline">Every day</h2></summary>
     <div class="seg2"><div class="seg" id="tFilter" role="group" aria-label="Filter"><button aria-pressed="true" data-v="">All days</button><button aria-pressed="false" data-v="win">Top 5 won</button><button aria-pressed="false" data-v="lose">S&amp;P 500 won</button></div><span class="note" id="tCount"></span></div>
     <div class="scroll"><table id="tTable"></table></div>
-    <p class="note">Select a day to see how each of the 5 stocks did.</p>
-  </div>
+    <p class="note">Select a day to see how each stock did.</p>
+  </details>
 </section>
 
 <section id="record" class="hide">
@@ -162,7 +168,8 @@ tr.sel td{background:var(--chip)}
     <div style="overflow-x:auto"><table id="fcTable"></table></div>
   </div>
   <div class="card">
-    <h2>History replay: the same rules applied to past weeks</h2>
+    <h2>History replay (hypothetical): the same rules applied to past weeks</h2>
+    <p class="note" id="mood" style="margin-top:-6px"></p>
     <div class="grid g4" id="replayKpis"></div>
     <div id="cumChart" style="margin-top:14px"></div>
     <div class="legend"><span><i style="background:var(--acc)"></i>Picks minus S&amp;P 500, after costs (cumulative)</span></div>
@@ -208,9 +215,9 @@ tr.sel td{background:var(--chip)}
   <div class="card">
     <h2>What the Oracle does</h2>
     <div class="steps" style="grid-template-columns:repeat(2,1fr)">
-      <div class="step"><b>1 · Scores every stock</b>Each week, after Friday's close, it ranks all S&amp;P 500 stocks on 8 well-studied price signals using three models (two machine-learning models and a simple blend).</div>
+      <div class="step"><b>1 · Scores every stock</b>When the previous list ends, at that day's close, it ranks all S&amp;P 500 stocks on 8 well-studied price signals using three models (two machine-learning models and a simple blend).</div>
       <div class="step"><b>2 · Picks 10</b>It suggests the top 10. A stock already held is kept while it stays in the top 50, which cuts trading costs.</div>
-      <div class="step"><b>3 · Locks the forecast</b>The full list is sealed with a fingerprint before the market opens, so it cannot be changed afterwards.</div>
+      <div class="step"><b>3 · Locks the forecast</b>Before the market opens, the full list is fingerprinted (SHA-256) and committed to the public Git history, so any later edit would be detectable.</div>
       <div class="step"><b>4 · Grades itself</b>After 5 trading days it scores the forecast against what really happened, and keeps a public track record.</div>
     </div>
   </div>
@@ -241,7 +248,7 @@ tr.sel td{background:var(--chip)}
   <button class="x" aria-label="Close" id="setX">×</button><h1 id="setTitle">Settings</h1><p class="note">Saved on this device only.</p>
   <div class="card"><h2>Appearance</h2>
     <div class="set"><label for="sTheme">Theme</label><select id="sTheme"><option value="system">Match my device</option><option value="light">Light</option><option value="dark">Dark</option></select></div>
-    <div class="set"><label for="sTab">Open on</label><select id="sTab"><option value="week">This week</option><option value="test">$1,000 test</option><option value="record">Track record</option><option value="explore">All stocks</option><option value="how">How it works</option></select></div>
+    <div class="set"><label for="sTab">Open on</label><select id="sTab"><option value="week">This week</option><option value="test">$1,000 test</option><option value="record">Record</option><option value="explore">Stocks</option><option value="how">About</option></select></div>
   </div>
   <div class="card"><h2>$1,000 test</h2>
     <div class="set"><label for="sAmt">Amount invested each day ($)</label><input id="sAmt" type="number" min="100" step="100" style="width:120px"></div>
@@ -251,7 +258,7 @@ tr.sel td{background:var(--chip)}
     <div class="set"><label for="acct">Total amount invested ($)</label><input id="acct" type="number" min="1000" step="1000" style="width:120px"></div>
     <div class="set"><label for="fee">Minimum fee per trade ($)</label><input id="fee" type="number" min="0" step="1" style="width:120px"></div>
     <div class="set"><label for="pctfee">Fee as % of trade</label><input id="pctfee" type="number" min="0" step="0.01" style="width:120px"></div>
-    <p class="note">Used by the cost check in How it works.</p>
+    <p class="note">Used by the cost check in About.</p>
   </div>
   <button class="iconbtn" id="setReset">Reset to defaults</button>
 </div></div>
@@ -264,17 +271,20 @@ const pct=(x,d=1,s=true)=>x==null?'–':((x<0?'\u2212':(s&&x>0?'+':''))+Math.abs
 const cls=x=>x==null?'':(x>0?'pos':x<0?'neg':'');
 const fmtD=s=>{if(!s)return'–';const d=new Date(s+'T12:00:00Z');return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'})};
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let D, BY={};
+let D, BY={}, BAD=false;
+const CW=(sel='.wrap')=>{const x=document.querySelector(sel);return Math.max(320,Math.min(640,((x&&x.clientWidth)||680)-48))};
+const avgStock=()=>{const W=[.02,.08,.10,.30,.30,.10,.08,.02];return (D.cal||[]).reduce((a,c,i)=>a+(c.m||0)*(W[i]??0),0)};
+const sealMsg=s=>/^blocked/.test(s||'')?'locking was blocked because too few prices updated; it retries before the open.':/^late/.test(s||'')?'the update ran after the market opened, so this list will not be locked or graded.':'it is locked automatically at the close when the current list ends, before the next open.';
 
 async function load(){
   if(EMBED) return EMBED;
-  const srcs=['data.json','https://raw.githubusercontent.com/yohasson/sp500-watch/main/site/data.json'];
+  const srcs=['data.json'];
   for(const u of srcs){try{const r=await fetch(u,{cache:'no-cache'});if(r.ok)return await r.json()}catch(e){}}
   throw new Error('no data');
 }
-function line(series,{w=640,h=180,color='var(--acc)',zero=true,fmt=v=>pct(v,0),band=null,dates=null,label='Line chart'}={}){
+function line(series,{w=CW(),h=180,min=null,max=null,color='var(--acc)',zero=true,fmt=v=>pct(v,0),band=null,dates=null,label='Line chart'}={}){
   const pts=series.filter(p=>p[1]!=null); if(pts.length<2)return '';
-  let ys=pts.map(p=>p[1]); if(band)ys=ys.concat(band); let mn=Math.min(...ys,zero?0:Infinity),mx=Math.max(...ys,zero?0:-Infinity); if(mx===mn){mx+=1e-3}
+  let ys=pts.map(p=>p[1]); if(band)ys=ys.concat(band); let mn=min??Math.min(...ys,zero?0:Infinity),mx=max??Math.max(...ys,zero?0:-Infinity); if(mx===mn){mx+=1e-3}
   const pad=28,X=i=>pad+(w-pad-8)*i/(pts.length-1),Y=v=>8+(h-26)*(1-(v-mn)/(mx-mn));
   let d=pts.map((p,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(p[1]).toFixed(1)).join('');
   let s=`<svg viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="${esc(label)}">`;
@@ -297,45 +307,48 @@ function tagFor(s){ if(s.a==='BUY')return '<span class="tag">New</span>'; if(s.a
   if(s.l==='Strong Buy')return '<span class="tag">Top 2%</span>'; if(s.l==='Avoid')return '<span class="tag avoid">Avoid</span>'; return ''}
 
 const CLOSED={'2026-11-26':'closed (Thanksgiving)','2026-11-27':'half day','2026-12-24':'half day','2026-12-25':'closed (Christmas)','2027-01-01':'closed (New Year)','2027-01-18':'closed (MLK Day)','2027-02-15':'closed (Presidents Day)','2027-03-26':'closed (Good Friday)','2027-05-31':'closed (Memorial Day)','2027-06-18':'closed (Juneteenth)','2027-07-05':'closed (Independence Day)','2027-09-06':'closed (Labor Day)','2027-11-25':'closed (Thanksgiving)','2027-11-26':'half day','2027-12-24':'closed (Christmas)'};
-function closures(a,b){return Object.entries(CLOSED).filter(([d])=>d>=a&&d<=b).map(([d,t])=>`${fmtD(d)}: ${t}`).join('; ')}
+function closures(a,b){return Object.entries(CLOSED).filter(([d])=>d>=a&&d<=b).map(([d,t])=>t.startsWith('closed')?`closed ${fmtD(d)}${t.slice(6)}`:`${t} ${fmtD(d)}`).join('; ')}
 function isWeak(e){return e.t==null||e.t<2||e.dsr==null||e.dsr<0.95}
-function integrityBad(){const k=(D.ks||[]).find(k=>k.id==='Ledger integrity');return k&&!k.ok?k.detail:null}
+function integrityBad(){const k=(D.ks||[]).find(k=>k.id==='Ledger integrity'&&!k.ok);return k?k.detail:null}
 function renderWeek(){
   const r=D.regime,e=D.eval;
-  $('#mood').innerHTML=`Market mood: <b>${esc(r.name)}</b> · VIX ${r.vix??'–'} · S&amp;P 500 ${pct(r.spy_1w)} this week, ${pct(r.spy_1m)} this month`;
+  $('#mood').innerHTML=`Market mood now: <b>${esc(r.name)}</b> · VIX ${r.vix??'–'} · S&amp;P 500 ${pct(r.spy_1w)} over 5 trading days, ${pct(r.spy_1m)} over a month`;
   const sealed=D.forecasts.find(f=>f.entry===D.entry&&f.conv==='next_open');
-  const over=(D.running&&D.running.done)||D.exit<D.asof, state=over?'over':sealed?'sealed':'preview';
-  const weak=isWeak(e), bad=integrityBad()&&sealed&&integrityBad().includes(sealed.id);
+  const over=!!(D.running&&D.running.done&&D.running.entry===D.entry)||D.exit<D.asof, state=over?'over':sealed?'sealed':'preview';
+  const started=D.asof>=D.entry;
+  const weak=isWeak(e), badAny=integrityBad(), bad=!!(badAny&&sealed&&badAny.includes(sealed.id)); BAD=bad;
   const graded=D.forecasts.filter(f=>f.status==='graded'&&f.conv==='next_open').length;
-  $('#verdict').innerHTML=[weak?'Unproven edge':'Edge measured',`t ${e.t==null?'–':e.t.toFixed(1)}`,`${graded} live week${graded===1?'':'s'} graded`,'paper only'].map(x=>`<span>${x}</span>`).join('');
+  $('#verdict').innerHTML=[weak?'Unproven edge':'Edge measured',`t ${e.t==null?'–':e.t.toFixed(1)}`,`${graded} live week${graded===1?'':'s'} graded`].map(x=>`<span>${x}</span>`).join('');
   const ne=D.next_entry||D.entry, nx=D.next_exit||D.exit;
   $('#headline').textContent=(bad?'Unverified · ':'')+(state==='sealed'?`Paper plan for ${fmtD(D.entry)} – ${fmtD(D.exit)}`:state==='over'?`Next list: preview for ${fmtD(ne)} – ${fmtD(nx)}`:`Preview (not locked yet) for ${fmtD(D.entry)} – ${fmtD(D.exit)}`);
-  const why=weak?`In the history replay this ranking's edge is too small to tell from luck (t = ${e.t==null?'–':e.t.toFixed(1)}; about 2 is needed), so treat the list as an experiment to track, not a tip.`
+  const why=weak?`Edge too small to tell from luck so far (t ${e.t==null?'–':e.t.toFixed(1)}; 2+ needed). Track it; don't trade on it.`
     :`In the history replay, picks like these averaged ${pct(e.gross,2)} a week above the S&P 500 before costs.`;
-  $('#subline').textContent=(state==='over'?'Last week\'s locked list has finished (result below). The new list is locked before the next market open. ':`The ${D.portfolio.length} stocks the models rank highest for the next 5 trading days. `)+why;
   const cl=closures(D.entry,D.exit), P0=D.portfolio.map(t=>BY[t]).filter(Boolean);
-  $('#steps').classList.toggle('hide',state!=='sealed');
-  $('#steps').innerHTML=[['Buy',`At the open on ${fmtD(D.entry)}: ${P0.filter(s=>s.a==='BUY').length===P0.length?'all '+P0.length:P0.filter(s=>s.a==='BUY').length+' new'} names, equal amounts`],['Hold',`5 trading days${cl?' (market '+cl+')':''}. Review if there is major news`],['Sell',`At the close on ${fmtD(D.exit)}, unless still in the top ${D.cfg.k}`]].map(x=>`<div class="step"><b>${x[0]}</b>${x[1]}</div>`).join('');
+  $('#subline').textContent=(state==='over'?'The last locked list has finished (result below). Next list: '+sealMsg(D.seal)+' ':started&&state==='sealed'?`Locked list for ${fmtD(D.entry)} – ${fmtD(D.exit)}; progress below. `:`The ${P0.length} stocks the models rank highest for ${fmtD(D.entry)} – ${fmtD(D.exit)}. `)+why;
+  $('#steps').classList.toggle('hide',state!=='sealed'||bad);
+  $('#steps').textContent=`${started?'Paper-bought':'Paper buy'} at the open ${fmtD(D.entry)}, equal amounts · hold 5 trading days${cl?' ('+cl+')':''} · paper sell at the close ${fmtD(D.exit)}${P0.some(s=>s.a==='KEEP')?' (names still in the top '+D.cfg.k+' are kept)':''}.`;
   if(bad){$('#banner').classList.add('bad');$('#banner').textContent='Integrity check failed for this week\'s locked list: it may have been changed after locking. Do not rely on it.'}
-  const P=D.portfolio.map(t=>BY[t]);
-  $('#picksTitle').textContent=state==='over'?`Last week's ${P.length} locked picks`:`The ${P.length} picks`;
-  $('#picks').innerHTML=P.map(s=>`<div class="pick" tabindex="0" role="button" data-t="${esc(s.t)}"><div class="tk">${esc(s.t)}</div><div style="flex:1;min-width:0"><div class="nm">${esc(s.n)}</div><div class="ws">${esc(s.why.join(' · ')||'Overall model blend')}</div></div>${tagFor(s)}</div>`).join('');
+  else if(badAny){$('#banner').classList.add('bad');$('#banner').textContent='The record-keeping check failed. Past live results may be unreliable until this is fixed.'}
+  const P=P0, miss=D.portfolio.filter(t=>!BY[t]);
+  $('#picksTitle').textContent=state==='over'?`Last list's ${P.length} locked picks`:state==='preview'?`Latest top ${P.length} (not locked)`:`The ${P.length} picks`;
+  $('#picks').innerHTML=P.map(s=>`<div class="pick" tabindex="0" role="button" data-t="${esc(s.t)}"><div class="tk">${esc(s.t)}</div><div style="flex:1;min-width:0"><div class="nm">${esc(s.n)}</div><div class="ws">${esc((s.why||[]).join(' · ')||'Overall model blend')}</div></div>${tagFor(s)}</div>`).join('')+(miss.length?`<p class="note">No price today for ${miss.map(esc).join(', ')} (may have left the index); still graded from the locked list.</p>`:'');
   const secs={};P.forEach(s=>secs[s.s]=(secs[s.s]||0)+1);
   const newP=P.filter(p=>p.a!=='KEEP'), lim=newP.length?Math.max(...newP.map(p=>p.rk)):0, cap=D.cfg.cap||3;
   const skipped=D.stocks.filter(s=>!s.port&&s.rk<lim&&(secs[s.s]||0)>=cap).length, kept=P.filter(p=>p.a==='KEEP').map(p=>p.t);
+  $('#whySum').textContent=`Why these ${P.length}? Sectors${D.sells.length?' and exits':''}`;
   $('#sells').innerHTML=`<div class="note" style="margin-bottom:6px">Sectors: ${Object.entries(secs).map(([k,v])=>esc(k)+' '+v).join(' · ')}. ${kept.length?`Kept from last week: ${kept.map(esc).join(', ')}. `:''}At most ${cap} per sector${skipped?`, so ${skipped} higher-ranked stock${skipped>1?'s were':' was'} skipped for balance`:''}.</div>`+(D.sells.length?`<b>Sell:</b> ${D.sells.map(t=>`<span class="chip" role="button" tabindex="0" data-t="${esc(t)}">${esc(t)}</span>`).join(' ')} – dropped out of the top ${D.cfg.k}.`:'');
   $('#trust').innerHTML=[
-    [pct(e.hitw,0,false),'of past weeks beat the S&P 500',`over ${e.weeks} replayed weeks`],
+    [pct(e.hitw,0,false),'of past weeks beat the S&P 500',`over ${e.weeks} replayed weeks · random ${D.cfg.n} stocks: ${e.base_hit!=null?pct(e.base_hit,0,false):'about 50%'}`],
     [e.t==null?'–':e.t.toFixed(1),'strength of evidence (t-stat)',e.weeks_needed&&e.t<2?`about 2 is needed; at this pace that takes ~${Math.max(1,Math.round(e.weeks_needed/52))} years of results`:(e.t>=2?'above the usual bar of 2':'no positive edge measured yet')],
     [pct(e.dd,0),'worst losing stretch vs the index','losing streaks are normal']
   ].map(k=>`<div class="kpi"><div class="v">${k[0]}</div><div class="l">${k[1]}</div><div class="h">${k[2]}</div></div>`).join('');
-  $('#trustNote').innerHTML=`Research output, not financial advice. Start with paper trading. ${state==='over'?'The next list is locked automatically before the next market open.':sealed?'This week\'s list was locked before the open (fingerprint <code>'+esc(sealed.sha)+'…</code>).':'This week\'s list is not locked yet: '+esc(D.seal||'')}`;
+  $('#trustNote').innerHTML=`${state==='over'?'Next list: '+sealMsg(D.seal):bad?'<b class="neg">This list fails its integrity check: treat the list and its results as unverified.</b>':sealed?'This week\'s list was locked before the open (fingerprint <code>'+esc(sealed.sha)+'…</code>).':'Not locked yet: '+sealMsg(D.seal)}`;
 }
 function renderRunning(){
   const R=D.running; if(!R)return; $('#runCard').classList.remove('hide');
   const usd=x=>(x>=0?'+$':'−$')+Math.abs(x).toFixed(0);
-  $('#runTitle').textContent=R.done?`Final result: picks sealed for ${fmtD(R.entry)} – ${fmtD(R.exit)}`:`So far this week (since the open on ${fmtD(R.entry)}, as of ${fmtD(R.asof)} close)`;
-  $('#runKpis').innerHTML=[[pct(R.avg,2),'the 10 picks (equal amounts)',`${usd(1000*R.avg)} on $1,000`],[pct(R.bench,2),'S&P 500 (SPY)',`${usd(1000*R.bench)} on $1,000`],[pct(R.avg-R.bench,2),'picks minus S&P 500',R.done?'graded in Track record':'not final until '+fmtD(R.exit)]]
+  $('#runTitle').textContent=R.entry!==D.entry?`Last list's final result (${fmtD(R.entry)} – ${fmtD(R.exit)})`:R.done?`Final result: ${BAD?'unverified':'locked'} picks for ${fmtD(R.entry)} – ${fmtD(R.exit)}`:`So far this week (since the open on ${fmtD(R.entry)}, as of ${fmtD(R.asof)} close)`;
+  $('#runKpis').innerHTML=[[pct(R.avg,2),'the 10 picks (equal amounts)',`${usd(1000*R.avg)} on $1,000`],[pct(R.bench,2),'S&P 500 (SPY)',`${usd(1000*R.bench)} on $1,000`],[pct(R.avg-R.bench,2),'picks minus S&P 500',R.done?'graded in Record':'not final until '+fmtD(R.exit)]]
     .map((k,i)=>`<div class="kpi"><div class="v ${cls(i==2?R.avg-R.bench:(i?R.bench:R.avg))}">${k[0]}</div><div class="l">${k[1]}</div><div class="h">${k[2]}</div></div>`).join('');
   $('#runChips').innerHTML=Object.entries(R.picks).sort((a,b)=>b[1]-a[1]).map(([t,v])=>`<span class="chip" data-t="${esc(t)}" role="button" tabindex="0">${esc(t)} <span class="${cls(v)}">${pct(v,1)}</span></span>`).join('');
 }
@@ -343,8 +356,8 @@ function renderRecord(){
   const e=D.eval, F=[...D.forecasts].reverse();
   if(!F.length){$('#fcTable').innerHTML='<tr><td class="note">No live forecasts yet. The first one is locked before the next market open and graded 5 trading days later.</td></tr>'}else
   $('#fcTable').innerHTML='<tr><th>Decided</th><th>Window</th><th>Model</th><th>Status</th><th class="num">Picks vs S&amp;P</th><th class="num">Hit rate</th><th class="num">Rank accuracy</th></tr>'+
-   F.map(f=>`<tr><td>${fmtD(f.decision)}</td><td class="mut">${fmtD(f.entry||f.decision)} → ${fmtD(f.exit)}</td><td class="mut">${esc(f.model)}</td><td>${f.status==='graded'?'Graded':f.status==='open'&&f.exit<=D.asof?'Grading…':f.status==='open'?'<span class="tag keep">Running</span>':'Waiting for prices'}</td><td class="num ${cls(f.port)}">${pct(f.port,2)}</td><td class="num">${f.hit==null?'–':pct(f.hit,0,false)}</td><td class="num">${f.ic==null?'–':f.ic.toFixed(2)}</td></tr>`).join('');
-  $('#replayKpis').innerHTML=[[pct(e.gross,2),'avg weekly edge, before costs'],[pct(e.ann,1),`per year after costs (${(e.first||'').slice(0,4)}–${(e.last||'').slice(0,4)})`],[pct(e.hitw,0,false),'weeks beating the index'],[pct(e.dd,0),'worst drawdown vs index']]
+   F.map(f=>`<tr><td>${fmtD(f.decision)}</td><td class="mut">${fmtD(f.entry||f.decision)} → ${fmtD(f.exit)}</td><td class="mut">${esc(f.model)}</td><td>${(integrityBad()||'').includes(f.id)?'<span class="tag sell">Failed check</span>':f.status==='graded'?'Graded':f.status==='open'&&(f.entry||'')>D.asof?'Starts '+fmtD(f.entry):f.status==='open'&&f.exit<=D.asof?'Grading…':f.status==='open'?'<span class="tag keep">Running</span>':'Waiting for prices'}</td><td class="num ${cls(f.port)}">${pct(f.port,2)}</td><td class="num">${f.hit==null?'–':pct(f.hit,0,false)}</td><td class="num">${f.ic==null?'–':f.ic.toFixed(2)}</td></tr>`).join('');
+  $('#replayKpis').innerHTML=[[pct(e.gross,2),'avg weekly edge, before costs (hypothetical)'],[pct(e.ann,1),`per year after costs (${(e.first||'').slice(0,4)}–${(e.last||'').slice(0,4)})`],[pct(e.hitw,0,false),'weeks beating the index'],[pct(e.dd,0),'worst drawdown vs index']]
     .map(k=>`<div class="kpi"><div class="v ${k[0].startsWith('\u2212')?'neg':''}">${k[0]}</div><div class="l">${k[1]}</div></div>`).join('');
   $('#cumChart').innerHTML=line(D.cum,{fmt:v=>pct(v,0)});
   $('#skill').innerHTML=[[e.ic==null?'–':e.ic.toFixed(3),'average rank accuracy (IC)','0 = no skill; 0.02–0.05 is useful'],[pct(e.pctpos,0,false),'weeks with positive accuracy',''],[pct(e.dsr,0,false),'overfitting-adjusted confidence','95% would count as proven']]
@@ -355,8 +368,9 @@ function renderRecord(){
   $('#league').innerHTML='<tr><th>Model</th><th class="num">Rank accuracy</th><th class="num">t-stat</th><th class="num">Last 52 weeks</th><th class="num">Top 10, per year after costs</th></tr>'+
     Object.entries(L).map(([k,v])=>`<tr><td>${esc(k)}</td><td class="num ${cls(v.ic)}">${v.ic==null?'–':v.ic.toFixed(3)}</td><td class="num">${v.t==null?'–':v.t.toFixed(1)}</td><td class="num ${cls(v.last52)}">${v.last52==null?'–':v.last52.toFixed(3)}</td><td class="num">${pct(v.net_ann,1)}</td></tr>`).join('')+`<tr><td colspan="5" class="note">With ${Object.keys(L).length} models compared, one of them looking best over a short stretch is expected by chance alone.</td></tr>`;
   const lab={'Top 2%':'Top 2%','Top 2–10%':'2–10%','Top 10–20%':'10–20%','Upper middle':'20–50%','Lower middle':'50–80%','Bottom 10–20%':'80–90%','Bottom 2–10%':'90–98%','Bottom 2%':'Last 2%'};
+  if(!(D.cal||[]).length){$('#calNote').textContent='Not available yet.';return}
   $('#calChart').innerHTML=bars(D.cal.map(c=>({l:lab[c.b]||c.b,v:c.m})));
-  const best=[...D.cal].sort((a,b)=>b.m-a.m)[0], top=D.cal[0], W=[.02,.08,.10,.30,.30,.10,.08,.02], avg=D.cal.reduce((a,c,i)=>a+c.m*(W[i]??1/D.cal.length),0);
+  const best=[...D.cal].sort((a,b)=>b.m-a.m)[0], top=D.cal[0], avg=avgStock();
   $('#calNote').textContent=`Average next-week return versus the S&P 500 for each rank group (best-ranked on the left). Top 2%: ${pct(top.m,2)}; average stock: ${pct(avg,2)}; best group: ${esc(lab[best.b]||best.b)} (${pct(best.m,2)}). A useful model shows bars falling from left to right.`;
 }
 const DEF={theme:'system',tab:'week',amt:1000,n:5,a:50000,fee:0,pf:0};
@@ -372,11 +386,11 @@ function closeSettings(){if(!$('#setDlg').classList.contains('on'))return;$('#se
 function readSettings(show){SET.theme=$('#sTheme').value;SET.tab=$('#sTab').value;SET.amt=Math.max(100,+$('#sAmt').value||1000);SET.n=+$('#sN').value||5;
   SET.a=Math.max(1000,+$('#acct').value||0);SET.fee=Math.max(0,+$('#fee').value||0);SET.pf=Math.max(0,+$('#pctfee').value||0);saveSet();applyTheme();safe(renderTest);safe(calc);
   if(show){$('#sAmt').value=SET.amt;$('#acct').value=SET.a;$('#fee').value=SET.fee;$('#pctfee').value=SET.pf}}
-function safe(f){try{f()}catch(err){console.error(err)}}
-let tView='diff',tF='',tSel=null; const R0len=()=>(D.daily||[]).filter(r=>r.e&&r.b!=null).length;
+function safe(f){try{f()}catch(err){console.error(err);const id={renderWeek:'week',renderRunning:'week',renderTest:'test',renderRecord:'record',renderHind:'record',renderAll:'explore',calc:'how'}[f.name],x=id&&$('#'+id);if(x&&x.querySelector&&!x.querySelector('.err'))x.insertAdjacentHTML('afterbegin','<div class="card note err">Part of this page could not be shown (data incomplete). The rest is unaffected.</div>')}}
+let tView='diff',tF='',tSel=null,tAll=false; const R0len=()=>(D.daily||[]).filter(r=>r.e&&r.b!=null).length;
 function renderTest(){
   const A=SET.amt, N=SET.n, ow=Math.max(SET.fee/(A/N),SET.pf/100)+0.0003, cpos=2*ow*(A/N);
-  $('#tSub2').textContent=`After your broker fees from Settings (about $${(2*ow*A).toFixed(2)} per round trip on $${A.toLocaleString('en-US')}${SET.fee||SET.pf?'':'; add your broker\'s fees in ⚙︎ Settings'}). Days overlap, so ${R0len()} days are only about ${Math.round(R0len()/5)} independent weeks.`;
+  $('#tSub2').textContent=`${SET.fee||SET.pf?'After your broker fees':'After a 0.03% trading spread (no broker fee set; add yours in ⚙︎ Settings)'} (about $${(2*ow*A).toFixed(2)} per round trip on $${A.toLocaleString('en-US')}).`+(R0len()?` Days overlap, so ${R0len()} days are only about ${Math.round(R0len()/5)} independent weeks.`:'');
   $('#tTitle').textContent=`If you had put $${A.toLocaleString('en-US')} into the top ${N} pick${N>1?'s':''} on any day of the past year`;
   const R=(D.daily||[]).filter(r=>r.e&&r.b!=null).map(r=>{const ps=r.p.slice(0,N).filter(t=>r.e[t]!=null);const m=ps.reduce((a,t)=>a+r.e[t],0)/(ps.length||1);
     return {d:r.d,x:r.x,p:ps,e:Object.fromEntries(ps.map(t=>[t,r.e[t]])),v:A*(1+m-2*ow),b:A*(r.b/1000)}});
@@ -394,17 +408,17 @@ function renderTest(){
   const rows=R.filter(r=>!tF||(tF==='win'?r.v>r.b:r.v<=r.b)).slice().reverse();
   $('#tCount').textContent=`${rows.length} days`;
   $('#tTable').innerHTML=`<tr><th>Bought</th><th>Sold</th><th>Top ${N} that day</th><th class="num">Top ${N}</th><th class="num">S&amp;P 500</th><th class="num">Difference</th></tr>`+
-   rows.map(r=>`<tr class="row${tSel===r.d?' sel':''}" data-day="${esc(r.d)}" tabindex="0"><td>${fmtD(r.d)}</td><td class="mut">${fmtD(r.x)}</td><td class="mut">${r.p.map(esc).join(' · ')}</td><td class="num ${cls(r.v-A)}">${usd(r.v)}</td><td class="num ${cls(r.b-A)}">${usd(r.b)}</td><td class="num ${cls(r.v-r.b)}"><b>${sd(r.v-r.b)}</b></td></tr>`+
-     (tSel===r.d&&r.e?`<tr class="sel"><td></td><td colspan="5">${Object.entries(r.e).map(([t,v])=>`<span class="chip" role="button" tabindex="0" data-t="${esc(t)}">${esc(t)} <span class="${cls(v)}">${pct(v,1)}</span> = ${usd(A/r.p.length*(1+v)-2*ow*A/r.p.length)}</span>`).join(' ')}</td></tr>`:'')).join('');
+   rows.slice(0,tAll?rows.length:30).map(r=>`<tr class="row${tSel===r.d?' sel':''}" data-day="${esc(r.d)}" tabindex="0"><td>${fmtD(r.d)}</td><td class="mut">${fmtD(r.x)}</td><td class="mut">${r.p.map(esc).join(' · ')}</td><td class="num ${cls(r.v-A)}">${usd(r.v)}</td><td class="num ${cls(r.b-A)}">${usd(r.b)}</td><td class="num ${cls(r.v-r.b)}"><b>${sd(r.v-r.b)}</b></td></tr>`+
+     (tSel===r.d&&r.e?`<tr class="sel"><td></td><td colspan="5">${Object.entries(r.e).map(([t,v])=>`<span class="chip" role="button" tabindex="0" data-t="${esc(t)}">${esc(t)} <span class="${cls(v)}">${pct(v,1)}</span> = ${usd(A/r.p.length*(1+v)-2*ow*A/r.p.length)}</span>`).join(' ')}</td></tr>`:'')).join('')+(rows.length>30&&!tAll?`<tr><td colspan="6"><button class="iconbtn" id="tMore">Show all ${rows.length} days</button></td></tr>`:'');
 }
-function bars2(items,{w=640,h=170}={}){
+function bars2(items,{w=CW(),h=170}={}){
   const mx=Math.max(...items.map(i=>Math.abs(i.v)),1e-6),bw=(w-40)/items.length,Y0=(h-24)/2+4;
   let s=`<svg viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="Daily difference chart"><line x1="36" x2="${w}" y1="${Y0}" y2="${Y0}" stroke="var(--line)"/>`;
   s+=`<text x="0" y="12">+$${mx.toFixed(0)}</text><text x="0" y="${h-16}">−$${mx.toFixed(0)}</text>`;
   items.forEach((it,i)=>{const bh=Math.abs(it.v)/mx*(Y0-6),x=36+i*bw;s+=`<rect x="${x.toFixed(1)}" y="${(it.v>=0?Y0-bh:Y0).toFixed(1)}" width="${Math.max(bw*.8,.6).toFixed(2)}" height="${Math.max(bh,.5).toFixed(1)}" fill="${it.v>=0?'var(--pos)':'var(--neg)'}"><title>${it.l}: ${it.v>=0?'+':'−'}$${Math.abs(it.v).toFixed(0)}</title></rect>`});
   return s+`<text x="36" y="${h-2}">${esc(items[0].l.slice(0,7))}</text><text x="${w}" y="${h-2}" text-anchor="end">${esc(items[items.length-1].l.slice(0,7))}</text></svg>`;
 }
-function line2(sets,{w=640,h=190,base=1000}={}){
+function line2(sets,{w=CW(),h=190,base=1000}={}){
   const all=sets.flat().map(p=>p[1]);let mn=Math.min(...all),mx=Math.max(...all);const n=sets[0].length,X=i=>40+(w-48)*i/(n-1),Y=v=>8+(h-28)*(1-(v-mn)/(mx-mn||1));
   let s=`<svg viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="Values after one week"><line x1="40" x2="${w-8}" y1="${Y(base)}" y2="${Y(base)}" stroke="var(--line)" stroke-dasharray="3 3"/>`;
   s+=`<text x="0" y="${Y(mx)+4}">$${mx.toFixed(0)}</text><text x="0" y="${Y(mn)}">$${mn.toFixed(0)}</text>`;
@@ -420,9 +434,9 @@ function renderHind(){
   $('#hindNote').textContent=`Rank accuracy per day, smoothed over 20 days. Above the dashed line, higher-ranked stocks tended to do better that week. On ${pct(H.pos,0,false)} of days it was positive.`;
 }
 async function stockHind(t){
-  const el=$('#sHind'); if(!el)return;
-  try{const r=await fetch('stocks/'+encodeURIComponent(t)+'.json',{cache:'no-cache'}); if(!r.ok)throw 0; const h=await r.json();
-    const px=$('#sPx'); if(px){const ser=(h.px||[]).map((v,i)=>[D.weeks[i],v==null?null:v-1]);
+  const el=$('#sHind'),px=$('#sPx'); if(!el)return;
+  try{const r=await fetch('stocks/'+encodeURIComponent(t)+'.json',{cache:'no-cache'}); if(!r.ok)throw 0; const h=await r.json(); if(!el.isConnected)return;
+    if(px){const ser=(h.px||[]).map((v,i)=>[D.weeks[i],v==null?null:v-1]);
       px.innerHTML=ser.filter(x=>x[1]!=null).length>1?line2b(ser,D.spyw.map((v,i)=>[D.weeks[i],v-1]),{label:'Price of '+t+' versus the S&P 500'})+`<div class="legend"><span><i style="background:var(--acc)"></i>${esc(t)}</span><span><i style="background:var(--mut)"></i>S&amp;P 500 (SPY)</span></div>`:'<p class="note">No price history.</p>'}
     if(!h.d.length){el.innerHTML='<p class="note">No daily record for this stock yet.</p>';return}
     const n=h.d.length, done=h.a.map((a,i)=>[a,h.p[i],h.r[i]]).filter(x=>x[0]!=null);
@@ -434,10 +448,10 @@ async function stockHind(t){
       <div class="kpi"><div class="v ${cls(avgAll)}">${pct(avgAll,1)}</div><div class="l">avg week vs S&amp;P 500, all days</div></div></div>`+
       line2b(h.d.map((d,i)=>[d,h.p[i]]),h.d.map((d,i)=>[d,h.a[i]]))+
       '<div class="legend"><span><i style="background:var(--acc)"></i>Projected that day (blind)</span><span><i style="background:var(--mut)"></i>What happened the next week</span></div>'+
-      line(h.d.map((d,i)=>[d,1-(h.r[i]-1)/D.stocks.length]),{h:90,fmt:v=>Math.round(v*100)+'',zero:false})+'<p class="note">Daily model rank (100 = top). Projections are tiny next to real moves: one week of price noise is far larger than the edge.</p>';
-  }catch(e){el.innerHTML='<p class="note">Daily history not available yet.</p>';const px=$('#sPx');if(px&&px.textContent.includes('Loading'))px.innerHTML='<p class="note">No price history.</p>'}
+      line(h.d.map((d,i)=>[d,1-(h.r[i]-1)/D.stocks.length]),{h:90,fmt:v=>Math.round(v*100)+'',zero:false,min:0,max:1,label:'Daily model rank of '+t})+'<p class="note">Daily model rank (100 = top). Projections are tiny next to real moves: one week of price noise is far larger than the edge.</p>';
+  }catch(e){el.innerHTML='<p class="note">Daily history not available yet.</p>';if(px&&px.textContent.includes('Loading'))px.innerHTML='<p class="note">No price history.</p>'}
 }
-function line2b(a,b,{w=640,h=170,label='Projected versus actual'}={}){
+function line2b(a,b,{w=CW(),h=170,label='Projected versus actual'}={}){
   const ys=a.concat(b).map(p=>p[1]).filter(v=>v!=null); if(ys.length<2)return '';
   let mn=Math.min(...ys,0),mx=Math.max(...ys,0); const n=a.length,X=i=>36+(w-44)*i/(n-1),Y=v=>8+(h-26)*(1-(v-mn)/(mx-mn||1));
   const path=S=>{let d='',pen=false;S.forEach((p,i)=>{if(p[1]==null){pen=false;return}d+=(pen?'L':'M')+X(i).toFixed(1)+' '+Y(p[1]).toFixed(1);pen=true});return d};
@@ -450,7 +464,7 @@ function renderAll(){
   rows.sort((a,b)=>{const x=a[sortKey]??-1e9,y=b[sortKey]??-1e9;return (x>y?1:x<y?-1:0)*sortDir});
   const th=(k,t,c='')=>`<th class="${c}" data-k="${k}"${sortKey===k?` aria-sort="${sortDir>0?'ascending':'descending'}"`:''}><button type="button">${t}${sortKey===k?(sortDir>0?' ↑':' ↓'):''}</button></th>`;
   $('#all').innerHTML='<tr>'+th('rk','Rank','num')+th('t','Stock')+th('s','Sector')+th('sc','Model score','hm')+th('r1w','Last week','num')+'<th></th></tr>'+
-   rows.slice(0,200).map(s=>`<tr class="row" tabindex="0" data-t="${esc(s.t)}"><td class="num">${s.rk}</td><td><b>${esc(s.t)}</b> <span class="mut">${esc(s.n)}</span></td><td class="mut">${esc(s.s)}</td><td class="hm"><div class="bar" title="Percentile ${Math.round((1-(s.rk-1)/D.stocks.length)*100)}"><i style="width:${Math.round((1-(s.rk-1)/D.stocks.length)*100)}%"></i></div></td><td class="num ${cls(s.r1w)}">${pct(s.r1w,1)}</td><td>${tagFor(s)}</td></tr>`).join('');
+   rows.slice(0,200).map(s=>`<tr class="row" tabindex="0" role="button" data-t="${esc(s.t)}"><td class="num">${s.rk}</td><td><b>${esc(s.t)}</b> <span class="mut">${esc(s.n)}</span></td><td class="mut">${esc(s.s)}</td><td class="hm"><div class="bar" title="Percentile ${Math.round((1-(s.rk-1)/D.stocks.length)*100)}"><i style="width:${Math.round((1-(s.rk-1)/D.stocks.length)*100)}%"></i></div></td><td class="num ${cls(s.r1w)}">${pct(s.r1w,1)}</td><td>${tagFor(s)}</td></tr>`).join('');
   if(!rows.length)$('#all').innerHTML='<tr><td class="note">No stocks match.</td></tr>';
   $('#allNote').textContent=rows.length>200?`Showing 200 of ${rows.length}. Refine the search to see more.`:`${rows.length} stocks`;
 }
@@ -462,7 +476,7 @@ function openStock(t){
   $('#panel').innerHTML=`<button class="x" aria-label="Close" id="dx">×</button>
   <div class="note">${esc(s.s)}</div><h1 id="dTitle" style="margin-top:2px">${esc(s.t)} <span class="mut" style="font-weight:500;font-size:18px">${esc(s.n)}</span></h1>
   <div style="display:flex;gap:8px;align-items:center;margin:6px 0 14px">${tagFor(s)}<span class="note">Rank ${s.rk} of ${D.stocks.length} · last close $${s.c??'–'}</span></div>
-  <div class="card"><h2>Model view</h2><p style="margin:0 0 8px">Rank group <b>${esc(s.b)}</b>. In past weeks this group averaged <b class="${cls(cal.m)}">${pct(cal.m,2)}</b> versus the S&amp;P 500 the following week, beating it ${pct(cal.p,0,false)} of the time.${s.port&&cal.m!=null&&cal.m<0?' It is on the list because of its rank; so far this rank group has not beaten the index.':''}</p>
+  <div class="card"><h2>Model view</h2><p style="margin:0 0 8px">Rank group <b>${esc(s.b)}</b>. In past weeks this group averaged <b class="${cls(cal.m)}">${pct(cal.m,2)}</b> versus the S&amp;P 500 the following week, beating it ${pct(cal.p,0,false)} of the time.${cal.m!=null?` The average S&amp;P 500 stock did ${pct(avgStock(),2)}, so this group's extra edge was <b class="${cls(cal.m-avgStock())}">${pct(cal.m-avgStock(),2)}</b>.`:''}</p>
    <div class="grid g3">${['gbm','ridge','blend'].map((k,i)=>`<div class="kpi"><div class="v">${s.m[k]==null?'–':Math.round(s.m[k]*100)}</div><div class="l">${['Boosted trees','Linear model','Signal blend'][i]} (percentile)</div></div>`).join('')}</div></div>
   <div class="card"><h2>Signals (percentile vs other stocks)</h2>${facs.map(([k,v])=>`<div class="fac"><span>${fl[k]}</span><div class="bar"><i style="width:${Math.round(v*100)}%"></i></div><span class="num">${Math.round(v*100)}</span></div>`).join('')}</div>
   <div class="card"><h2>Price over the past year</h2><div id="sPx"><p class="note">Loading…</p></div></div>
@@ -476,8 +490,8 @@ function calc(){
   const e=D.eval, a=SET.a, fee=SET.fee, pf=SET.pf/100;
   $('#calcWho').textContent=`For $${a.toLocaleString('en-US')} split across ${D.cfg.n} stocks, minimum fee $${fee}, fee ${SET.pf}% of trade.`;
   const pos=a/D.cfg.n, oneway=(pos>0?Math.max(fee/pos,pf):0)+0.0003, net=e.gross-2*oneway*e.turn, ann=Math.pow(1+net,52)-1;
-  $('#calcOut').textContent=pct(ann,1); $('#calcOut').className='big '+(isWeak(e)?'mut':cls(ann));
-  $('#calcNote').textContent=`a year versus the S&P 500 in the history replay, after trading costs, before taxes ≈ $${Math.round(a*ann).toLocaleString('en-US')} a year on $${a.toLocaleString('en-US')} (cost per trade ≈ ${pct(oneway,2,false)} incl. a 0.03% spread; break-even ≈ ${pct(e.be,2,false)}).`+(net<0?' Fees would erase the edge at this size.':'');
+  const w=isWeak(e); $('#calcOut').textContent=w?'Unproven':pct(ann,1); $('#calcOut').className='big '+(w?'mut':cls(ann));
+  $('#calcNote').textContent=(w?`In the hypothetical replay: ${pct(ann,1)} a year vs the S&P 500 after your costs, but this is too small to tell from luck, so don't plan on it. `:`a year vs the S&P 500 in the hypothetical replay, after costs, before taxes (≈ $${Math.round(a*ann).toLocaleString('en-US')} on $${a.toLocaleString('en-US')}). `)+`Cost per trade ≈ ${pct(oneway,2,false)} incl. a 0.03% spread; break-even ≈ ${pct(e.be,2,false)}.`+(net<0?' Fees would erase the edge at this size.':'');
 }
 function tabs(){
   const bs=[...document.querySelectorAll('nav button')];
@@ -501,13 +515,16 @@ function wire(){
   $('#setReset').onclick=()=>{const r=setReturn;SET=Object.assign({},DEF);saveSet();applyTheme();openSettings();setReturn=r;safe(renderTest);safe(calc)};
   $('#tView').onclick=ev=>{const b=ev.target.closest('button');if(!b)return;tView=b.dataset.v;$('#tView').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));renderTest()};
   $('#tFilter').onclick=ev=>{const b=ev.target.closest('button');if(!b)return;tF=b.dataset.v;$('#tFilter').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));renderTest()};
-  $('#tTable').addEventListener('click',ev=>{const r=ev.target.closest('tr[data-day]');if(!r||ev.target.closest('[data-t]'))return;tSel=tSel===r.dataset.day?null:r.dataset.day;renderTest()});
+  $('#tTable').addEventListener('click',ev=>{if(ev.target.id==='tMore'){tAll=true;renderTest();return}const r=ev.target.closest('tr[data-day]');if(!r||ev.target.closest('[data-t]'))return;tSel=tSel===r.dataset.day?null:r.dataset.day;renderTest()});
 }
 (async()=>{
   try{D=await load()}catch(e){document.querySelector('.wrap').insertAdjacentHTML('beforeend','<div class="card">Data could not be loaded. <button class="iconbtn" onclick="location.reload()">Try again</button></div>');return}
   const age=(Date.now()-new Date(D.asof+'T21:00:00Z'))/864e5; if(age>4)$('#banner').textContent=`Data is ${Math.floor(age)} days old: the automatic update may have failed. Paper trading only · not financial advice`;
+  try{
+  D.ks=D.ks||[];D.forecasts=D.forecasts||[];D.health=D.health||{};D.sells=D.sells||[];D.portfolio=D.portfolio||[];D.cal=D.cal||[];
+  D.stocks=(D.stocks||[]).filter(s=>/^[A-Z0-9.\-]{1,7}$/.test(s.t));
   D.stocks.forEach(s=>BY[s.t]=s);
-  $('#asof').textContent='Prices as of '+fmtD(D.asof)+' close';
+  $('#asof').innerHTML='<span class="lg">Prices as of </span>'+fmtD(D.asof)+'<span class="lg"> close</span>';
   const bad=D.ks.filter(k=>!k.ok); const h=$('#health'); const graded=D.forecasts.filter(f=>f.status==='graded').length;
   h.classList.toggle('bad',bad.length>0); h.classList.toggle('warn',!bad.length&&!graded);
   h.lastElementChild.textContent=bad.length?bad[0].id+': check':(graded?`Checks OK · ${graded} live week${graded>1?'s':''} graded`:'Checks OK · no live results yet');
@@ -520,7 +537,9 @@ function wire(){
   tabs(); wire(); [renderWeek,renderRunning,renderTest,renderRecord,renderHind,renderAll,calc].forEach(safe);
   const hh=location.hash.slice(1), TABS=['week','test','record','explore','how'], startTab=TABS.includes(hh)?hh:SET.tab;
   if(startTab&&startTab!=='week'){const b=document.querySelector(`nav button[data-tab="${startTab}"]`);if(b)b.click()}
-  if(hh&&!TABS.includes(hh))openStock(decodeURIComponent(hh).toUpperCase());
+  if(hh&&!TABS.includes(hh)){history.replaceState(null,'',location.pathname+location.search);openStock(decodeURIComponent(hh).toUpperCase())}
+  window.addEventListener('hashchange',()=>{const h=decodeURIComponent(location.hash.slice(1)).toUpperCase();if(BY[h]&&!$('#drawer').classList.contains('on'))openStock(h)});
+  }catch(err){console.error(err);document.querySelector('.wrap').insertAdjacentHTML('beforeend','<div class="card">Data is incomplete. <button class="iconbtn" onclick="location.reload()">Try again</button></div>')}
   if('serviceWorker' in navigator&&!EMBED)navigator.serviceWorker.register('sw.js').catch(()=>{});
 })();
 </script>
