@@ -1,5 +1,5 @@
 {
-"fetched_utc": "2026-11-25T02:53:45",
+"fetched_utc": "2026-11-25T03:00:50",
 "source": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",
 "members": {
 "MMM": {
@@ -3524,5 +3524,2526 @@
 "end": null
 }
 },
-"removed": {}
+"removed": {
+"KVUE": {
+"name": "Kenvue",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2026-10-30"
+},
+"WBD": {
+"name": "Warner Bros. Discovery",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2026-10-06"
+},
+"CTVA": {
+"name": "Corteva",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2026-10-06"
+},
+"TAP": {
+"name": "Molson Coors",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2026-09-21"
+},
+"TTD": {
+"name": "The Trade Desk",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2026-09-21"
+},
+"BLDR": {
+"name": "Builders FirstSource",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2026-09-21"
+},
+"AVB": {
+"name": "AvalonBay Communities",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2026-08-18"
+},
+"EA": {
+"name": "Electronic Arts",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2026-08-05"
+},
+"CAG": {
+"name": "Conagra Brands",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2026-06-30"
+},
+"POOL": {
+"name": "Pool Corporation",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2026-06-22"
+},
+"CPB": {
+"name": "Campbell's",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2026-06-22"
+},
+"EPAM": {
+"name": "EPAM Systems",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2026-06-02"
+},
+"CTRA": {
+"name": "Coterra Energy",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2026-05-07"
+},
+"HOLX": {
+"name": "Hologic",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2026-04-09"
+},
+"MTCH": {
+"name": "Match Group",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2026-03-23"
+},
+"MOH": {
+"name": "Molina Healthcare",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2026-03-23"
+},
+"LW": {
+"name": "Lamb Weston",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2026-03-23"
+},
+"PAYC": {
+"name": "Paycom",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2026-03-23"
+},
+"DAY": {
+"name": "Dayforce",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2026-02-09"
+},
+"LKQ": {
+"name": "LKQ Corporation",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2025-12-22"
+},
+"SOLS": {
+"name": "Solstice Advanced Materials",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2025-12-22"
+},
+"MHK": {
+"name": "Mohawk Industries",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2025-12-22"
+},
+"K": {
+"name": "Kellanova",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2025-12-11"
+},
+"IPG": {
+"name": "Interpublic Group",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2025-11-28"
+},
+"EMN": {
+"name": "Eastman Chemical Co.",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2025-11-04"
+},
+"KMX": {
+"name": "CarMax",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2025-10-31"
+},
+"ENPH": {
+"name": "Enphase Energy",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2025-09-22"
+},
+"CZR": {
+"name": "Caesars Entertainment",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2025-09-22"
+},
+"MKTX": {
+"name": "MarketAxess",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2025-09-22"
+},
+"WBA": {
+"name": "Walgreens Boots Alliance",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2025-08-28"
+},
+"HES": {
+"name": "Hess Corporation",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2025-07-23"
+},
+"ANSS": {
+"name": "Ansys",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2025-07-18"
+},
+"JNPR": {
+"name": "Juniper Networks",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2025-07-09"
+},
+"DFS": {
+"name": "Discover Financial",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2025-05-19"
+},
+"BWA": {
+"name": "BorgWarner",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2025-03-24"
+},
+"TFX": {
+"name": "Teleflex",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2025-03-24"
+},
+"CE": {
+"name": "Celanese",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2025-03-24"
+},
+"FMC": {
+"name": "FMC Corporation",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2025-03-24"
+},
+"QRVO": {
+"name": "Qorvo",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2024-12-23"
+},
+"AMTM": {
+"name": "Amentum",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2024-12-23"
+},
+"CTLT": {
+"name": "Catalent",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2024-12-23"
+},
+"MRO": {
+"name": "Marathon Oil",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2024-11-26"
+},
+"BBWI": {
+"name": "Bath & Body Works, Inc.",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2024-10-01"
+},
+"AAL": {
+"name": "American Airlines Group",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2024-09-23"
+},
+"ETSY": {
+"name": "Etsy",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2024-09-23"
+},
+"BIO": {
+"name": "Bio-Rad Laboratories",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2024-09-23"
+},
+"RHI": {
+"name": "Robert Half",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2024-06-24"
+},
+"CMA": {
+"name": "Comerica",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2024-06-24"
+},
+"PXD": {
+"name": "Pioneer Natural Resources",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2024-05-08"
+},
+"XRAY": {
+"name": "Dentsply Sirona",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2024-04-03"
+},
+"VFC": {
+"name": "VF Corporation",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2024-04-03"
+},
+"WHR": {
+"name": "Whirlpool Corporation",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2024-03-18"
+},
+"ZION": {
+"name": "Zions Bancorporation",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2024-03-18"
+},
+"SEE": {
+"name": "Sealed Air",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2023-12-18"
+},
+"ALK": {
+"name": "Alaska Air Group",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2023-12-18"
+},
+"SEDG": {
+"name": "SolarEdge",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2023-12-18"
+},
+"OGN": {
+"name": "Organon & Co.",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2023-10-18"
+},
+"ATVI": {
+"name": "Activision Blizzard",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2023-10-18"
+},
+"DXC": {
+"name": "DXC Technology",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2023-10-03"
+},
+"LNC": {
+"name": "Lincoln National Corporation",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2023-09-18"
+},
+"NWL": {
+"name": "Newell Brands",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2023-09-18"
+},
+"AAP": {
+"name": "Advance Auto Parts",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2023-08-25"
+},
+"DISH": {
+"name": "Dish Network",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2023-06-20"
+},
+"FRC": {
+"name": "First Republic Bank",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2023-05-04"
+},
+"LUMN": {
+"name": "Lumen Technologies",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2023-03-20"
+},
+"SBNY": {
+"name": "Signature Bank",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2023-03-15"
+},
+"SIVB": {
+"name": "SVB Financial Group",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2023-03-15"
+},
+"VNO": {
+"name": "Vornado Realty Trust",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2023-01-05"
+},
+"ABMD": {
+"name": "Abiomed",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2022-12-22"
+},
+"FBHS": {
+"name": "Fortune Brands Home & Security",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2022-12-19"
+},
+"MBC": {
+"name": "MasterBrand",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2022-12-19"
+},
+"TWTR": {
+"name": "Twitter",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2022-11-01"
+},
+"NLSN": {
+"name": "Nielsen Holdings",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2022-10-12"
+},
+"CTXS": {
+"name": "Citrix Systems",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2022-10-03"
+},
+"DRE": {
+"name": "Duke Realty",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2022-10-03"
+},
+"PVH": {
+"name": "PVH",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2022-09-19"
+},
+"PENN": {
+"name": "Penn Entertainment",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2022-09-19"
+},
+"UA": {
+"name": "Under Armour (Class C)",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2022-06-21"
+},
+"UAA": {
+"name": "Under Armour (Class A)",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2022-06-21"
+},
+"IPGP": {
+"name": "IPG Photonics",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2022-06-21"
+},
+"CERN": {
+"name": "Cerner",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2022-06-08"
+},
+"DISCA": {
+"name": "Discovery, Inc.",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2022-04-11"
+},
+"DISCK": {
+"name": "Discovery, Inc.",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2022-04-11"
+},
+"PBCT": {
+"name": "People's United Financial",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2022-04-04"
+},
+"INFO": {
+"name": "IHS Markit",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2022-03-02"
+},
+"XLNX": {
+"name": "Xilinx",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2022-02-15"
+},
+"GPS": {
+"name": "Gap",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2022-02-03"
+},
+"LEG": {
+"name": "Leggett & Platt",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2021-12-20"
+},
+"WLTW": {
+"name": "Willis Towers Watson",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2022-01-10"
+},
+"HBI": {
+"name": "Hanesbrands",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2021-12-20"
+},
+"WU": {
+"name": "Western Union",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2021-12-20"
+},
+"KSU": {
+"name": "Kansas City Southern",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2021-12-14"
+},
+"PRGO": {
+"name": "Perrigo",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2021-09-20"
+},
+"UNM": {
+"name": "Unum",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2021-09-20"
+},
+"NOV": {
+"name": "Nov",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2021-09-20"
+},
+"MXIM": {
+"name": "Maxim Integrated",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2021-08-30"
+},
+"ALXN": {
+"name": "Alexion Pharmaceuticals",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2021-07-21"
+},
+"HFC": {
+"name": "HollyFrontier",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2021-06-04"
+},
+"FLIR": {
+"name": "FLIR Systems",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2021-05-14"
+},
+"VAR": {
+"name": "Varian Medical Systems",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2021-04-20"
+},
+"FLS": {
+"name": "Flowserve",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2021-03-22"
+},
+"SLG": {
+"name": "SL Green Realty",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2021-03-22"
+},
+"XRX": {
+"name": "Xerox",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2021-03-22"
+},
+"VNT": {
+"name": "Vontier",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2021-03-22"
+},
+"FTI": {
+"name": "TechnipFMC",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2021-02-12"
+},
+"CXO": {
+"name": "Concho Resources",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2021-01-21"
+},
+"TIF": {
+"name": "Tiffany & Co",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2021-01-07"
+},
+"AIV": {
+"name": "Aimco",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2020-12-21"
+},
+"NBL": {
+"name": "Noble Energy",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2020-10-12"
+},
+"ETFC": {
+"name": "E-Trade",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2020-10-07"
+},
+"HRB": {
+"name": "H&R Block",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2020-09-21"
+},
+"COTY": {
+"name": "Coty",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2020-09-21"
+},
+"KSS": {
+"name": "Kohl's",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2020-09-21"
+},
+"ADS": {
+"name": "Alliance Data Systems",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2020-06-22"
+},
+"HOG": {
+"name": "Harley-Davidson",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2020-06-22"
+},
+"JWN": {
+"name": "Nordstrom",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2020-06-22"
+},
+"HP": {
+"name": "Helmerich & Payne",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2020-05-22"
+},
+"CPRI": {
+"name": "Capri Holdings",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2020-05-12"
+},
+"AGN": {
+"name": "Allergan",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2020-05-12"
+},
+"M": {
+"name": "Macy's",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2020-04-06"
+},
+"RTN": {
+"name": "Raytheon Company",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2020-04-06"
+},
+"ARNC": {
+"name": "Arconic",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2020-04-01"
+},
+"XEC": {
+"name": "Cimarex Energy",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2020-03-03"
+},
+"WCG": {
+"name": "WellCare",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2020-01-28"
+},
+"AMG": {
+"name": "Affiliated Managers Group",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2019-12-23"
+},
+"TRIP": {
+"name": "TripAdvisor",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2019-12-23"
+},
+"MAC": {
+"name": "Macerich",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2019-12-23"
+},
+"STI": {
+"name": "SunTrust Banks",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2019-12-09"
+},
+"VIAB": {
+"name": "Viacom",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2019-12-05"
+},
+"CELG": {
+"name": "Celgene",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2019-11-21"
+},
+"NKTR": {
+"name": "Nektar Therapeutics",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2019-10-03"
+},
+"JEF": {
+"name": "Jefferies Financial Group",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2019-09-26"
+},
+"TSS": {
+"name": "TSYS",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2019-09-23"
+},
+"APC": {
+"name": "Anadarko Petroleum",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2019-08-09"
+},
+"FL": {
+"name": "Foot Locker",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2019-08-09"
+},
+"RHT": {
+"name": "Red Hat",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2019-07-15"
+},
+"LLL": {
+"name": "L3 Technologies",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2019-07-01"
+},
+"BMS": {
+"name": "Bemis",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2019-06-11"
+},
+"MAT": {
+"name": "Mattel",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2019-06-07"
+},
+"DWDP": {
+"name": "DuPont",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2019-06-03"
+},
+"FLR": {
+"name": "Fluor Corporation",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2019-06-03"
+},
+"BHF": {
+"name": "Brighthouse Financial",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2019-04-02"
+},
+"TFCFA": {
+"name": "21st Century Fox",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2019-03-20"
+},
+"TFCF": {
+"name": "21st Century Fox",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2019-03-20"
+},
+"GT": {
+"name": "The Goodyear Tire & Rubber Company",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2019-02-27"
+},
+"NFX": {
+"name": "Newfield Exploration",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2019-02-15"
+},
+"SCG": {
+"name": "SCANA",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2019-01-02"
+},
+"ESRX": {
+"name": "Express Scripts",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2018-12-24"
+},
+"COL": {
+"name": "Rockwell Collins",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2018-12-03"
+},
+"AET": {
+"name": "Aetna",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2018-12-03"
+},
+"SRCL": {
+"name": "Stericycle",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2018-12-03"
+},
+"CA": {
+"name": "CA Technologies",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2018-11-06"
+},
+"EVHC": {
+"name": "Envision Healthcare",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2018-10-11"
+},
+"ANDV": {
+"name": "Andeavor",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2018-10-01"
+},
+"XL": {
+"name": "XL Group",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2018-09-14"
+},
+"GGP": {
+"name": "GGP Inc.",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2018-08-28"
+},
+"DPS": {
+"name": "Dr Pepper Snapple Group",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2018-07-02"
+},
+"TWX": {
+"name": "Time Warner",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2018-06-20"
+},
+"RRC": {
+"name": "Range Resources",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2018-06-18"
+},
+"AYI": {
+"name": "Acuity Brands",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2018-06-18"
+},
+"MON": {
+"name": "Monsanto",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2018-06-07"
+},
+"NAVI": {
+"name": "Navient",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2018-06-05"
+},
+"WYN": {
+"name": "Wyndham Worldwide",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2018-05-31"
+},
+"CSRA": {
+"name": "CSRA",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2018-04-04"
+},
+"SIG": {
+"name": "Signet Jewelers",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2018-03-19"
+},
+"PDCO": {
+"name": "Patterson Companies",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2018-03-19"
+},
+"CHK": {
+"name": "Chesapeake Energy",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2018-03-19"
+},
+"SNI": {
+"name": "Scripps Networks Interactive",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2018-03-07"
+},
+"BCR": {
+"name": "CR Bard",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2018-01-03"
+},
+"LVLT": {
+"name": "Level 3 Communications",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2017-10-13"
+},
+"SPLS": {
+"name": "Staples",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2017-09-18"
+},
+"WFM": {
+"name": "Whole Foods Market",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2017-08-29"
+},
+"AN": {
+"name": "AutoNation",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2017-08-08"
+},
+"RIG": {
+"name": "Transocean",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2017-07-26"
+},
+"BBBY": {
+"name": "Bed Bath & Beyond",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2017-07-26"
+},
+"MUR": {
+"name": "Murphy Oil",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2017-07-26"
+},
+"MNK": {
+"name": "Mallinckrodt",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2017-07-26"
+},
+"RAI": {
+"name": "Reynolds American",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2017-07-26"
+},
+"BHI": {
+"name": "Baker Hughes",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2017-07-07"
+},
+"YHOO": {
+"name": "Yahoo!",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2017-06-19"
+},
+"TDC": {
+"name": "Teradata",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2017-06-19"
+},
+"R": {
+"name": "Ryder System",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2017-06-19"
+},
+"MJN": {
+"name": "Mead Johnson",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2017-06-19"
+},
+"TGNA": {
+"name": "Tegna",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2017-06-02"
+},
+"DNB": {
+"name": "Dun & Bradstreet",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2017-04-05"
+},
+"SWN": {
+"name": "Southwestern Energy",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2017-04-04"
+},
+"URBN": {
+"name": "Urban Outfitters",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2017-03-20"
+},
+"FTR": {
+"name": "Frontier Communications",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2017-03-20"
+},
+"HAR": {
+"name": "Harman International",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2017-03-16"
+},
+"LLTC": {
+"name": "Linear Technology",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2017-03-13"
+},
+"ENDP": {
+"name": "Endo International",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2017-03-02"
+},
+"PBI": {
+"name": "Pitney Bowes",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2017-03-01"
+},
+"SE": {
+"name": "Spectra Energy",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2017-02-28"
+},
+"STJ": {
+"name": "St Jude Medical",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2017-01-05"
+},
+"OI": {
+"name": "Owens-Illinois",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-12-02"
+},
+"LM": {
+"name": "Legg Mason",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-12-02"
+},
+"AA": {
+"name": "Alcoa",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-11-01"
+},
+"DO": {
+"name": "Diamond Offshore Drilling",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-09-30"
+},
+"HOT": {
+"name": "Starwood Hotels and Resorts",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-09-22"
+},
+"EMC": {
+"name": "EMC Corporation",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-09-08"
+},
+"TYC": {
+"name": "Tyco International",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-09-06"
+},
+"CPGX": {
+"name": "Columbia Pipeline Group",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-07-05"
+},
+"GAS": {
+"name": "AGL Resources",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-07-01"
+},
+"TE": {
+"name": "TECO Energy",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-07-01"
+},
+"CVC": {
+"name": "Cablevision Systems",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-06-22"
+},
+"BXLT": {
+"name": "Baxalta",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-06-03"
+},
+"CCE": {
+"name": "Coca-Cola Enterprises",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-05-31"
+},
+"ARG": {
+"name": "Airgas",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-05-23"
+},
+"TWC": {
+"name": "Time Warner Cable",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-05-18"
+},
+"ADT": {
+"name": "ADT",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-05-03"
+},
+"GME": {
+"name": "GameStop",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-04-25"
+},
+"THC": {
+"name": "Tenet Healthcare",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-04-18"
+},
+"CAM": {
+"name": "Cameron International",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-04-04"
+},
+"POM": {
+"name": "Pepco Holdings",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-03-30"
+},
+"ESV": {
+"name": "Ensco",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-03-30"
+},
+"GMCR": {
+"name": "Keurig Green Mountain",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-03-07"
+},
+"CNX": {
+"name": "Consol Energy",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-03-04"
+},
+"PCL": {
+"name": "Plum Creek Timber",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-02-22"
+},
+"PCP": {
+"name": "Precision Castparts Corporation",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-02-01"
+},
+"BRCM": {
+"name": "Broadcom Corporation",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-02-01"
+},
+"ACE": {
+"name": "Chubb",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-01-19"
+},
+"FOSL": {
+"name": "Fossil Group",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2016-01-05"
+},
+"ALTR": {
+"name": "Altera",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2015-12-29"
+},
+"CMCSK": {
+"name": "Comcast Series K",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2015-12-15"
+},
+"CSC": {
+"name": "Computer Sciences Corporation",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2015-12-01"
+},
+"SIAL": {
+"name": "Sigma-Aldrich",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2015-11-19"
+},
+"GNW": {
+"name": "Genworth Financial",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2015-11-18"
+},
+"HCBK": {
+"name": "Hudson City Bancorp",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2015-11-02"
+},
+"JOY": {
+"name": "Joy Global",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2015-10-07"
+},
+"HSP": {
+"name": "Hospira",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2015-09-02"
+},
+"PLL": {
+"name": "Pall Corporation",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2015-08-28"
+},
+"DTV": {
+"name": "DirecTV",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2015-07-29"
+},
+"NE": {
+"name": "Noble Corporation",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2015-07-20"
+},
+"FDO": {
+"name": "Family Dollar",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2015-07-08"
+},
+"KRFT": {
+"name": "Kraft Foods",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2015-07-06"
+},
+"ATI": {
+"name": "Allegheny Technologies",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2015-07-02"
+},
+"TEG": {
+"name": "Integrys Energy Group",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2015-07-01"
+},
+"QEP": {
+"name": "QEP Resources",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2015-07-01"
+},
+"LO": {
+"name": "Lorillard Tobacco Company",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2015-06-11"
+},
+"WIN": {
+"name": "Windstream Communications",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2015-04-07"
+},
+"DNR": {
+"name": "Denbury Resources",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2015-03-23"
+},
+"NBR": {
+"name": "Nabors Industries",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2015-03-23"
+},
+"AVP": {
+"name": "Avon Products",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2015-03-23"
+},
+"CFN": {
+"name": "Carefusion",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2015-03-18"
+},
+"PETM": {
+"name": "PetSmart",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2015-03-12"
+},
+"SWY": {
+"name": "Safeway",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2015-01-27"
+},
+"COV": {
+"name": "Covidien",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2015-01-27"
+},
+"BTU": {
+"name": "Peabody Energy",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2014-09-20"
+},
+"GHC": {
+"name": "Graham Holdings",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2014-09-20"
+},
+"RDC": {
+"name": "Rowan Companies",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2014-08-18"
+},
+"X": {
+"name": "United States Steel",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2014-07-02"
+},
+"FRX": {
+"name": "Forest Laboratories",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2014-07-01"
+},
+"IGT": {
+"name": "International Game Technology",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2014-06-20"
+},
+"LSI": {
+"name": "LSI Corporation",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2014-05-08"
+},
+"BEAM": {
+"name": "Suntory Global Spirits",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2014-05-01"
+},
+"SLM": {
+"name": "SLM Corporation",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2014-05-01"
+},
+"CLF": {
+"name": "Cliffs Natural Resources",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2014-04-02"
+},
+"WPX": {
+"name": "WPX Energy",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2014-03-21"
+},
+"LIFE": {
+"name": "Life Technologies",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2014-01-24"
+},
+"ANF": {
+"name": "Abercrombie & Fitch",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2013-12-23"
+},
+"JDSU": {
+"name": "JDS Uniphase",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2013-12-23"
+},
+"MOLX": {
+"name": "Molex",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2013-12-10"
+},
+"JCP |": {
+"name": "JCPenney",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2013-12-02"
+},
+"NYX": {
+"name": "NYSE Euronext",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2013-11-13"
+},
+"SAI": {
+"name": "SAIC",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2013-09-20"
+},
+"BMC": {
+"name": "BMC Software",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2013-09-10"
+},
+"S": {
+"name": "Sprint Nextel",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2013-07-08"
+},
+"APOL": {
+"name": "Apollo Education Group",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2013-07-01"
+},
+"FHN": {
+"name": "First Horizon",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2013-06-21"
+},
+"HNZ": {
+"name": "Heinz",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2013-06-06"
+},
+"DF": {
+"name": "Dean Foods",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2013-05-23"
+},
+"CVH": {
+"name": "Coventry Health Care",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2013-05-08"
+},
+"PCS": {
+"name": "MetroPCS",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2013-04-30"
+},
+"BIG": {
+"name": "Big Lots",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2013-02-15"
+},
+"FII": {
+"name": "Federated Investors",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2013-01-02"
+},
+"TIE": {
+"name": "Titanium Metals",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2012-12-21"
+},
+"RRD": {
+"name": "RR Donnelley",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2012-12-11"
+},
+"CBE": {
+"name": "Cooper Industries",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2012-12-03"
+},
+"SUN": {
+"name": "Sunoco",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2012-10-10"
+},
+"ANR": {
+"name": "Alpha Natural Resources",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2012-10-02"
+},
+"KFT": {
+"name": "Kraft Foods",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2012-10-02"
+},
+"LXK": {
+"name": "Lexmark",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2012-10-01"
+},
+"DV": {
+"name": "DeVry",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2012-10-01"
+},
+"SHLD": {
+"name": "Sears Holdings",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2012-09-05"
+},
+"GR": {
+"name": "Goodrich Corporation",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2012-07-31"
+},
+"PGN": {
+"name": "Progress Energy",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2012-07-02"
+},
+"SLE": {
+"name": "Sara Lee Corporation",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2012-06-29"
+},
+"NVLS": {
+"name": "Novellus Systems",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2012-06-05"
+},
+"MMI": {
+"name": "Motorola Mobility",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2012-05-21"
+},
+"EP": {
+"name": "El Paso Corporation",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2012-05-17"
+},
+"SVU": {
+"name": "Supervalu",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2012-04-23"
+},
+"MHS": {
+"name": "Medco Health Solutions",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2012-04-03"
+},
+"CPWR": {
+"name": "Compuware",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2011-12-31"
+},
+"TLAB": {
+"name": "Tellabs",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2011-12-20"
+},
+"AKS": {
+"name": "AK Steel",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2011-12-16"
+},
+"MWW": {
+"name": "Monster Worldwide",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2011-12-16"
+},
+"WFR": {
+"name": "MEMC Electronic Materials",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2011-12-16"
+},
+"JNS": {
+"name": "Janus Capital Group",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2011-11-18"
+},
+"ITT |": {
+"name": "ITT",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2011-10-31"
+},
+"CEPH": {
+"name": "Cephalon",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2011-10-14"
+},
+"NSM": {
+"name": "National Semiconductor",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2011-09-23"
+},
+"MI": {
+"name": "Marshall & Ilsley",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2011-07-05"
+},
+"RSH": {
+"name": "RadioShack",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2011-06-30"
+},
+"MEE": {
+"name": "Massey Energy",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2011-06-01"
+},
+"NOVL": {
+"name": "Novell",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2011-04-27"
+},
+"GENZ": {
+"name": "Genzyme",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2011-04-01"
+},
+"MFE": {
+"name": "McAfee",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2011-02-28"
+},
+"AYE": {
+"name": "Allegheny Energy",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2011-02-25"
+},
+"MDP": {
+"name": "Meredith Corp",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2011-01-03"
+},
+"KG": {
+"name": "King Pharmaceuticals",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2010-12-17"
+},
+"EK": {
+"name": "Eastman Kodak",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2010-12-17"
+},
+"ODP": {
+"name": "Office Depot",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2010-12-17"
+},
+"NYT": {
+"name": "The New York Times Company",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2010-12-17"
+},
+"PTV": {
+"name": "Pactiv",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2010-11-17"
+},
+"SII": {
+"name": "Smith International",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2010-08-26"
+},
+"MIL": {
+"name": "Millipore",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2010-07-14"
+},
+"STR": {
+"name": "Questar",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2010-06-30"
+},
+"XTO": {
+"name": "XTO Energy",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2010-06-28"
+},
+"BJS": {
+"name": "BJ Services",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2010-04-29"
+},
+"RX": {
+"name": "IMS Health",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2010-02-26"
+},
+"DYN": {
+"name": "Dynegy",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2009-12-18"
+},
+"KBH": {
+"name": "KB Home",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2009-12-18"
+},
+"CVG": {
+"name": "Convergys",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2009-12-18"
+},
+"MBI": {
+"name": "MBIA",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2009-12-18"
+},
+"SGP": {
+"name": "Schering-Plough",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2009-11-03"
+},
+"CTX": {
+"name": "Centex Corp.",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2009-08-19"
+},
+"ACAS": {
+"name": "American Capital",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2009-03-03"
+},
+"JNY": {
+"name": "Jones Apparel Group",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2009-03-03"
+},
+"WB": {
+"name": "Wachovia Bank",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2008-12-31"
+},
+"LEH": {
+"name": "Lehman Brothers",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2008-09-16"
+},
+"FRE": {
+"name": "Freddie Mac",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2008-09-12"
+},
+"FNM": {
+"name": "Fannie Mae",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2008-09-12"
+},
+"CFC": {
+"name": "Countrywide Financial Corp",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2008-07-01"
+},
+"BC": {
+"name": "Brunswick",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2008-06-23"
+},
+"OMX": {
+"name": "OfficeMax",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2008-06-23"
+},
+"ABK": {
+"name": "Ambac Financial",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2008-06-10"
+},
+"TRB": {
+"name": "Tribune Media",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2007-12-20"
+},
+"DJ": {
+"name": "Dow Jones",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2007-12-13"
+},
+"AV": {
+"name": "Avaya",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2007-10-26"
+},
+"SLR": {
+"name": "Solectron",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2007-10-02"
+},
+"NCR": {
+"name": "NCR Corporation",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2007-10-01"
+},
+"FDC": {
+"name": "First Data",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2007-09-26"
+},
+"KSE": {
+"name": "KeySpan",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2007-08-24"
+},
+"ADCT": {
+"name": "ADC Telecommunications",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2007-07-02"
+},
+"TSG": {
+"name": "Sabre Corporation",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2007-03-30"
+},
+"SBL": {
+"name": "Symbol Technologies",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2007-01-10"
+},
+"ABS": {
+"name": "Albertsons",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2006-06-02"
+},
+"GLK": {
+"name": "Great Lakes Chemical",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2005-07-01"
+},
+"QTRN": {
+"name": "Quintiles Transnational",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2003-09-25"
+},
+"BS": {
+"name": "Bethlehem Steel",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2000-12-05"
+},
+"GRA": {
+"name": "WR Grace",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2000-12-05"
+},
+"CCK": {
+"name": "Crown Holdings",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2000-12-05"
+},
+"RAD": {
+"name": "Rite Aid",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2000-07-27"
+},
+"TMC": {
+"name": "Times Mirror",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2000-06-12"
+},
+"SMS": {
+"name": "Shared Medical Systems",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "2000-06-07"
+},
+"LDW": {
+"name": "Laidlaw",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "1999-12-08"
+},
+"HPH": {
+"name": "Harnischfeger Industries",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "1999-06-09"
+},
+"GRN": {
+"name": "General Re",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "1998-12-11"
+},
+"USL": {
+"name": "USLife",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "1997-06-17"
+},
+"HNG": {
+"name": "Houston Natural Gas",
+"sector": "Unknown",
+"sub_industry": "",
+"start": null,
+"end": "1976-07-01"
+}
+}
 }
