@@ -22,8 +22,8 @@
 
 ## How much to trust this
 
-- In a hypothetical replay of 205 past weeks (2022-12-09 to 2026-11-20), the list beat the S&P 500 by +0.01% a week on average before costs (-0.03% after costs at a $0-commission broker).
-- It beat the index in 54% of weeks. The worst stretch was -23% behind the index.
-- Strength of evidence: t = 0.4 (2 or more is convincing). At this pace proving it would take ~94 years.
+- In a hypothetical replay of 205 past weeks (2022-12-09 to 2026-11-20), the list beat the S&P 500 by -0.02% a week on average before costs (-0.06% after costs at a $0-commission broker).
+- It beat the index in 53% of weeks. The worst stretch was -26% behind the index.
+- Strength of evidence: t = 0.5 (2 or more is convincing). At this pace proving it would take ~64 years.
 
 _Research output, not financial advice. Paper-trade first._
